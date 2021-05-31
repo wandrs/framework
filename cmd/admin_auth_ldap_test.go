@@ -7,8 +7,8 @@ package cmd
 import (
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/auth/ldap"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/auth/ldap"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli"

@@ -7,9 +7,9 @@ package doctor
 import (
 	"context"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/models/migrations"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/models/migrations"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 func checkDBVersion(logger log.Logger, autofix bool) error {

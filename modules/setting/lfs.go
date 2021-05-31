@@ -8,9 +8,9 @@ import (
 	"encoding/base64"
 	"time"
 
-	"code.gitea.io/gitea/modules/generate"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/generate"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
 
 	ini "gopkg.in/ini.v1"
 )

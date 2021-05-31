@@ -5,8 +5,8 @@
 package swagger
 
 import (
-	"code.gitea.io/gitea/models"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // User

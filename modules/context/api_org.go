@@ -5,7 +5,7 @@
 package context
 
 import (
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
 )
 
 // APIOrganization contains organization and team

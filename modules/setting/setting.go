@@ -22,10 +22,10 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/modules/generate"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/user"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/generate"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/user"
+	"go.wandrs.dev/framework/modules/util"
 
 	jsoniter "github.com/json-iterator/go"
 	shellquote "github.com/kballard/go-shellquote"

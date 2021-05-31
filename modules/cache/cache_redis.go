@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"time"
 
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/nosql"
+	"go.wandrs.dev/cache"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/nosql"
 
-	"gitea.com/go-chi/cache"
 	"github.com/go-redis/redis/v8"
 	"github.com/unknwon/com"
 )

@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	code_indexer "code.gitea.io/gitea/modules/indexer/code"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	code_indexer "go.wandrs.dev/framework/modules/indexer/code"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"

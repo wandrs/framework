@@ -5,9 +5,9 @@
 package repofiles
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/structs"
 )
 
 // GetPayloadCommitVerification returns the verification information of a commit

@@ -9,13 +9,14 @@ import (
 	"net/http"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/util"
-	"code.gitea.io/gitea/routers/utils"
-	"code.gitea.io/gitea/services/webhook"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/util"
+	"go.wandrs.dev/framework/routers/utils"
+	"go.wandrs.dev/framework/services/webhook"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

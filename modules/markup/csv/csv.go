@@ -12,9 +12,9 @@ import (
 	"io/ioutil"
 	"strconv"
 
-	"code.gitea.io/gitea/modules/csv"
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/csv"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 func init() {

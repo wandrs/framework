@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"code.gitea.io/gitea/modules/markup"
+	"go.wandrs.dev/framework/modules/markup"
 
 	"github.com/stretchr/testify/assert"
 )

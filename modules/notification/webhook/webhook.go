@@ -5,15 +5,15 @@
 package webhook
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/convert"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification/base"
-	"code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
-	webhook_services "code.gitea.io/gitea/services/webhook"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/convert"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification/base"
+	"go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
+	webhook_services "go.wandrs.dev/framework/services/webhook"
 )
 
 type webhookNotifier struct {

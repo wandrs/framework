@@ -5,8 +5,8 @@
 package ssh
 
 import (
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
 
 	"github.com/gliderlabs/ssh"
 )

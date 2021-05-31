@@ -7,7 +7,8 @@ package validation
 import (
 	"testing"
 
-	"gitea.com/go-chi/binding"
+	"go.wandrs.dev/binding"
+
 	"github.com/gobwas/glob"
 )
 

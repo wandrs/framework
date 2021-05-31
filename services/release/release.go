@@ -9,13 +9,13 @@ import (
 	"fmt"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification"
-	"code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/storage"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification"
+	"go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/storage"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 func createTag(gitRepo *git.Repository, rel *models.Release, msg string) (bool, error) {

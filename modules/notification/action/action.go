@@ -9,10 +9,11 @@ import (
 	"path"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification/base"
-	"code.gitea.io/gitea/modules/repository"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification/base"
+	"go.wandrs.dev/framework/modules/repository"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

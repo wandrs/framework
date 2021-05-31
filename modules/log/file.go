@@ -15,7 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/util"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

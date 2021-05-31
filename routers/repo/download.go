@@ -12,14 +12,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/charset"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/httpcache"
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/charset"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/httpcache"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // ServeData download file from io.Reader

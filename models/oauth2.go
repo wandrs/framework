@@ -7,8 +7,8 @@ package models
 import (
 	"sort"
 
-	"code.gitea.io/gitea/modules/auth/oauth2"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/auth/oauth2"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // OAuth2Provider describes the display values of a single OAuth2 provider

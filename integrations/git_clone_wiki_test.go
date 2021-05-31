@@ -12,8 +12,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/util"
+
 	"github.com/stretchr/testify/assert"
 )
 

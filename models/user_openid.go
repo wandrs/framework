@@ -7,8 +7,8 @@ package models
 import (
 	"errors"
 
-	"code.gitea.io/gitea/modules/auth/openid"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/auth/openid"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // ErrOpenIDNotExist openid is not known

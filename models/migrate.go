@@ -5,7 +5,7 @@
 package models
 
 import (
-	"code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/modules/structs"
 
 	"xorm.io/builder"
 	"xorm.io/xorm"

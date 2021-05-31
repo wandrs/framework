@@ -21,15 +21,15 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/process"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/util"
-	repo_service "code.gitea.io/gitea/services/repository"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/process"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/util"
+	repo_service "go.wandrs.dev/framework/services/repository"
 )
 
 // httpBase implmentation git smart HTTP protocol

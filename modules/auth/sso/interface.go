@@ -7,9 +7,9 @@ package sso
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/session"
-	"code.gitea.io/gitea/modules/web/middleware"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/session"
+	"go.wandrs.dev/framework/modules/web/middleware"
 )
 
 // DataStore represents a data store

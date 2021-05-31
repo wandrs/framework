@@ -13,10 +13,10 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/queue"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/services/forms"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/queue"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/services/forms"
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"

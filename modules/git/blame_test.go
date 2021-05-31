@@ -75,12 +75,12 @@ committer Sandro Santilli
 committer-mail <strk@kbt.io>
 committer-time 1478872595
 committer-tz +0100
-summary ask for go get from code.gitea.io/gitea and change gogs to gitea on main file (#146)
+summary ask for go get from go.wandrs.dev/framework and change gogs to gitea on main file (#146)
 previous 5fc370e332171b8658caed771b48585576f11737 main.go
 filename main.go
 	// Gitea (git with a cup of tea) is a painless self-hosted Git Service.
 e2aa991e10ffd924a828ec149951f2f20eecead2 7 7
-	package main // import "code.gitea.io/gitea"
+	package main // import "go.wandrs.dev/framework"
 `
 
 func TestReadingBlameOutput(t *testing.T) {
@@ -128,7 +128,7 @@ func TestReadingBlameOutput(t *testing.T) {
 			"e2aa991e10ffd924a828ec149951f2f20eecead2",
 			[]string{
 				"// Gitea (git with a cup of tea) is a painless self-hosted Git Service.",
-				"package main // import \"code.gitea.io/gitea\"",
+				"package main // import \"go.wandrs.dev/framework\"",
 			},
 		},
 		nil,

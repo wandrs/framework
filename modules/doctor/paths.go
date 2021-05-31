@@ -9,9 +9,9 @@ import (
 	"io/ioutil"
 	"os"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/options"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/options"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 type configurationFile struct {

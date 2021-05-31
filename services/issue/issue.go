@@ -5,10 +5,10 @@
 package issue
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/notification"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/notification"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 // NewIssue creates new issue with labels for repository.

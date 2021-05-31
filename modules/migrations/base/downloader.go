@@ -8,7 +8,7 @@ package base
 import (
 	"context"
 
-	"code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/modules/structs"
 )
 
 // Downloader downloads the site repo informations

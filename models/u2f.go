@@ -5,8 +5,8 @@
 package models
 
 import (
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"github.com/tstranex/u2f"
 )

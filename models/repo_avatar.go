@@ -13,10 +13,10 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/modules/avatar"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/storage"
+	"go.wandrs.dev/framework/modules/avatar"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/storage"
 )
 
 // CustomAvatarRelativePath returns repository custom avatar file path.

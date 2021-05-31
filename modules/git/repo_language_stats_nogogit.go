@@ -12,7 +12,7 @@ import (
 	"io"
 	"math"
 
-	"code.gitea.io/gitea/modules/analyze"
+	"go.wandrs.dev/framework/modules/analyze"
 
 	"github.com/go-enry/go-enry/v2"
 )

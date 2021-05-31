@@ -7,8 +7,8 @@ package repository
 import (
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
 )
 
 // PushUpdateOptions defines the push update options

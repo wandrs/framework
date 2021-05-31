@@ -14,9 +14,9 @@ import (
 	"strings"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/storage"
-	"code.gitea.io/gitea/modules/test"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/storage"
+	"go.wandrs.dev/framework/modules/test"
 
 	"github.com/stretchr/testify/assert"
 )

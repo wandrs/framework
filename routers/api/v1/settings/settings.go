@@ -7,9 +7,9 @@ package settings
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // GetGeneralUISettings returns instance's global settings for ui

@@ -7,9 +7,9 @@ package repository
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/notification"
-	"code.gitea.io/gitea/modules/sync"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/notification"
+	"go.wandrs.dev/framework/modules/sync"
 )
 
 // repoWorkingPool represents a working pool to order the parallel changes to the same repository

@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/modules/migrations/base"
+	"go.wandrs.dev/framework/modules/migrations/base"
 
 	"github.com/stretchr/testify/assert"
 )

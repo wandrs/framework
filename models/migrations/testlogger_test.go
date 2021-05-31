@@ -14,8 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/queue"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/queue"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

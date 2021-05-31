@@ -5,11 +5,11 @@
 package admin
 
 import (
-	"code.gitea.io/gitea/modules/context"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/web"
-	"code.gitea.io/gitea/routers/api/v1/repo"
-	"code.gitea.io/gitea/routers/api/v1/user"
+	"go.wandrs.dev/framework/modules/context"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/web"
+	"go.wandrs.dev/framework/routers/api/v1/repo"
+	"go.wandrs.dev/framework/routers/api/v1/user"
 )
 
 // CreateRepo api for creating a repository

@@ -7,8 +7,8 @@ package mailer
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 func fallbackMailSubject(issue *models.Issue) string {

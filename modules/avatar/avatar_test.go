@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/stretchr/testify/assert"
 )

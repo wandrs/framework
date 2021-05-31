@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 
 	uuid "github.com/google/uuid"
 	"github.com/lafriks/xormstore"

@@ -15,7 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/modules/git"
+
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 )

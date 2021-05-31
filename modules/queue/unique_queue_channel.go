@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"sync"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // ChannelUniqueQueueType is the type for channel queue

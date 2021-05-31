@@ -5,9 +5,9 @@
 package convert
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/markup"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/markup"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // ToUser convert models.User to api.User

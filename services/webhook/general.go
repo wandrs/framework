@@ -9,8 +9,8 @@ import (
 	"html"
 	"strings"
 
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 type linkFormatter = func(string, string) string

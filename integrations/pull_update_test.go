@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/repofiles"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	pull_service "code.gitea.io/gitea/services/pull"
-	repo_service "code.gitea.io/gitea/services/repository"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/repofiles"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	pull_service "go.wandrs.dev/framework/services/pull"
+	repo_service "go.wandrs.dev/framework/services/repository"
 
 	"github.com/stretchr/testify/assert"
 )

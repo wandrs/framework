@@ -7,8 +7,8 @@ package repofiles
 import (
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/services/gitdiff"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/services/gitdiff"
 )
 
 // GetDiffPreview produces and returns diff result of a file which is not yet committed.

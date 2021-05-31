@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
 )
 
 // SigningKey returns the public key of the default signing key if it exists

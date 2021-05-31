@@ -13,9 +13,9 @@ import (
 	"strings"
 	"sync"
 
-	"code.gitea.io/gitea/modules/log"
-	jsoniter "github.com/json-iterator/go"
+	"go.wandrs.dev/framework/modules/log"
 
+	jsoniter "github.com/json-iterator/go"
 	ini "gopkg.in/ini.v1"
 )
 

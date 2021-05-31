@@ -15,7 +15,7 @@ import (
 	"net/url"
 	"strings"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // HTTPClient is used to communicate with the LFS server

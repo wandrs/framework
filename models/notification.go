@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"xorm.io/builder"
 	"xorm.io/xorm"

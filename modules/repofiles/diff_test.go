@@ -7,9 +7,9 @@ package repofiles
 import (
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/test"
-	"code.gitea.io/gitea/services/gitdiff"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/test"
+	"go.wandrs.dev/framework/services/gitdiff"
 
 	"github.com/stretchr/testify/assert"
 )

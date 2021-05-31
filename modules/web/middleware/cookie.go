@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"time"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // MaxAge sets the maximum age for a provided cookie

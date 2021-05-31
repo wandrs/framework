@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"strings"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 
 	"github.com/go-ldap/ldap/v3"
 )

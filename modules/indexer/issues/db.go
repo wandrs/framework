@@ -4,7 +4,7 @@
 
 package issues
 
-import "code.gitea.io/gitea/models"
+import "go.wandrs.dev/framework/models"
 
 // DBIndexer implements Indexer interface to use database's like search
 type DBIndexer struct {

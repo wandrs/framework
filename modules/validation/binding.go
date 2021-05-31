@@ -9,7 +9,8 @@ import (
 	"regexp"
 	"strings"
 
-	"gitea.com/go-chi/binding"
+	"go.wandrs.dev/binding"
+
 	"github.com/gobwas/glob"
 )
 

@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // ChannelQueueType is the type for channel queue

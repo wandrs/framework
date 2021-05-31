@@ -7,11 +7,11 @@ package models
 import (
 	"fmt"
 
-	migration "code.gitea.io/gitea/modules/migrations/base"
-	"code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/timeutil"
-	jsoniter "github.com/json-iterator/go"
+	migration "go.wandrs.dev/framework/modules/migrations/base"
+	"go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/timeutil"
 
+	jsoniter "github.com/json-iterator/go"
 	"xorm.io/builder"
 )
 

@@ -8,9 +8,9 @@ package private
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // UpdatePublicKeyInRepo update public key and deploy key updates

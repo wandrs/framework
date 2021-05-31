@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strings"
 
-	"code.gitea.io/gitea/modules/process"
+	"go.wandrs.dev/framework/modules/process"
 )
 
 // LoadPublicKeyContent will load the key from gpg

@@ -5,7 +5,7 @@
 package webhook
 
 import (
-	api "code.gitea.io/gitea/modules/structs"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 func issueTestPayload() *api.IssuePayload {

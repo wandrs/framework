@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/notification"
-	"code.gitea.io/gitea/modules/references"
-	"code.gitea.io/gitea/modules/repository"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/notification"
+	"go.wandrs.dev/framework/modules/references"
+	"go.wandrs.dev/framework/modules/repository"
 )
 
 const (

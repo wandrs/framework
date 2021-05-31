@@ -18,12 +18,12 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/process"
-	"code.gitea.io/gitea/modules/queue"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/process"
+	"go.wandrs.dev/framework/modules/queue"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/jaytaylor/html2text"
 	"gopkg.in/gomail.v2"

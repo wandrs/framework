@@ -8,9 +8,9 @@ import (
 	"sort"
 	"testing"
 
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"github.com/stretchr/testify/assert"
 	"xorm.io/builder"

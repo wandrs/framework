@@ -7,8 +7,8 @@ package user
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
 )
 
 // TaskStatus returns task's status

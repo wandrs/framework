@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/structs"
 )
 
 // Service settings

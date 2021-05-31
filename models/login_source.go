@@ -14,17 +14,17 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/modules/auth/ldap"
-	"code.gitea.io/gitea/modules/auth/oauth2"
-	"code.gitea.io/gitea/modules/auth/pam"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/secret"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/auth/ldap"
+	"go.wandrs.dev/framework/modules/auth/oauth2"
+	"go.wandrs.dev/framework/modules/auth/pam"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/secret"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
+	"go.wandrs.dev/framework/modules/util"
+
 	gouuid "github.com/google/uuid"
 	jsoniter "github.com/json-iterator/go"
-
 	"xorm.io/xorm"
 	"xorm.io/xorm/convert"
 )

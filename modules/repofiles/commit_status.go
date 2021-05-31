@@ -7,8 +7,8 @@ package repofiles
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
 )
 
 // CreateCommitStatus creates a new CommitStatus given a bunch of parameters

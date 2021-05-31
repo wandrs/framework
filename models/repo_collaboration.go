@@ -8,7 +8,7 @@ package models
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"xorm.io/builder"
 )

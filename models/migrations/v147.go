@@ -5,7 +5,7 @@
 package migrations
 
 import (
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"xorm.io/xorm"
 )

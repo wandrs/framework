@@ -7,7 +7,7 @@ package models
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	jsoniter "github.com/json-iterator/go"
 	"xorm.io/xorm"

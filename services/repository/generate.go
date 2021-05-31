@@ -5,10 +5,10 @@
 package repository
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification"
-	repo_module "code.gitea.io/gitea/modules/repository"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification"
+	repo_module "go.wandrs.dev/framework/modules/repository"
 )
 
 // GenerateRepository generates a repository from a template

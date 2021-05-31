@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/translation"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/translation"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/unknwon/i18n"

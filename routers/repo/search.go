@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"strings"
 
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/context"
-	code_indexer "code.gitea.io/gitea/modules/indexer/code"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/context"
+	code_indexer "go.wandrs.dev/framework/modules/indexer/code"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 const tplSearch base.TplName = "repo/search"

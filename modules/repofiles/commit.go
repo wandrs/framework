@@ -5,8 +5,8 @@
 package repofiles
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
 )
 
 // CountDivergingCommits determines how many commits a branch is ahead or behind the repository's base branch

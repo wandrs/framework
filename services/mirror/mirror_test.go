@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	migration "code.gitea.io/gitea/modules/migrations/base"
-	"code.gitea.io/gitea/modules/repository"
-	release_service "code.gitea.io/gitea/services/release"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	migration "go.wandrs.dev/framework/modules/migrations/base"
+	"go.wandrs.dev/framework/modules/repository"
+	release_service "go.wandrs.dev/framework/services/release"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -7,8 +7,8 @@ package repo
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/repofiles"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/repofiles"
 )
 
 // GetTree get the tree of a repository.

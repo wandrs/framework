@@ -7,9 +7,9 @@ package repo
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/git"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/git"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // GetGitAllRefs get ref or an list all the refs of a repository

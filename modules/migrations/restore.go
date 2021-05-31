@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"code.gitea.io/gitea/modules/migrations/base"
+	"go.wandrs.dev/framework/modules/migrations/base"
 
 	"gopkg.in/yaml.v2"
 )

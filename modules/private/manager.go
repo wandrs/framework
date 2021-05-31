@@ -10,7 +10,8 @@ import (
 	"net/url"
 	"time"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

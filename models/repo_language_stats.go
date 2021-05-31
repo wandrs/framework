@@ -8,7 +8,7 @@ import (
 	"math"
 	"strings"
 
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"github.com/go-enry/go-enry/v2"
 )

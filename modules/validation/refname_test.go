@@ -7,7 +7,7 @@ package validation
 import (
 	"testing"
 
-	"gitea.com/go-chi/binding"
+	"go.wandrs.dev/binding"
 )
 
 var gitRefNameValidationTestCases = []validationTestCase{

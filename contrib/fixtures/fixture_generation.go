@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
 )
 
 // To generate derivative fixtures, execute the following from Gitea's repository base dir:

@@ -7,7 +7,8 @@ package migrations
 import (
 	"testing"
 
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
+
 	"github.com/stretchr/testify/assert"
 )
 

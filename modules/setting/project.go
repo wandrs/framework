@@ -4,7 +4,7 @@
 
 package setting
 
-import "code.gitea.io/gitea/modules/log"
+import "go.wandrs.dev/framework/modules/log"
 
 // Project settings
 var (

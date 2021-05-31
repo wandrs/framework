@@ -5,7 +5,7 @@
 
 package base
 
-import "code.gitea.io/gitea/modules/structs"
+import "go.wandrs.dev/framework/modules/structs"
 
 // MigrateOptions defines the way a repository gets migrated
 // this is for internal usage by migrations module and func who interact with it

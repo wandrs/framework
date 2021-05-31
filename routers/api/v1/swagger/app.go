@@ -5,7 +5,7 @@
 package swagger
 
 import (
-	api "code.gitea.io/gitea/modules/structs"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // OAuth2Application

@@ -8,7 +8,7 @@ package context
 import (
 	"strings"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
 )
 
 // Organization contains organization context

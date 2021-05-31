@@ -5,9 +5,9 @@
 package migrations
 
 import (
-	"code.gitea.io/gitea/modules/setting"
-	jsoniter "github.com/json-iterator/go"
+	"go.wandrs.dev/framework/modules/setting"
 
+	jsoniter "github.com/json-iterator/go"
 	"xorm.io/xorm"
 )
 

@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"testing"
 
-	api "code.gitea.io/gitea/modules/structs"
+	api "go.wandrs.dev/framework/modules/structs"
 
 	"github.com/stretchr/testify/assert"
 )

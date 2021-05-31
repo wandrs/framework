@@ -9,17 +9,17 @@ import (
 	"fmt"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/cache"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification"
-	"code.gitea.io/gitea/modules/queue"
-	"code.gitea.io/gitea/modules/repofiles"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
-	pull_service "code.gitea.io/gitea/services/pull"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/cache"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification"
+	"go.wandrs.dev/framework/modules/queue"
+	"go.wandrs.dev/framework/modules/repofiles"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
+	pull_service "go.wandrs.dev/framework/services/pull"
 )
 
 // pushQueue represents a queue to handle update pull request tests

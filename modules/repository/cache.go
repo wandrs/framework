@@ -7,10 +7,10 @@ package repository
 import (
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/cache"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/cache"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 func getRefName(fullRefName string) string {

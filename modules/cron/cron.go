@@ -9,8 +9,8 @@ import (
 	"context"
 	"time"
 
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/sync"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/sync"
 
 	"github.com/gogs/cron"
 )

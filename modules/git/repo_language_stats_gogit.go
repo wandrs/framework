@@ -11,7 +11,7 @@ import (
 	"io"
 	"io/ioutil"
 
-	"code.gitea.io/gitea/modules/analyze"
+	"go.wandrs.dev/framework/modules/analyze"
 
 	"github.com/go-enry/go-enry/v2"
 	"github.com/go-git/go-git/v5"

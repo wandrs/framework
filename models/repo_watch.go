@@ -7,8 +7,8 @@ package models
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // RepoWatchMode specifies what kind of watch the user has on a repository

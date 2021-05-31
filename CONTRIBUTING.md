@@ -144,7 +144,7 @@ import (
   "fmt"
 
   // local packages
-  "code.gitea.io/gitea/models"
+  "go.wandrs.dev/framework/models"
   "code.gitea.io/sdk/gitea"
 
   // external packages

@@ -11,7 +11,7 @@ import (
 	"regexp"
 	"sync"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/microcosm-cc/bluemonday"
 )

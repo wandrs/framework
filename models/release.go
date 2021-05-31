@@ -11,9 +11,9 @@ import (
 	"sort"
 	"strings"
 
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"xorm.io/builder"
 )

@@ -7,7 +7,7 @@ package setting
 import (
 	"net/url"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 
 	"strk.kbt.io/projects/go/libravatar"
 )
