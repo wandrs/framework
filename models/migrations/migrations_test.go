@@ -21,7 +21,6 @@ import (
 	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/unknwon/com"
 	"xorm.io/xorm"
 	"xorm.io/xorm/names"
 )
@@ -56,15 +55,11 @@ func TestMain(m *testing.M) {
 
 	setting.SetCustomPathAndConf("", "", "")
 	setting.NewContext()
-	setting.CheckLFSVersion()
 	setting.InitDBConfig()
 	setting.NewLogServices(true)
 
 	exitStatus := m.Run()
 
-	if err := removeAllWithRetry(setting.RepoRootPath); err != nil {
-		fmt.Fprintf(os.Stderr, "os.RemoveAll: %v\n", err)
-	}
 	if err := removeAllWithRetry(setting.AppDataPath); err != nil {
 		fmt.Fprintf(os.Stderr, "os.RemoveAll: %v\n", err)
 	}
@@ -201,10 +196,6 @@ func prepareTestEnv(t *testing.T, skip int, syncModels ...interface{}) (*xorm.En
 	ourSkip := 2
 	ourSkip += skip
 	deferFn := PrintCurrentTest(t, ourSkip)
-	assert.NoError(t, os.RemoveAll(setting.RepoRootPath))
-
-	assert.NoError(t, com.CopyDir(path.Join(filepath.Dir(setting.AppPath), "integrations/gitea-repositories-meta"),
-		setting.RepoRootPath))
 
 	if err := deleteDB(); err != nil {
 		t.Errorf("unable to reset database: %v", err)
