@@ -582,12 +582,6 @@ func removeOrgUser(sess *xorm.Session, orgID, userID int64) error {
 		return err
 	}
 
-	// Delete all repository accesses and unwatch them.
-	env, err := org.accessibleReposEnv(sess, userID)
-	if err != nil {
-		return fmt.Errorf("AccessibleReposEnv: %v", err)
-	}
-
 	// Delete member in his/her teams.
 	teams, err := getUserOrgTeams(sess, org.ID, userID)
 	if err != nil {
