@@ -16,7 +16,7 @@ import (
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/util"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func Test_CmdKeys(t *testing.T) {

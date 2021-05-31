@@ -11,7 +11,7 @@ import (
 	"go.wandrs.dev/framework/modules/auth/ldap"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func TestAddLdapBindDn(t *testing.T) {

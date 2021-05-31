@@ -22,7 +22,7 @@ import (
 	_ "go.wandrs.dev/framework/modules/markup/orgmode"
 	"go.wandrs.dev/framework/modules/setting"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var (
@@ -56,7 +56,7 @@ func main() {
 	app.Description = `By default, gitea will start serving using the webserver with no
 arguments - which can alternatively be run by running the subcommand web.`
 	app.Version = Version + formatBuiltWith()
-	app.Commands = []cli.Command{
+	app.Commands = []*cli.Command{
 		cmd.CmdWeb,
 		cmd.CmdServ,
 		cmd.CmdHook,
@@ -83,21 +83,24 @@ arguments - which can alternatively be run by running the subcommand web.`
 
 	// default configuration flags
 	defaultFlags := []cli.Flag{
-		cli.StringFlag{
-			Name:  "custom-path, C",
-			Value: setting.CustomPath,
-			Usage: "Custom path file path",
+		&cli.StringFlag{
+			Name:    "custom-path",
+			Aliases: []string{"C"},
+			Value:   setting.CustomPath,
+			Usage:   "Custom path file path",
 		},
-		cli.StringFlag{
-			Name:  "config, c",
-			Value: setting.CustomConf,
-			Usage: "Custom configuration file path",
+		&cli.StringFlag{
+			Name:    "config",
+			Aliases: []string{"c"},
+			Value:   setting.CustomConf,
+			Usage:   "Custom configuration file path",
 		},
 		cli.VersionFlag,
-		cli.StringFlag{
-			Name:  "work-path, w",
-			Value: setting.AppWorkPath,
-			Usage: "Set the gitea working path",
+		&cli.StringFlag{
+			Name:    "work-path",
+			Aliases: []string{"w"},
+			Value:   setting.AppWorkPath,
+			Usage:   "Set the gitea working path",
 		},
 	}
 
@@ -109,7 +112,7 @@ arguments - which can alternatively be run by running the subcommand web.`
 	// Add functions to set these paths and these flags to the commands
 	app.Before = establishCustomPath
 	for i := range app.Commands {
-		setFlagsAndBeforeOnSubcommands(&app.Commands[i], defaultFlags, establishCustomPath)
+		setFlagsAndBeforeOnSubcommands(app.Commands[i], defaultFlags, establishCustomPath)
 	}
 
 	err := app.Run(os.Args)
@@ -122,7 +125,7 @@ func setFlagsAndBeforeOnSubcommands(command *cli.Command, defaultFlags []cli.Fla
 	command.Flags = append(command.Flags, defaultFlags...)
 	command.Before = establishCustomPath
 	for i := range command.Subcommands {
-		setFlagsAndBeforeOnSubcommands(&command.Subcommands[i], defaultFlags, before)
+		setFlagsAndBeforeOnSubcommands(command.Subcommands[i], defaultFlags, before)
 	}
 }
 
@@ -131,12 +134,8 @@ func establishCustomPath(ctx *cli.Context) error {
 	var providedConf string
 	var providedWorkPath string
 
-	currentCtx := ctx
-	for {
+	for _, currentCtx := range ctx.Lineage() {
 		if len(providedCustom) != 0 && len(providedConf) != 0 && len(providedWorkPath) != 0 {
-			break
-		}
-		if currentCtx == nil {
 			break
 		}
 		if currentCtx.IsSet("custom-path") && len(providedCustom) == 0 {
@@ -148,8 +147,6 @@ func establishCustomPath(ctx *cli.Context) error {
 		if currentCtx.IsSet("work-path") && len(providedWorkPath) == 0 {
 			providedWorkPath = currentCtx.String("work-path")
 		}
-		currentCtx = currentCtx.Parent()
-
 	}
 	setting.SetCustomPathAndConf(providedCustom, providedConf, providedWorkPath)
 

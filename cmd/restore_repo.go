@@ -12,32 +12,33 @@ import (
 	"go.wandrs.dev/framework/modules/private"
 	"go.wandrs.dev/framework/modules/setting"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 // CmdRestoreRepository represents the available restore a repository sub-command.
-var CmdRestoreRepository = cli.Command{
+var CmdRestoreRepository = &cli.Command{
 	Name:        "restore-repo",
 	Usage:       "Restore the repository from disk",
 	Description: "This is a command for restoring the repository data.",
 	Action:      runRestoreRepository,
 	Flags: []cli.Flag{
-		cli.StringFlag{
-			Name:  "repo_dir, r",
-			Value: "./data",
-			Usage: "Repository dir path to restore from",
+		&cli.StringFlag{
+			Name:    "repo_dir",
+			Aliases: []string{"r"},
+			Value:   "./data",
+			Usage:   "Repository dir path to restore from",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "owner_name",
 			Value: "",
 			Usage: "Restore destination owner name",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "repo_name",
 			Value: "",
 			Usage: "Restore destination repository name",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "units",
 			Value: "",
 			Usage: `Which items will be restored, one or more units should be separated as comma. 
