@@ -7,11 +7,11 @@ package admin
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/cron"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/routers/api/v1/utils"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/cron"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/routers/api/v1/utils"
 )
 
 // ListCronTasks api for getting cron tasks

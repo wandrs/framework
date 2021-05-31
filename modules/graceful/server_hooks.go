@@ -8,7 +8,7 @@ import (
 	"os"
 	"runtime"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // awaitShutdown waits for the shutdown signal from the Manager

@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 type languageResponse []*models.LanguageStat

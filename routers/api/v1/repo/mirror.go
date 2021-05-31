@@ -7,9 +7,9 @@ package repo
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	mirror_service "code.gitea.io/gitea/services/mirror"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	mirror_service "go.wandrs.dev/framework/services/mirror"
 )
 
 // MirrorSync adds a mirrored repository to the sync queue

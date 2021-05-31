@@ -7,9 +7,9 @@ package notify
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // NewAvailable check if unread notifications exist

@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 // hookNames is a list of Git server hooks' name that are supported.

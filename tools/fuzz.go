@@ -10,8 +10,8 @@ import (
 	"bytes"
 	"io"
 
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/markup/markdown"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/markup/markdown"
 )
 
 // Contains fuzzing functions executed by

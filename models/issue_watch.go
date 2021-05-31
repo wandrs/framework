@@ -5,7 +5,7 @@
 package models
 
 import (
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // IssueWatch is connection request for receiving issue notification.

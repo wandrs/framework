@@ -11,7 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 // FilesystemClient is used to read LFS data from a filesystem path

@@ -10,8 +10,9 @@ import (
 	"net"
 	"net/http"
 
-	"code.gitea.io/gitea/modules/httplib"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/httplib"
+	"go.wandrs.dev/framework/modules/setting"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

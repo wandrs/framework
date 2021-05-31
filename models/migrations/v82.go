@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"xorm.io/xorm"
 )

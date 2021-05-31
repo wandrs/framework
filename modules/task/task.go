@@ -7,17 +7,18 @@ package task
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/migrations/base"
-	"code.gitea.io/gitea/modules/queue"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/secret"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/timeutil"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/migrations/base"
+	"go.wandrs.dev/framework/modules/queue"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/secret"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/timeutil"
+	"go.wandrs.dev/framework/modules/util"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

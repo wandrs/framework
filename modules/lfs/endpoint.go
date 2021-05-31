@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // DetermineEndpoint determines an endpoint from the clone url or uses the specified LFS url.

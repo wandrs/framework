@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/modules/git"
 )
 
 func BenchmarkGetCommitGraph(b *testing.B) {

@@ -12,10 +12,10 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/cache"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/cache"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // EmailHash represents a pre-generated hash map

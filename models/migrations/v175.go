@@ -8,8 +8,9 @@ import (
 	"fmt"
 	"regexp"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+
 	"xorm.io/xorm"
 )
 

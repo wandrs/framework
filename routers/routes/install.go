@@ -9,16 +9,15 @@ import (
 	"net/http"
 	"path"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/public"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/templates"
-	"code.gitea.io/gitea/modules/web"
-	"code.gitea.io/gitea/modules/web/middleware"
-	"code.gitea.io/gitea/routers"
-	"code.gitea.io/gitea/services/forms"
-
-	"gitea.com/go-chi/session"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/public"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/templates"
+	"go.wandrs.dev/framework/modules/web"
+	"go.wandrs.dev/framework/modules/web/middleware"
+	"go.wandrs.dev/framework/routers"
+	"go.wandrs.dev/framework/services/forms"
+	"go.wandrs.dev/session"
 )
 
 func installRecovery() func(next http.Handler) http.Handler {

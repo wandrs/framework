@@ -7,10 +7,10 @@ package repo
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
-	releaseservice "code.gitea.io/gitea/services/release"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
+	releaseservice "go.wandrs.dev/framework/services/release"
 )
 
 // GetReleaseByTag get a single release of a repository by tag name

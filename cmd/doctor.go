@@ -12,15 +12,14 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/models/migrations"
-	"code.gitea.io/gitea/modules/doctor"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-
-	"xorm.io/xorm"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/models/migrations"
+	"go.wandrs.dev/framework/modules/doctor"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/urfave/cli"
+	"xorm.io/xorm"
 )
 
 // CmdDoctor represents the available doctor sub-command.

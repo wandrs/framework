@@ -11,7 +11,8 @@ import (
 	"errors"
 	"path/filepath"
 
-	gitealog "code.gitea.io/gitea/modules/log"
+	gitealog "go.wandrs.dev/framework/modules/log"
+
 	"github.com/go-git/go-billy/v5/osfs"
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/cache"

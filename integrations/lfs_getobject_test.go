@@ -12,10 +12,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/routers/routes"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/routers/routes"
 
 	jsoniter "github.com/json-iterator/go"
 	gzipp "github.com/klauspost/compress/gzip"

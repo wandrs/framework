@@ -14,7 +14,7 @@ import (
 	"errors"
 	"io"
 
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 // New creats a new secret

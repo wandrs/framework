@@ -7,7 +7,8 @@ package cron
 import (
 	"time"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
+
 	"github.com/unknwon/i18n"
 )
 

@@ -11,8 +11,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 // WrappedQueueType is the type for a wrapped delayed starting queue

@@ -7,11 +7,11 @@ package repository
 import (
 	"errors"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	pull_service "code.gitea.io/gitea/services/pull"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	pull_service "go.wandrs.dev/framework/services/pull"
 )
 
 // enmuerates all branch related errors

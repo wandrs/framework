@@ -7,7 +7,7 @@ package queue
 import (
 	"context"
 
-	"code.gitea.io/gitea/modules/nosql"
+	"go.wandrs.dev/framework/modules/nosql"
 
 	"gitea.com/lunny/levelqueue"
 )

@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/modules/process"
+	"go.wandrs.dev/framework/modules/process"
 )
 
 var (

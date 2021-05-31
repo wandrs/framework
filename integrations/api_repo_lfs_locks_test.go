@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
 
 	"github.com/stretchr/testify/assert"
 )

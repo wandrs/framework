@@ -14,10 +14,10 @@ import (
 	"os"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/gobwas/glob"
 )

@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // DeleteRepoFileOptions holds the repository delete file options

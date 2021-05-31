@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	api "code.gitea.io/gitea/modules/structs"
+	api "go.wandrs.dev/framework/modules/structs"
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"

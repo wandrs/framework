@@ -5,8 +5,8 @@
 package context
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // RequireRepoAdmin returns a middleware for requiring repository admin permission

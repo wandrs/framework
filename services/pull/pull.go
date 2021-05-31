@@ -12,13 +12,14 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification"
-	"code.gitea.io/gitea/modules/setting"
-	issue_service "code.gitea.io/gitea/services/issue"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification"
+	"go.wandrs.dev/framework/modules/setting"
+	issue_service "go.wandrs.dev/framework/services/issue"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

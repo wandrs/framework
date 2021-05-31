@@ -9,13 +9,14 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
-	lfs_module "code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
+	lfs_module "go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

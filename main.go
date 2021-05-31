@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file.
 
 // Gitea (git with a cup of tea) is a painless self-hosted Git Service.
-package main // import "code.gitea.io/gitea"
+package main // import "go.wandrs.dev/framework"
 
 import (
 	"fmt"
@@ -13,14 +13,14 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/cmd"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-
 	// register supported doc types
-	_ "code.gitea.io/gitea/modules/markup/csv"
-	_ "code.gitea.io/gitea/modules/markup/markdown"
-	_ "code.gitea.io/gitea/modules/markup/orgmode"
+
+	"go.wandrs.dev/framework/cmd"
+	"go.wandrs.dev/framework/modules/log"
+	_ "go.wandrs.dev/framework/modules/markup/csv"
+	_ "go.wandrs.dev/framework/modules/markup/markdown"
+	_ "go.wandrs.dev/framework/modules/markup/orgmode"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/urfave/cli"
 )

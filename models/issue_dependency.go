@@ -5,9 +5,9 @@
 package models
 
 import (
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // IssueDependency represents an issue dependency

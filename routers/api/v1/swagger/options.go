@@ -5,8 +5,8 @@
 package swagger
 
 import (
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/services/forms"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/services/forms"
 )
 
 // not actually a response, just a hack to get go-swagger to include definitions

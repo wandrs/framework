@@ -16,12 +16,12 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/migrations/base"
-	"code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/migrations/base"
+	"go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/structs"
 
 	"gopkg.in/yaml.v2"
 )

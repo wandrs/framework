@@ -6,15 +6,14 @@ package mdstripper
 
 import (
 	"bytes"
+	"io"
 	"net/url"
 	"strings"
 	"sync"
 
-	"io"
-
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/markup/common"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/markup/common"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"

@@ -10,10 +10,10 @@ import (
 	"regexp"
 	"strings"
 
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/markup/common"
-	"code.gitea.io/gitea/modules/setting"
-	giteautil "code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/markup/common"
+	"go.wandrs.dev/framework/modules/setting"
+	giteautil "go.wandrs.dev/framework/modules/util"
 
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/ast"

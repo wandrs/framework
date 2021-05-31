@@ -364,6 +364,22 @@ func (c *Client) EnableFeatures(features Features) (*gomemcached.MCResponse, err
 	})
 
 	if err == nil && collectionsEnabled != 0 {
+		collectionsEnabled = 0
+		body := rv.Body
+		if rv.Status != gomemcached.SUCCESS {
+			logging.Errorf("Client.EnableFeatures: Features can't be enabled: HELO status = %v", rv.Status)
+			return nil, errors.New("Unsuccessful HELO exchange")
+		} else if rv.Opcode != gomemcached.HELLO {
+			logging.Errorf("Client.EnableFeatures: Invalid memcached HELO response: opcode %v, expecting %v", rv.Opcode, gomemcached.HELLO)
+			return nil, errors.New("Invalid HELO response")
+		} else {
+			for i := 0; len(body) > i; i += 2 {
+				if Feature(binary.BigEndian.Uint16(body[i:])) == FeatureCollections {
+					collectionsEnabled = 1
+					break
+				}
+			}
+		}
 		atomic.StoreUint32(&c.collectionsEnabled, uint32(collectionsEnabled))
 	}
 	return rv, err
@@ -377,10 +393,8 @@ func (c *Client) setContext(req *gomemcached.MCRequest, context ...*ClientContex
 	if len(context) > 0 {
 		collectionId = context[0].CollId
 		uLen := len(context[0].User)
-		if uLen > 0 {
-			if uLen > gomemcached.MAX_USER_LEN {
-				uLen = gomemcached.MAX_USER_LEN
-			}
+
+		if uLen > 0 && uLen <= gomemcached.MAX_USER_LEN {
 			req.UserLen = uLen
 			copy(req.Username[:uLen], context[0].User)
 		}
@@ -404,7 +418,7 @@ func (c *Client) setExtrasContext(req *gomemcached.MCRequest, context ...*Client
 	if len(context) > 0 {
 		collectionId = context[0].CollId
 		uLen := len(context[0].User)
-		if uLen > 0 {
+		if uLen > 0 && uLen <= gomemcached.MAX_USER_LEN {
 			req.UserLen = uLen
 			copy(req.Username[:], context[0].User)
 		}
@@ -506,7 +520,7 @@ func (c *Client) CollectionsGetCID(scope string, collection string) (*gomemcache
 
 	res, err := c.Send(&gomemcached.MCRequest{
 		Opcode: gomemcached.COLLECTIONS_GET_CID,
-		Key:    []byte(scope + "." + collection),
+		Body:   []byte(scope + "." + collection),
 		Opaque: c.getOpaque(),
 	})
 
@@ -665,7 +679,9 @@ func (c *Client) AuthScramSha(user, pass string) (*gomemcached.MCResponse, error
 }
 
 func (c *Client) AuthPlain(user, pass string) (*gomemcached.MCResponse, error) {
-	logging.Infof("Using plain authentication for user %v%v%v", gomemcached.UdTagBegin, user, gomemcached.UdTagEnd)
+	if len(user) > 0 && user[0] != '@' {
+		logging.Infof("Using plain authentication for user %v%v%v", gomemcached.UdTagBegin, user, gomemcached.UdTagEnd)
+	}
 	return c.Send(&gomemcached.MCRequest{
 		Opcode: gomemcached.SASL_AUTH,
 		Key:    []byte("PLAIN"),

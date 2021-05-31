@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/test"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/test"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"

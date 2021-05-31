@@ -9,7 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
+
 	"github.com/stretchr/testify/assert"
 )
 

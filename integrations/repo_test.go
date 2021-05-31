@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"

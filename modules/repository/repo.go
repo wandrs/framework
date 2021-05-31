@@ -12,14 +12,14 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/log"
-	migration "code.gitea.io/gitea/modules/migrations/base"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/log"
+	migration "go.wandrs.dev/framework/modules/migrations/base"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
+	"go.wandrs.dev/framework/modules/util"
 
 	"gopkg.in/ini.v1"
 )

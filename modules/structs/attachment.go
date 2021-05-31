@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package structs // import "code.gitea.io/gitea/modules/structs"
+package structs // import "go.wandrs.dev/framework/modules/structs"
 
 import (
 	"time"

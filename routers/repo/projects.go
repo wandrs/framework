@@ -9,15 +9,15 @@ import (
 	"net/http"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/markup/markdown"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/util"
-	"code.gitea.io/gitea/modules/web"
-	"code.gitea.io/gitea/services/forms"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/markup/markdown"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/util"
+	"go.wandrs.dev/framework/modules/web"
+	"go.wandrs.dev/framework/services/forms"
 )
 
 const (

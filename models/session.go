@@ -7,7 +7,7 @@ package models
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // Session represents a session compatible for go-chi session

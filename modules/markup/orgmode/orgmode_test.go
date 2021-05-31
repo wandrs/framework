@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/stretchr/testify/assert"
 )

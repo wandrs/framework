@@ -13,14 +13,14 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification"
-	"code.gitea.io/gitea/modules/queue"
-	"code.gitea.io/gitea/modules/timeutil"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification"
+	"go.wandrs.dev/framework/modules/queue"
+	"go.wandrs.dev/framework/modules/timeutil"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 // prQueue represents a queue to handle update pull request tests

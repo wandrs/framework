@@ -10,13 +10,12 @@ import (
 	"reflect"
 	"strings"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/private"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/web"
-
-	"gitea.com/go-chi/binding"
+	"go.wandrs.dev/binding"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/private"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/web"
 )
 
 // CheckInternalToken check internal token is set

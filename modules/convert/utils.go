@@ -8,8 +8,8 @@ package convert
 import (
 	"strings"
 
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/structs"
 )
 
 // ToCorrectPageSize makes sure page size is in allowed range.

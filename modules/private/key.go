@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // UpdatePublicKeyInRepo update public key and if necessary deploy key updates

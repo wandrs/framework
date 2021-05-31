@@ -10,11 +10,10 @@ import (
 	"net/http"
 	"strings"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/binding"
+	"go.wandrs.dev/binding"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/web/middleware"
 )
 
 // InstallForm form for installation page

@@ -7,7 +7,7 @@ package sso
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
 )
 
 // Ensure the struct implements the interface.

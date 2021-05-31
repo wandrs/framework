@@ -13,8 +13,8 @@ import (
 	"regexp"
 	"strings"
 
-	"code.gitea.io/gitea/modules/translation"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/translation"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 var quoteRegexp = regexp.MustCompile(`["'][\s\S]+?["']`)

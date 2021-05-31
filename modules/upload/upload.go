@@ -10,9 +10,9 @@ import (
 	"regexp"
 	"strings"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // ErrFileTypeForbidden not allowed file type error

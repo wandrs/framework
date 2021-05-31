@@ -5,7 +5,7 @@
 package models
 
 import (
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // Star represents a starred repo by an user.

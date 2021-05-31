@@ -13,11 +13,11 @@ import (
 	"os"
 	"strings"
 
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/routers"
-	"code.gitea.io/gitea/routers/routes"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/routers"
+	"go.wandrs.dev/framework/routers/routes"
 
 	context2 "github.com/gorilla/context"
 	"github.com/urfave/cli"

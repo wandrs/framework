@@ -12,8 +12,8 @@ import (
 	"os"
 	"strings"
 
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // GetCommitGraph return a list of commit (GraphItems) from all branches

@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/services/forms"
-	issue_service "code.gitea.io/gitea/services/issue"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/services/forms"
+	issue_service "go.wandrs.dev/framework/services/issue"
 
 	"github.com/stretchr/testify/assert"
 )

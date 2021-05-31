@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/test"
-	"code.gitea.io/gitea/modules/web"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/test"
+	"go.wandrs.dev/framework/modules/web"
 
 	"github.com/stretchr/testify/assert"
 )

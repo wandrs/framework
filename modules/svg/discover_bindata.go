@@ -9,7 +9,7 @@ package svg
 import (
 	"path/filepath"
 
-	"code.gitea.io/gitea/modules/public"
+	"go.wandrs.dev/framework/modules/public"
 )
 
 // Discover returns a map of discovered SVG icons in bindata

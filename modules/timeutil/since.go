@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/unknwon/i18n"
 )

@@ -12,8 +12,9 @@ import (
 	"net/url"
 	"strings"
 
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/util"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

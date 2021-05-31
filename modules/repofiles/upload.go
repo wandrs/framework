@@ -10,10 +10,10 @@ import (
 	"path"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // UploadRepoFileOptions contains the uploaded repository file options

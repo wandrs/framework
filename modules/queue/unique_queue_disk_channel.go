@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // PersistableChannelUniqueQueueType is the type for persistable queue

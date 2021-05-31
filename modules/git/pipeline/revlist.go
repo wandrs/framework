@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // RevListAllObjects runs rev-list --objects --all and writes to a pipewriter

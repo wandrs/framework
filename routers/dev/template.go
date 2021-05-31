@@ -7,11 +7,11 @@ package dev
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // TemplatePreview render for previewing the indicated template

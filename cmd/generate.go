@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"code.gitea.io/gitea/modules/generate"
+	"go.wandrs.dev/framework/modules/generate"
 
 	"github.com/mattn/go-isatty"
 	"github.com/urfave/cli"

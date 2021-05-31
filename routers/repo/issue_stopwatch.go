@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
 )
 
 // IssueStopwatch creates or stops a stopwatch for the given issue.

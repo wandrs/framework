@@ -9,14 +9,14 @@ ENV GOPROXY ${GOPROXY:-direct}
 ARG GITEA_VERSION
 ARG TAGS="sqlite sqlite_unlock_notify"
 ENV TAGS "bindata timetzdata $TAGS"
-ARG CGO_EXTRA_CFLAGS 
+ARG CGO_EXTRA_CFLAGS
 
 #Build deps
 RUN apk --no-cache add build-base git nodejs npm
 
 #Setup repo
-COPY . ${GOPATH}/src/code.gitea.io/gitea
-WORKDIR ${GOPATH}/src/code.gitea.io/gitea
+COPY . ${GOPATH}/src/go.wandrs.dev/framework
+WORKDIR ${GOPATH}/src/go.wandrs.dev/framework
 
 #Checkout version if set
 RUN if [ -n "${GITEA_VERSION}" ]; then git checkout "${GITEA_VERSION}"; fi \
@@ -53,8 +53,8 @@ RUN mkdir -p /var/lib/gitea /etc/gitea
 RUN chown git:git /var/lib/gitea /etc/gitea
 
 COPY docker/rootless /
-COPY --from=build-env --chown=root:root /go/src/code.gitea.io/gitea/gitea /usr/local/bin/gitea
-COPY --from=build-env --chown=root:root /go/src/code.gitea.io/gitea/environment-to-ini /usr/local/bin/environment-to-ini
+COPY --from=build-env --chown=root:root /go/src/go.wandrs.dev/framework/gitea /usr/local/bin/gitea
+COPY --from=build-env --chown=root:root /go/src/go.wandrs.dev/framework/environment-to-ini /usr/local/bin/environment-to-ini
 
 USER git:git
 ENV GITEA_WORK_DIR /var/lib/gitea

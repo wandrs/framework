@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 
 	"github.com/olivere/elastic/v7"
 )

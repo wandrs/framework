@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
 )
 
 // GetQueryBeforeSince return parsed time (unix format) from URL query's before and since

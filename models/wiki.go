@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 // WikiCloneLink returns clone URLs of repository wiki.

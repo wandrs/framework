@@ -7,11 +7,11 @@ package repo
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
-	"code.gitea.io/gitea/modules/git"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/web"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
+	"go.wandrs.dev/framework/modules/git"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/web"
 )
 
 // ListGitHooks list all Git hooks of a repository

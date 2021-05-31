@@ -7,7 +7,7 @@ package hcaptcha
 import (
 	"context"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"go.jolheiser.com/hcaptcha"
 )

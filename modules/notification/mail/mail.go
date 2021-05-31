@@ -7,10 +7,10 @@ package mail
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification/base"
-	"code.gitea.io/gitea/services/mailer"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification/base"
+	"go.wandrs.dev/framework/services/mailer"
 )
 
 type mailNotifier struct {

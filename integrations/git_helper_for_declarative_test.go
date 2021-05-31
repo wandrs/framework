@@ -18,10 +18,10 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/ssh"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/ssh"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/stretchr/testify/assert"
 )

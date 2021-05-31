@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // Discover returns a map of discovered SVG icons in the file system

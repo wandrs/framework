@@ -10,11 +10,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -16,7 +16,7 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/modules/git"
 )
 
 // LFSResult represents commits found using a provided pointer file hash

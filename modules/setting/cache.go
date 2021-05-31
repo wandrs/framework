@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // Cache represents cache settings

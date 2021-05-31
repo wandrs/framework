@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/util"
-	"code.gitea.io/gitea/routers/api/v1/utils"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/util"
+	"go.wandrs.dev/framework/routers/api/v1/utils"
 )
 
 // ListUnadoptedRepositories lists the unadopted repositories that match the provided names

@@ -15,8 +15,8 @@ import (
 	"syscall"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // Manager manages the graceful shutdown process

@@ -5,7 +5,7 @@
 package models
 
 import (
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/timeutil"
 )
 
 // Follow represents relations of user and his/her followers.

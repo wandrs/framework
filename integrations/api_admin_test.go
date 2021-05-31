@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	api "go.wandrs.dev/framework/modules/structs"
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"

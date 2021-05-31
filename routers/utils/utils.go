@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"strings"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // RemoveUsernameParameterSuffix returns the username parameter without the (fullname) suffix - leaving just the username

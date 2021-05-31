@@ -11,8 +11,8 @@ import (
 	"io"
 	"strings"
 
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/niklasfasching/go-org/org"
 )

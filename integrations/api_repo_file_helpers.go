@@ -5,9 +5,9 @@
 package integrations
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/repofiles"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/repofiles"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 func createFileInBranch(user *models.User, repo *models.Repository, treePath, branchName, content string) (*api.FileResponse, error) {

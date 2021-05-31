@@ -16,7 +16,7 @@ else
 
 DIST := dist
 DIST_DIRS := $(DIST)/binaries $(DIST)/release
-IMPORT := code.gitea.io/gitea
+IMPORT := go.wandrs.dev/framework
 export GO111MODULE=on
 
 GO ?= go
@@ -93,7 +93,7 @@ LDFLAGS := $(LDFLAGS) -X "main.MakeVersion=$(MAKE_VERSION)" -X "main.Version=$(G
 
 LINUX_ARCHS ?= linux/amd64,linux/386,linux/arm-5,linux/arm-6,linux/arm64
 
-GO_PACKAGES ?= $(filter-out code.gitea.io/gitea/models/migrations code.gitea.io/gitea/integrations/migration-test code.gitea.io/gitea/integrations,$(shell $(GO) list -mod=vendor ./... | grep -v /vendor/))
+GO_PACKAGES ?= $(filter-out go.wandrs.dev/framework/models/migrations go.wandrs.dev/framework/integrations/migration-test go.wandrs.dev/framework/integrations,$(shell $(GO) list -mod=vendor ./... | grep -v /vendor/))
 
 FOMANTIC_WORK_DIR := web_src/fomantic
 
@@ -234,10 +234,32 @@ clean:
 		integrations/gitea-integration-mssql/ integrations/indexers-mysql/ integrations/indexers-mysql8/ integrations/indexers-pgsql integrations/indexers-sqlite \
 		integrations/indexers-mssql integrations/mysql.ini integrations/mysql8.ini integrations/pgsql.ini integrations/mssql.ini man/
 
+# fmt:
+# 	@echo "Running go fmt..."
+# 	@$(GOFMT) -w $(GO_SOURCES_OWN)
+
+GO_PKG   := go.wandrs.dev
+GO_VERSION       ?= 1.16
+BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)
+
 .PHONY: fmt
-fmt:
-	@echo "Running go fmt..."
-	@$(GOFMT) -w $(GO_SOURCES_OWN)
+fmt: $(BUILD_DIRS)
+	@docker run                                                 \
+	    -i                                                      \
+	    --rm                                                    \
+	    -u $$(id -u):$$(id -g)                                  \
+	    -v $$(pwd):/src                                         \
+	    -w /src                                                 \
+	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
+	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
+	    -v $$(pwd)/.go/cache:/.cache                            \
+	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
+	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
+	    $(BUILD_IMAGE)                                          \
+	    /bin/bash -c "                                          \
+	        REPO_PKG=$(GO_PKG)                                  \
+	        ./hack/fmt.sh $(GO_SOURCES_OWN)                     \
+	    "
 
 .PHONY: vet
 vet:
@@ -528,62 +550,62 @@ integration-test-coverage: integrations.cover.test generate-ini-mysql
 	GITEA_ROOT="$(CURDIR)" GITEA_CONF=integrations/mysql.ini ./integrations.cover.test -test.coverprofile=integration.coverage.out
 
 integrations.mysql.test: git-check $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -mod=vendor -c code.gitea.io/gitea/integrations -o integrations.mysql.test
+	$(GO) test $(GOTESTFLAGS) -mod=vendor -c go.wandrs.dev/framework/integrations -o integrations.mysql.test
 
 integrations.mysql8.test: git-check $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -mod=vendor -c code.gitea.io/gitea/integrations -o integrations.mysql8.test
+	$(GO) test $(GOTESTFLAGS) -mod=vendor -c go.wandrs.dev/framework/integrations -o integrations.mysql8.test
 
 integrations.pgsql.test: git-check $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -mod=vendor -c code.gitea.io/gitea/integrations -o integrations.pgsql.test
+	$(GO) test $(GOTESTFLAGS) -mod=vendor -c go.wandrs.dev/framework/integrations -o integrations.pgsql.test
 
 integrations.mssql.test: git-check $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -mod=vendor -c code.gitea.io/gitea/integrations -o integrations.mssql.test
+	$(GO) test $(GOTESTFLAGS) -mod=vendor -c go.wandrs.dev/framework/integrations -o integrations.mssql.test
 
 integrations.sqlite.test: git-check $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -mod=vendor -c code.gitea.io/gitea/integrations -o integrations.sqlite.test -tags '$(TEST_TAGS)'
+	$(GO) test $(GOTESTFLAGS) -mod=vendor -c go.wandrs.dev/framework/integrations -o integrations.sqlite.test -tags '$(TEST_TAGS)'
 
 integrations.cover.test: git-check $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -mod=vendor -c code.gitea.io/gitea/integrations -coverpkg $(shell echo $(GO_PACKAGES) | tr ' ' ',') -o integrations.cover.test
+	$(GO) test $(GOTESTFLAGS) -mod=vendor -c go.wandrs.dev/framework/integrations -coverpkg $(shell echo $(GO_PACKAGES) | tr ' ' ',') -o integrations.cover.test
 
 .PHONY: migrations.mysql.test
 migrations.mysql.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/integrations/migration-test -o migrations.mysql.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/integrations/migration-test -o migrations.mysql.test
 
 .PHONY: migrations.mysql8.test
 migrations.mysql8.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/integrations/migration-test -o migrations.mysql8.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/integrations/migration-test -o migrations.mysql8.test
 
 .PHONY: migrations.pgsql.test
 migrations.pgsql.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/integrations/migration-test -o migrations.pgsql.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/integrations/migration-test -o migrations.pgsql.test
 
 .PHONY: migrations.mssql.test
 migrations.mssql.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/integrations/migration-test -o migrations.mssql.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/integrations/migration-test -o migrations.mssql.test
 
 .PHONY: migrations.sqlite.test
 migrations.sqlite.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/integrations/migration-test -o migrations.sqlite.test -tags '$(TEST_TAGS)'
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/integrations/migration-test -o migrations.sqlite.test -tags '$(TEST_TAGS)'
 
 .PHONY: migrations.individual.mysql.test
 migrations.individual.mysql.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/models/migrations -o migrations.individual.mysql.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/models/migrations -o migrations.individual.mysql.test
 
 .PHONY: migrations.individual.mysql8.test
 migrations.individual.mysql8.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/models/migrations -o migrations.individual.mysql8.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/models/migrations -o migrations.individual.mysql8.test
 
 .PHONY: migrations.individual.pgsql.test
 migrations.individual.pgsql.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/models/migrations -o migrations.individual.pgsql.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/models/migrations -o migrations.individual.pgsql.test
 
 .PHONY: migrations.individual.mssql.test
 migrations.individual.mssql.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/models/migrations -o migrations.individual.mssql.test
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/models/migrations -o migrations.individual.mssql.test
 
 .PHONY: migrations.individual.sqlite.test
 migrations.individual.sqlite.test: $(GO_SOURCES)
-	$(GO) test $(GOTESTFLAGS) -c code.gitea.io/gitea/models/migrations -o migrations.individual.sqlite.test -tags '$(TEST_TAGS)'
+	$(GO) test $(GOTESTFLAGS) -c go.wandrs.dev/framework/models/migrations -o migrations.individual.sqlite.test -tags '$(TEST_TAGS)'
 
 .PHONY: check
 check: test
@@ -775,7 +797,7 @@ docker:
 
 .PHONY: docker-build
 docker-build:
-	docker run -ti --rm -v "$(CURDIR):/srv/app/src/code.gitea.io/gitea" -w /srv/app/src/code.gitea.io/gitea -e TAGS="bindata $(TAGS)" LDFLAGS="$(LDFLAGS)" CGO_EXTRA_CFLAGS="$(CGO_EXTRA_CFLAGS)" webhippie/golang:edge make clean build
+	docker run -ti --rm -v "$(CURDIR):/srv/app/src/go.wandrs.dev/framework" -w /srv/app/src/go.wandrs.dev/framework -e TAGS="bindata $(TAGS)" LDFLAGS="$(LDFLAGS)" CGO_EXTRA_CFLAGS="$(CGO_EXTRA_CFLAGS)" webhippie/golang:edge make clean build
 
 # This endif closes the if at the top of the file
 endif

@@ -4,7 +4,7 @@
 
 package swagger
 
-import api "code.gitea.io/gitea/modules/structs"
+import api "go.wandrs.dev/framework/modules/structs"
 
 // GeneralRepoSettings
 // swagger:response GeneralRepoSettings

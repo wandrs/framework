@@ -5,7 +5,7 @@
 package setting
 
 import (
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 
 	"gopkg.in/ini.v1"
 )

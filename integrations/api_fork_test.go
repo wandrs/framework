@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"testing"
 
-	api "code.gitea.io/gitea/modules/structs"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 func TestCreateForkNoLogin(t *testing.T) {

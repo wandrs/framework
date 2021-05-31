@@ -14,11 +14,12 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
+	"go.wandrs.dev/framework/modules/util"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/unknwon/com"
 	"xorm.io/xorm"

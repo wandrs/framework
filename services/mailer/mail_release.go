@@ -7,13 +7,13 @@ package mailer
 import (
 	"bytes"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/markup/markdown"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/translation"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/markup/markdown"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/translation"
 )
 
 const (

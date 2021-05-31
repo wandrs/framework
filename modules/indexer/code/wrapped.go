@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"sync"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
 )
 
 var (

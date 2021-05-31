@@ -10,9 +10,9 @@ import (
 	"io"
 	"path"
 
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/storage"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/storage"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	gouuid "github.com/google/uuid"
 	"xorm.io/xorm"

@@ -11,13 +11,12 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/util"
-
-	"gopkg.in/ini.v1"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/ini.v1"
 )
 
 func TestMain(m *testing.M) {

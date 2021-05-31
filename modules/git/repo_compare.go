@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	logger "code.gitea.io/gitea/modules/log"
+	logger "go.wandrs.dev/framework/modules/log"
 )
 
 // CompareInfo represents needed information for comparing references.

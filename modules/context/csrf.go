@@ -22,7 +22,7 @@ import (
 	"net/http"
 	"time"
 
-	"code.gitea.io/gitea/modules/web/middleware"
+	"go.wandrs.dev/framework/modules/web/middleware"
 
 	"github.com/unknwon/com"
 )

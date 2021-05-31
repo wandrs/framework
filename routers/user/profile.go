@@ -11,13 +11,13 @@ import (
 	"path"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/markup/markdown"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/util"
-	"code.gitea.io/gitea/routers/org"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/markup"
+	"go.wandrs.dev/framework/modules/markup/markdown"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/util"
+	"go.wandrs.dev/framework/routers/org"
 )
 
 // GetUserByName get user by name

@@ -7,8 +7,9 @@ package private
 import (
 	"io/ioutil"
 
-	myCtx "code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/migrations"
+	myCtx "go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/migrations"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

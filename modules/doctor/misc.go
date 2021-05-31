@@ -9,11 +9,12 @@ import (
 	"os/exec"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
+
 	"xorm.io/builder"
 )
 

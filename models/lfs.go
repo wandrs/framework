@@ -7,8 +7,8 @@ package models
 import (
 	"errors"
 
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/timeutil"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/timeutil"
 
 	"xorm.io/builder"
 )

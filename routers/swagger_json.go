@@ -7,9 +7,9 @@ package routers
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // tplSwaggerV1Json swagger v1 json template

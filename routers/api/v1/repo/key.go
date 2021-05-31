@@ -9,13 +9,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
-	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/web"
-	"code.gitea.io/gitea/routers/api/v1/utils"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
+	"go.wandrs.dev/framework/modules/setting"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/web"
+	"go.wandrs.dev/framework/routers/api/v1/utils"
 )
 
 // appendPrivateInformation appends the owner and key type information to api.PublicKey

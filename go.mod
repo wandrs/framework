@@ -1,4 +1,4 @@
-module code.gitea.io/gitea
+module go.wandrs.dev/framework
 
 go 1.14
 
@@ -6,10 +6,6 @@ require (
 	cloud.google.com/go v0.78.0 // indirect
 	code.gitea.io/gitea-vet v0.2.1
 	code.gitea.io/sdk/gitea v0.14.0
-	gitea.com/go-chi/binding v0.0.0-20210301195521-1fe1c9a555e7
-	gitea.com/go-chi/cache v0.0.0-20210110083709-82c4c9ce2d5e
-	gitea.com/go-chi/captcha v0.0.0-20210110083842-e7696c336a1e
-	gitea.com/go-chi/session v0.0.0-20210108030337-0cb48c5ba8ee
 	gitea.com/lunny/levelqueue v0.3.0
 	github.com/Microsoft/go-winio v0.4.18 // indirect
 	github.com/NYTimes/gziphandler v1.1.1
@@ -20,12 +16,9 @@ require (
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
 	github.com/blevesearch/bleve/v2 v2.0.3
 	github.com/boombuler/barcode v1.0.1 // indirect
-	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/caddyserver/certmagic v0.13.0
 	github.com/chi-middleware/proxy v1.1.1
 	github.com/couchbase/go-couchbase v0.0.0-20210224140812-5740cd35f448 // indirect
-	github.com/couchbase/gomemcached v0.1.2 // indirect
-	github.com/couchbase/goutils v0.0.0-20210118111533-e33d3ffb5401 // indirect
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dlclark/regexp2 v1.4.0 // indirect
@@ -60,14 +53,14 @@ require (
 	github.com/huandu/xstrings v1.3.2
 	github.com/issue9/identicon v1.2.0
 	github.com/jaytaylor/html2text v0.0.0-20200412013138-3577fbdbcff7
-	github.com/json-iterator/go v1.1.10
+	github.com/json-iterator/go v1.1.11
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
 	github.com/keybase/go-crypto v0.0.0-20200123153347-de78d2cb44f4
 	github.com/klauspost/compress v1.12.1
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/lafriks/xormstore v1.4.0
-	github.com/lib/pq v1.10.1
+	github.com/lib/pq v1.10.2
 	github.com/lunny/dingtalk_webhook v0.0.0-20171025031554-e3534c89ef96
 	github.com/markbates/goth v1.67.1
 	github.com/mattn/go-isatty v0.0.12
@@ -117,6 +110,15 @@ require (
 	go.jolheiser.com/pwn v0.0.3
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
+	go.wandrs.dev/binding v0.0.0-20210531104511-aa760cf3a6c4
+	go.wandrs.dev/cache v0.0.0-20210531105734-7f9e41f0042f
+	go.wandrs.dev/cache/memcache v0.0.0-20210531105734-7f9e41f0042f
+	go.wandrs.dev/captcha v0.0.0-20210531101847-946666b98836
+	go.wandrs.dev/session v0.0.0-20210531080514-72628304c241
+	go.wandrs.dev/session/couchbase v0.0.0-20210531080514-72628304c241
+	go.wandrs.dev/session/memcache v0.0.0-20210531080514-72628304c241
+	go.wandrs.dev/session/mysql v0.0.0-20210531080514-72628304c241
+	go.wandrs.dev/session/postgres v0.0.0-20210531080514-72628304c241
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/net v0.0.0-20210421230115-4e50805a0758
 	golang.org/x/oauth2 v0.0.0-20210413134643-5e61552d6c78

@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/caddyserver/certmagic"
 	context2 "github.com/gorilla/context"

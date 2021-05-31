@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
-	"code.gitea.io/gitea/routers/api/v1/utils"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
+	"go.wandrs.dev/framework/routers/api/v1/utils"
 )
 
 // ListNotifications list users's notification threads

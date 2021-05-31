@@ -7,7 +7,7 @@ package migrations
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"xorm.io/xorm"
 )

@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/timeutil"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/timeutil"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/gobwas/glob"
 )

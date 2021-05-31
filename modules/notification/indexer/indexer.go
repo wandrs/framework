@@ -5,15 +5,15 @@
 package indexer
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	code_indexer "code.gitea.io/gitea/modules/indexer/code"
-	issue_indexer "code.gitea.io/gitea/modules/indexer/issues"
-	stats_indexer "code.gitea.io/gitea/modules/indexer/stats"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification/base"
-	"code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	code_indexer "go.wandrs.dev/framework/modules/indexer/code"
+	issue_indexer "go.wandrs.dev/framework/modules/indexer/issues"
+	stats_indexer "go.wandrs.dev/framework/modules/indexer/stats"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification/base"
+	"go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 type indexerNotifier struct {

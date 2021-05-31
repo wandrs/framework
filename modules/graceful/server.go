@@ -16,7 +16,7 @@ import (
 	"syscall"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 var (

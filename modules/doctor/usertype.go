@@ -5,8 +5,8 @@
 package doctor
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 func checkUserType(logger log.Logger, autofix bool) error {

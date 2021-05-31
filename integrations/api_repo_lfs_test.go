@@ -12,9 +12,9 @@ import (
 	"strings"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/setting"
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"

@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/test"
+	"go.wandrs.dev/framework/models"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/test"
 
 	"github.com/stretchr/testify/assert"
 )

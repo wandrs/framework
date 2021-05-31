@@ -15,17 +15,16 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/auth/sso"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/httpcache"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/storage"
-	"code.gitea.io/gitea/modules/templates"
-	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/session"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/auth/sso"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/httpcache"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/storage"
+	"go.wandrs.dev/framework/modules/templates"
+	"go.wandrs.dev/framework/modules/web/middleware"
+	"go.wandrs.dev/session"
 )
 
 // LoggerHandler is a handler that will log the routing to the default gitea log

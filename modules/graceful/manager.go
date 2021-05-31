@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/process"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/process"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 type state uint8

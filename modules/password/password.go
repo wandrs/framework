@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // complexity contains information about a particular kind of password complexity

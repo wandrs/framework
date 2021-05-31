@@ -7,12 +7,12 @@ package repository
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	cfg "code.gitea.io/gitea/modules/setting"
-	pull_service "code.gitea.io/gitea/services/pull"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	cfg "go.wandrs.dev/framework/modules/setting"
+	pull_service "go.wandrs.dev/framework/services/pull"
 )
 
 // CreateRepository creates a repository for the user/organization.

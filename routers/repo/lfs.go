@@ -15,17 +15,17 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/charset"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/git/pipeline"
-	"code.gitea.io/gitea/modules/lfs"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/storage"
-	"code.gitea.io/gitea/modules/typesniffer"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/charset"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/git/pipeline"
+	"go.wandrs.dev/framework/modules/lfs"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/storage"
+	"go.wandrs.dev/framework/modules/typesniffer"
 )
 
 const (

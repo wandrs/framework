@@ -8,11 +8,12 @@ import (
 	"fmt"
 	"sync"
 
-	"gitea.com/go-chi/session"
-	couchbase "gitea.com/go-chi/session/couchbase"
-	memcache "gitea.com/go-chi/session/memcache"
-	mysql "gitea.com/go-chi/session/mysql"
-	postgres "gitea.com/go-chi/session/postgres"
+	"go.wandrs.dev/session"
+	couchbase "go.wandrs.dev/session/couchbase"
+	memcache "go.wandrs.dev/session/memcache"
+	mysql "go.wandrs.dev/session/mysql"
+	postgres "go.wandrs.dev/session/postgres"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

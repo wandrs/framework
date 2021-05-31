@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"code.gitea.io/gitea/modules/secret"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/timeutil"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/secret"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/timeutil"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/dgrijalva/jwt-go"
 	uuid "github.com/google/uuid"

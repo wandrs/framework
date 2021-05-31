@@ -11,12 +11,12 @@ import (
 	"os"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/sync"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/sync"
+	"go.wandrs.dev/framework/modules/util"
 )
 
 var (

@@ -11,7 +11,7 @@ import (
 	"io"
 	"io/ioutil"
 
-	"code.gitea.io/gitea/modules/typesniffer"
+	"go.wandrs.dev/framework/modules/typesniffer"
 )
 
 // This file contains common functions between the gogit and !gogit variants for git Blobs

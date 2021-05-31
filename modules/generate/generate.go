@@ -11,7 +11,8 @@ import (
 	"io"
 	"time"
 
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/util"
+
 	"github.com/dgrijalva/jwt-go"
 )
 

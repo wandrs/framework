@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/private"
-	"code.gitea.io/gitea/modules/setting"
-	repo_service "code.gitea.io/gitea/services/repository"
-	wiki_service "code.gitea.io/gitea/services/wiki"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/private"
+	"go.wandrs.dev/framework/modules/setting"
+	repo_service "go.wandrs.dev/framework/services/repository"
+	wiki_service "go.wandrs.dev/framework/services/wiki"
 )
 
 // ServNoCommand returns information about the provided keyid

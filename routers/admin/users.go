@@ -11,17 +11,17 @@ import (
 	"strconv"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/password"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/web"
-	"code.gitea.io/gitea/routers"
-	router_user_setting "code.gitea.io/gitea/routers/user/setting"
-	"code.gitea.io/gitea/services/forms"
-	"code.gitea.io/gitea/services/mailer"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/password"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/web"
+	"go.wandrs.dev/framework/routers"
+	router_user_setting "go.wandrs.dev/framework/routers/user/setting"
+	"go.wandrs.dev/framework/services/forms"
+	"go.wandrs.dev/framework/services/mailer"
 )
 
 const (

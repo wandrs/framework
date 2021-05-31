@@ -13,14 +13,13 @@ import (
 	"net/url"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/auth/sso"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/session"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/auth/sso"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/web/middleware"
+	"go.wandrs.dev/session"
 )
 
 // APIContext is a specific context for API service

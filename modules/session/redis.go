@@ -21,10 +21,10 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/nosql"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/nosql"
+	"go.wandrs.dev/session"
 
-	"gitea.com/go-chi/session"
 	"github.com/go-redis/redis/v8"
 )
 

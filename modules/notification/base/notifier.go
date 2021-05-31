@@ -5,8 +5,8 @@
 package base
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/repository"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/repository"
 )
 
 // Notifier defines an interface to notify receiver

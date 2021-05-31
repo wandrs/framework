@@ -10,16 +10,16 @@ import (
 	"fmt"
 	"net/http"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/convert"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/password"
-	api "code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/web"
-	"code.gitea.io/gitea/routers/api/v1/user"
-	"code.gitea.io/gitea/routers/api/v1/utils"
-	"code.gitea.io/gitea/services/mailer"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/convert"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/password"
+	api "go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/web"
+	"go.wandrs.dev/framework/routers/api/v1/user"
+	"go.wandrs.dev/framework/routers/api/v1/utils"
+	"go.wandrs.dev/framework/services/mailer"
 )
 
 func parseLoginSource(ctx *context.APIContext, u *models.User, sourceID int64, loginName string) {

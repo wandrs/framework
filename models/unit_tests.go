@@ -13,10 +13,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"code.gitea.io/gitea/modules/base"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/storage"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/base"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/storage"
+	"go.wandrs.dev/framework/modules/util"
 
 	"github.com/stretchr/testify/assert"
 	"xorm.io/xorm"

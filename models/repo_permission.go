@@ -7,7 +7,7 @@ package models
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // Permission contains all the permissions related variables to a repository for a user

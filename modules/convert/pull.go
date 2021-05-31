@@ -7,11 +7,11 @@ package convert
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // ToAPIPullRequest assumes following fields have been assigned with valid values:

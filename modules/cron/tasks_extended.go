@@ -8,9 +8,9 @@ import (
 	"context"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 func registerDeleteInactiveUsers() {

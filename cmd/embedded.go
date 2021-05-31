@@ -14,11 +14,11 @@ import (
 	"sort"
 	"strings"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/options"
-	"code.gitea.io/gitea/modules/public"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/templates"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/options"
+	"go.wandrs.dev/framework/modules/public"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/templates"
 
 	"github.com/gobwas/glob"
 	"github.com/urfave/cli"

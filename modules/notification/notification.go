@@ -5,15 +5,15 @@
 package notification
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/notification/action"
-	"code.gitea.io/gitea/modules/notification/base"
-	"code.gitea.io/gitea/modules/notification/indexer"
-	"code.gitea.io/gitea/modules/notification/mail"
-	"code.gitea.io/gitea/modules/notification/ui"
-	"code.gitea.io/gitea/modules/notification/webhook"
-	"code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/notification/action"
+	"go.wandrs.dev/framework/modules/notification/base"
+	"go.wandrs.dev/framework/modules/notification/indexer"
+	"go.wandrs.dev/framework/modules/notification/mail"
+	"go.wandrs.dev/framework/modules/notification/ui"
+	"go.wandrs.dev/framework/modules/notification/webhook"
+	"go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 var (

@@ -7,8 +7,8 @@ package models
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/references"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/references"
 
 	"xorm.io/xorm"
 )

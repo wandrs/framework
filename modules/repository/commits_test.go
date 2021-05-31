@@ -11,8 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
+
 	"github.com/stretchr/testify/assert"
 )
 

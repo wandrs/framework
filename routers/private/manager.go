@@ -8,13 +8,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/private"
-	"code.gitea.io/gitea/modules/queue"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/web"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/private"
+	"go.wandrs.dev/framework/modules/queue"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/web"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

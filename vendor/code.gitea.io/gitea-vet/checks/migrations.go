@@ -20,15 +20,15 @@ var Migrations = &analysis.Analyzer{
 
 var (
 	migrationDepBlockList = []string{
-		"code.gitea.io/gitea/models",
+		"go.wandrs.dev/framework/models",
 	}
 	migrationImpBlockList = []string{
-		"code.gitea.io/gitea/modules/structs",
+		"go.wandrs.dev/framework/modules/structs",
 	}
 )
 
 func checkMigrations(pass *analysis.Pass) (interface{}, error) {
-	if !strings.EqualFold(pass.Pkg.Path(), "code.gitea.io/gitea/models/migrations") {
+	if !strings.EqualFold(pass.Pkg.Path(), "go.wandrs.dev/framework/models/migrations") {
 		return nil, nil
 	}
 
@@ -36,7 +36,7 @@ func checkMigrations(pass *analysis.Pass) (interface{}, error) {
 		return nil, errors.New("go was not found in the PATH")
 	}
 
-	depsCmd := exec.Command("go", "list", "-f", `{{join .Deps "\n"}}`, "code.gitea.io/gitea/models/migrations")
+	depsCmd := exec.Command("go", "list", "-f", `{{join .Deps "\n"}}`, "go.wandrs.dev/framework/models/migrations")
 	depsOut, err := depsCmd.Output()
 	if err != nil {
 		return nil, err
@@ -45,12 +45,12 @@ func checkMigrations(pass *analysis.Pass) (interface{}, error) {
 	deps := strings.Split(string(depsOut), "\n")
 	for _, dep := range deps {
 		if stringInSlice(dep, migrationDepBlockList) {
-			pass.Reportf(0, "code.gitea.io/gitea/models/migrations cannot depend on the following packages: %s", migrationDepBlockList)
+			pass.Reportf(0, "go.wandrs.dev/framework/models/migrations cannot depend on the following packages: %s", migrationDepBlockList)
 			return nil, nil
 		}
 	}
 
-	impsCmd := exec.Command("go", "list", "-f", `{{join .Imports "\n"}}`, "code.gitea.io/gitea/models/migrations")
+	impsCmd := exec.Command("go", "list", "-f", `{{join .Imports "\n"}}`, "go.wandrs.dev/framework/models/migrations")
 	impsOut, err := impsCmd.Output()
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func checkMigrations(pass *analysis.Pass) (interface{}, error) {
 	imps := strings.Split(string(impsOut), "\n")
 	for _, imp := range imps {
 		if stringInSlice(imp, migrationImpBlockList) {
-			pass.Reportf(0, "code.gitea.io/gitea/models/migrations cannot import the following packages: %s", migrationImpBlockList)
+			pass.Reportf(0, "go.wandrs.dev/framework/models/migrations cannot import the following packages: %s", migrationImpBlockList)
 			return nil, nil
 		}
 	}

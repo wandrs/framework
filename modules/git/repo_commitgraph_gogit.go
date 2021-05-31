@@ -11,7 +11,7 @@ import (
 	"os"
 	"path"
 
-	gitealog "code.gitea.io/gitea/modules/log"
+	gitealog "go.wandrs.dev/framework/modules/log"
 
 	"github.com/go-git/go-git/v5/plumbing/format/commitgraph"
 	cgobject "github.com/go-git/go-git/v5/plumbing/object/commitgraph"

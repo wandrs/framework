@@ -7,8 +7,8 @@ package repository
 import (
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/git"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/git"
 )
 
 // GetBranch returns a branch by its name

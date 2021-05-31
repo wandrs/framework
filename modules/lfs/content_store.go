@@ -13,8 +13,8 @@ import (
 	"io"
 	"os"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/storage"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/storage"
 )
 
 var (

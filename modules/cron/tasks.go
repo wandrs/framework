@@ -10,11 +10,11 @@ import (
 	"reflect"
 	"sync"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/process"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/graceful"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/process"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 var lock = sync.Mutex{}

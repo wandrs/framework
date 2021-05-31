@@ -5,9 +5,9 @@
 package issue
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/notification"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/notification"
 )
 
 // DeleteNotPassedAssignee deletes all assignees who aren't passed via the "assignees" array

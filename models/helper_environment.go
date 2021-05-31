@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // env keys for git hooks need

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/framework/models"
 )
 
 func TestMain(m *testing.M) {

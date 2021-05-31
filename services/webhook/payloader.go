@@ -5,8 +5,8 @@
 package webhook
 
 import (
-	"code.gitea.io/gitea/models"
-	api "code.gitea.io/gitea/modules/structs"
+	"go.wandrs.dev/framework/models"
+	api "go.wandrs.dev/framework/modules/structs"
 )
 
 // PayloadConvertor defines the interface to convert system webhook payload to external payload

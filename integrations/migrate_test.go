@@ -9,9 +9,9 @@ import (
 	"os"
 	"testing"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/migrations"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/migrations"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/stretchr/testify/assert"
 )

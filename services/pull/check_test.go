@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/queue"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/queue"
 
 	"github.com/stretchr/testify/assert"
 )

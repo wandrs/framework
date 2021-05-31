@@ -5,9 +5,9 @@
 package translation
 
 import (
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/options"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/options"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/unknwon/i18n"
 	"golang.org/x/text/language"

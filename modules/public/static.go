@@ -17,7 +17,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 func fileSystem(dir string) http.FileSystem {

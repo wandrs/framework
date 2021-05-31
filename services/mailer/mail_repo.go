@@ -8,8 +8,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/translation"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/translation"
 )
 
 // SendRepoTransferNotifyMail triggers a notification e-mail when a pending repository transfer was created

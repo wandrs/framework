@@ -5,8 +5,8 @@
 package comments
 
 import (
-	"code.gitea.io/gitea/models"
-	"code.gitea.io/gitea/modules/notification"
+	"go.wandrs.dev/framework/models"
+	"go.wandrs.dev/framework/modules/notification"
 )
 
 // CreateIssueComment creates a plain issue comment.

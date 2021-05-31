@@ -14,8 +14,8 @@ import (
 	"strings"
 	"sync"
 
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/git/pipeline"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/git/pipeline"
 )
 
 // SearchPointerBlobs scans the whole repository for LFS pointer files

@@ -5,9 +5,9 @@
 package models
 
 import (
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
 )
 
 // SignMerge determines if we should sign a PR merge commit to the base repository

@@ -14,17 +14,17 @@ import (
 	"os"
 	"strings"
 
-	"code.gitea.io/gitea/models"
-	gitea_context "code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/private"
-	repo_module "code.gitea.io/gitea/modules/repository"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/util"
-	"code.gitea.io/gitea/modules/web"
-	pull_service "code.gitea.io/gitea/services/pull"
-	repo_service "code.gitea.io/gitea/services/repository"
+	"go.wandrs.dev/framework/models"
+	gitea_context "go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/git"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/private"
+	repo_module "go.wandrs.dev/framework/modules/repository"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/util"
+	"go.wandrs.dev/framework/modules/web"
+	pull_service "go.wandrs.dev/framework/services/pull"
+	repo_service "go.wandrs.dev/framework/services/repository"
 )
 
 func verifyCommits(oldCommitID, newCommitID string, repo *git.Repository, env []string) error {

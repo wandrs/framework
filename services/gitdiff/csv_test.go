@@ -9,8 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	csv_module "code.gitea.io/gitea/modules/csv"
-	"code.gitea.io/gitea/modules/setting"
+	csv_module "go.wandrs.dev/framework/modules/csv"
+	"go.wandrs.dev/framework/modules/setting"
+
 	"github.com/stretchr/testify/assert"
 )
 

@@ -13,19 +13,18 @@ import (
 	"reflect"
 	"strings"
 
-	"code.gitea.io/gitea/modules/setting"
-
 	// Needed for the MySQL driver
+	// Needed for the Postgresql driver
+	// Needed for the MSSQL driver
+
+	"go.wandrs.dev/framework/modules/setting"
+
+	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"xorm.io/xorm"
 	"xorm.io/xorm/names"
 	"xorm.io/xorm/schemas"
-
-	// Needed for the Postgresql driver
-	_ "github.com/lib/pq"
-
-	// Needed for the MSSQL driver
-	_ "github.com/denisenkom/go-mssqldb"
 )
 
 // Engine represents a xorm engine or session.

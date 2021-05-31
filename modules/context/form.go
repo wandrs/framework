@@ -12,7 +12,7 @@ import (
 	"strings"
 	"text/template"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
 )
 
 // Forms a new enhancement of http.Request

@@ -10,7 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"code.gitea.io/gitea/modules/log"
+	"go.wandrs.dev/framework/modules/log"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

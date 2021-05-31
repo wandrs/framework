@@ -13,7 +13,7 @@ import (
 	"os/exec"
 	"regexp"
 
-	"code.gitea.io/gitea/modules/process"
+	"go.wandrs.dev/framework/modules/process"
 )
 
 // BlamePart represents block of blame - continuous lines with one sha

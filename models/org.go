@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"strings"
 
-	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/storage"
-	"code.gitea.io/gitea/modules/structs"
-	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/framework/modules/log"
+	"go.wandrs.dev/framework/modules/setting"
+	"go.wandrs.dev/framework/modules/storage"
+	"go.wandrs.dev/framework/modules/structs"
+	"go.wandrs.dev/framework/modules/util"
 
 	"xorm.io/builder"
 	"xorm.io/xorm"

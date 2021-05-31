@@ -9,8 +9,8 @@ package private
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/graceful"
+	"go.wandrs.dev/framework/modules/context"
+	"go.wandrs.dev/framework/modules/graceful"
 )
 
 // Restart causes the server to perform a graceful restart
