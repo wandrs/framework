@@ -14,8 +14,6 @@ import (
 	"errors"
 	"fmt"
 	_ "image/jpeg" // Needed for jpeg support
-	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -34,8 +32,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/crypto/scrypt"
-	"golang.org/x/crypto/ssh"
 	"xorm.io/builder"
+)
+
+var (
+	// ErrNameEmpty name is empty error
+	ErrNameEmpty = errors.New("Name is empty")
 )
 
 // UserType defines the user type
@@ -859,24 +861,11 @@ func ChangeUserName(u *User, newUserName string) (err error) {
 		return ErrUserAlreadyExist{newUserName}
 	}
 
-	if _, err = sess.Exec("UPDATE `repository` SET owner_name=? WHERE owner_name=?", newUserName, oldUserName); err != nil {
-		return fmt.Errorf("Change repo owner name: %v", err)
-	}
-
-	// Do not fail if directory does not exist
-	if err = os.Rename(UserPath(oldUserName), UserPath(newUserName)); err != nil && !os.IsNotExist(err) {
-		return fmt.Errorf("Rename user directory: %v", err)
-	}
-
 	if err = newUserRedirect(sess, u.ID, oldUserName, newUserName); err != nil {
 		return err
 	}
 
 	if err = sess.Commit(); err != nil {
-		if err2 := os.Rename(UserPath(newUserName), UserPath(oldUserName)); err2 != nil && !os.IsNotExist(err2) {
-			log.Critical("Unable to rollback directory change during failed username change from: %s to: %s. DB Error: %v. Filesystem Error: %v", oldUserName, newUserName, err, err2)
-			return fmt.Errorf("failed to rollback directory change during failed username change from: %s to: %s. DB Error: %w. Filesystem Error: %v", oldUserName, newUserName, err, err2)
-		}
 		return err
 	}
 
@@ -985,75 +974,11 @@ func deleteUser(e Engine, u *User) error {
 		&AccessToken{UID: u.ID},
 		&Follow{UserID: u.ID},
 		&Follow{FollowID: u.ID},
-		&Action{UserID: u.ID},
 		&EmailAddress{UID: u.ID},
 		&UserOpenID{UID: u.ID},
 		&TeamUser{UID: u.ID},
-		&Stopwatch{UserID: u.ID},
 	); err != nil {
 		return fmt.Errorf("deleteBeans: %v", err)
-	}
-
-	if setting.Service.UserDeleteWithCommentsMaxTime != 0 &&
-		u.CreatedUnix.AsTime().Add(setting.Service.UserDeleteWithCommentsMaxTime).After(time.Now()) {
-
-		// Delete Comments
-		const batchSize = 50
-		for start := 0; ; start += batchSize {
-			comments := make([]*Comment, 0, batchSize)
-			if err = e.Where("type=? AND poster_id=?", CommentTypeComment, u.ID).Limit(batchSize, start).Find(&comments); err != nil {
-				return err
-			}
-			if len(comments) == 0 {
-				break
-			}
-
-			for _, comment := range comments {
-				if err = deleteComment(e, comment); err != nil {
-					return err
-				}
-			}
-		}
-
-		// Delete Reactions
-		if err = deleteReaction(e, &ReactionOptions{Doer: u}); err != nil {
-			return err
-		}
-	}
-
-	// ***** START: PublicKey *****
-	if _, err = e.Delete(&PublicKey{OwnerID: u.ID}); err != nil {
-		return fmt.Errorf("deletePublicKeys: %v", err)
-	}
-	err = rewriteAllPublicKeys(e)
-	if err != nil {
-		return err
-	}
-	err = rewriteAllPrincipalKeys(e)
-	if err != nil {
-		return err
-	}
-	// ***** END: PublicKey *****
-
-	// ***** START: GPGPublicKey *****
-	keys, err := listGPGKeys(e, u.ID, ListOptions{})
-	if err != nil {
-		return fmt.Errorf("ListGPGKeys: %v", err)
-	}
-	// Delete GPGKeyImport(s).
-	for _, key := range keys {
-		if _, err = e.Delete(&GPGKeyImport{KeyID: key.KeyID}); err != nil {
-			return fmt.Errorf("deleteGPGKeyImports: %v", err)
-		}
-	}
-	if _, err = e.Delete(&GPGKey{OwnerID: u.ID}); err != nil {
-		return fmt.Errorf("deleteGPGKeys: %v", err)
-	}
-	// ***** END: GPGPublicKey *****
-
-	// Clear assignee.
-	if err = clearAssigneeByUserID(e, u.ID); err != nil {
-		return fmt.Errorf("clear assignee: %v", err)
 	}
 
 	// ***** START: ExternalLoginUser *****
@@ -1064,15 +989,6 @@ func deleteUser(e Engine, u *User) error {
 
 	if _, err = e.ID(u.ID).Delete(new(User)); err != nil {
 		return fmt.Errorf("Delete: %v", err)
-	}
-
-	// Note: There are something just cannot be roll back,
-	//	so just keep error logs of those operations.
-	path := UserPath(u.Name)
-	if err = util.RemoveAll(path); err != nil {
-		err = fmt.Errorf("Failed to RemoveAll %s: %v", path, err)
-		_ = createNotice(e, NoticeTask, fmt.Sprintf("delete user '%s': %v", u.Name, err))
-		return err
 	}
 
 	if len(u.Avatar) > 0 {
@@ -1145,11 +1061,6 @@ func DeleteInactiveUsers(ctx context.Context, olderThan time.Duration) (err erro
 		Where("is_activated = ?", false).
 		Delete(new(EmailAddress))
 	return err
-}
-
-// UserPath returns the path absolute path of user repositories.
-func UserPath(userName string) string {
-	return filepath.Join(setting.RepoRootPath, strings.ToLower(userName))
 }
 
 func getUserByID(e Engine, id int64) (*User, error) {
@@ -1373,6 +1284,27 @@ func GetUser(user *User) (bool, error) {
 	return x.Get(user)
 }
 
+// SearchOrderBy is used to sort the result
+type SearchOrderBy string
+
+func (s SearchOrderBy) String() string {
+	return string(s)
+}
+
+// Strings for sorting result
+const (
+	SearchOrderByAlphabetically        SearchOrderBy = "name ASC"
+	SearchOrderByAlphabeticallyReverse SearchOrderBy = "name DESC"
+	SearchOrderByLeastUpdated          SearchOrderBy = "updated_unix ASC"
+	SearchOrderByRecentUpdated         SearchOrderBy = "updated_unix DESC"
+	SearchOrderByOldest                SearchOrderBy = "created_unix ASC"
+	SearchOrderByNewest                SearchOrderBy = "created_unix DESC"
+	SearchOrderBySize                  SearchOrderBy = "size ASC"
+	SearchOrderBySizeReverse           SearchOrderBy = "size DESC"
+	SearchOrderByID                    SearchOrderBy = "id ASC"
+	SearchOrderByIDReverse             SearchOrderBy = "id DESC"
+)
+
 // SearchUserOptions contains the options for searching
 type SearchUserOptions struct {
 	ListOptions
@@ -1462,143 +1394,6 @@ func SearchUsers(opts *SearchUserOptions) (users []*User, _ int64, _ error) {
 	return users, count, sess.Find(&users)
 }
 
-// deleteKeysMarkedForDeletion returns true if ssh keys needs update
-func deleteKeysMarkedForDeletion(keys []string) (bool, error) {
-	// Start session
-	sess := x.NewSession()
-	defer sess.Close()
-	if err := sess.Begin(); err != nil {
-		return false, err
-	}
-
-	// Delete keys marked for deletion
-	var sshKeysNeedUpdate bool
-	for _, KeyToDelete := range keys {
-		key, err := searchPublicKeyByContentWithEngine(sess, KeyToDelete)
-		if err != nil {
-			log.Error("SearchPublicKeyByContent: %v", err)
-			continue
-		}
-		if err = deletePublicKeys(sess, key.ID); err != nil {
-			log.Error("deletePublicKeys: %v", err)
-			continue
-		}
-		sshKeysNeedUpdate = true
-	}
-
-	if err := sess.Commit(); err != nil {
-		return false, err
-	}
-
-	return sshKeysNeedUpdate, nil
-}
-
-// addLdapSSHPublicKeys add a users public keys. Returns true if there are changes.
-func addLdapSSHPublicKeys(usr *User, s *LoginSource, sshPublicKeys []string) bool {
-	var sshKeysNeedUpdate bool
-	for _, sshKey := range sshPublicKeys {
-		var err error
-		found := false
-		keys := []byte(sshKey)
-	loop:
-		for len(keys) > 0 && err == nil {
-			var out ssh.PublicKey
-			// We ignore options as they are not relevant to Gitea
-			out, _, _, keys, err = ssh.ParseAuthorizedKey(keys)
-			if err != nil {
-				break loop
-			}
-			found = true
-			marshalled := string(ssh.MarshalAuthorizedKey(out))
-			marshalled = marshalled[:len(marshalled)-1]
-			sshKeyName := fmt.Sprintf("%s-%s", s.Name, ssh.FingerprintSHA256(out))
-
-			if _, err := AddPublicKey(usr.ID, sshKeyName, marshalled, s.ID); err != nil {
-				if IsErrKeyAlreadyExist(err) {
-					log.Trace("addLdapSSHPublicKeys[%s]: LDAP Public SSH Key %s already exists for user", sshKeyName, usr.Name)
-				} else {
-					log.Error("addLdapSSHPublicKeys[%s]: Error adding LDAP Public SSH Key for user %s: %v", sshKeyName, usr.Name, err)
-				}
-			} else {
-				log.Trace("addLdapSSHPublicKeys[%s]: Added LDAP Public SSH Key for user %s", sshKeyName, usr.Name)
-				sshKeysNeedUpdate = true
-			}
-		}
-		if !found && err != nil {
-			log.Warn("addLdapSSHPublicKeys[%s]: Skipping invalid LDAP Public SSH Key for user %s: %v", s.Name, usr.Name, sshKey)
-		}
-	}
-	return sshKeysNeedUpdate
-}
-
-// synchronizeLdapSSHPublicKeys updates a users public keys. Returns true if there are changes.
-func synchronizeLdapSSHPublicKeys(usr *User, s *LoginSource, sshPublicKeys []string) bool {
-	var sshKeysNeedUpdate bool
-
-	log.Trace("synchronizeLdapSSHPublicKeys[%s]: Handling LDAP Public SSH Key synchronization for user %s", s.Name, usr.Name)
-
-	// Get Public Keys from DB with current LDAP source
-	var giteaKeys []string
-	keys, err := ListPublicLdapSSHKeys(usr.ID, s.ID)
-	if err != nil {
-		log.Error("synchronizeLdapSSHPublicKeys[%s]: Error listing LDAP Public SSH Keys for user %s: %v", s.Name, usr.Name, err)
-	}
-
-	for _, v := range keys {
-		giteaKeys = append(giteaKeys, v.OmitEmail())
-	}
-
-	// Get Public Keys from LDAP and skip duplicate keys
-	var ldapKeys []string
-	for _, v := range sshPublicKeys {
-		sshKeySplit := strings.Split(v, " ")
-		if len(sshKeySplit) > 1 {
-			ldapKey := strings.Join(sshKeySplit[:2], " ")
-			if !util.ExistsInSlice(ldapKey, ldapKeys) {
-				ldapKeys = append(ldapKeys, ldapKey)
-			}
-		}
-	}
-
-	// Check if Public Key sync is needed
-	if util.IsEqualSlice(giteaKeys, ldapKeys) {
-		log.Trace("synchronizeLdapSSHPublicKeys[%s]: LDAP Public Keys are already in sync for %s (LDAP:%v/DB:%v)", s.Name, usr.Name, len(ldapKeys), len(giteaKeys))
-		return false
-	}
-	log.Trace("synchronizeLdapSSHPublicKeys[%s]: LDAP Public Key needs update for user %s (LDAP:%v/DB:%v)", s.Name, usr.Name, len(ldapKeys), len(giteaKeys))
-
-	// Add LDAP Public SSH Keys that doesn't already exist in DB
-	var newLdapSSHKeys []string
-	for _, LDAPPublicSSHKey := range ldapKeys {
-		if !util.ExistsInSlice(LDAPPublicSSHKey, giteaKeys) {
-			newLdapSSHKeys = append(newLdapSSHKeys, LDAPPublicSSHKey)
-		}
-	}
-	if addLdapSSHPublicKeys(usr, s, newLdapSSHKeys) {
-		sshKeysNeedUpdate = true
-	}
-
-	// Mark LDAP keys from DB that doesn't exist in LDAP for deletion
-	var giteaKeysToDelete []string
-	for _, giteaKey := range giteaKeys {
-		if !util.ExistsInSlice(giteaKey, ldapKeys) {
-			log.Trace("synchronizeLdapSSHPublicKeys[%s]: Marking LDAP Public SSH Key for deletion for user %s: %v", s.Name, usr.Name, giteaKey)
-			giteaKeysToDelete = append(giteaKeysToDelete, giteaKey)
-		}
-	}
-
-	// Delete LDAP keys from DB that doesn't exist in LDAP
-	needUpd, err := deleteKeysMarkedForDeletion(giteaKeysToDelete)
-	if err != nil {
-		log.Error("synchronizeLdapSSHPublicKeys[%s]: Error deleting LDAP Public SSH Keys marked for deletion for user %s: %v", s.Name, usr.Name, err)
-	}
-	if needUpd {
-		sshKeysNeedUpdate = true
-	}
-
-	return sshKeysNeedUpdate
-}
-
 // SyncExternalUsers is used to synchronize users with external authorization source
 func SyncExternalUsers(ctx context.Context, updateExisting bool) error {
 	log.Trace("Doing: SyncExternalUsers")
@@ -1624,8 +1419,6 @@ func SyncExternalUsers(ctx context.Context, updateExisting bool) error {
 			log.Trace("Doing: SyncExternalUsers[%s]", s.Name)
 
 			var existingUsers []int64
-			isAttributeSSHPublicKeySet := len(strings.TrimSpace(s.LDAP().AttributeSSHPublicKey)) > 0
-			var sshKeysNeedUpdate bool
 
 			// Find all users with this login type
 			var users []*User
@@ -1662,13 +1455,6 @@ func SyncExternalUsers(ctx context.Context, updateExisting bool) error {
 				select {
 				case <-ctx.Done():
 					log.Warn("SyncExternalUsers: Cancelled at update of %s before completed update of users", s.Name)
-					// Rewrite authorized_keys file if LDAP Public SSH Key attribute is set and any key was added or removed
-					if sshKeysNeedUpdate {
-						err = RewriteAllPublicKeys()
-						if err != nil {
-							log.Error("RewriteAllPublicKeys: %v", err)
-						}
-					}
 					return ErrCancelledf("During update of %s before completed update of users", s.Name)
 				default:
 				}
@@ -1711,19 +1497,9 @@ func SyncExternalUsers(ctx context.Context, updateExisting bool) error {
 
 					if err != nil {
 						log.Error("SyncExternalUsers[%s]: Error creating user %s: %v", s.Name, su.Username, err)
-					} else if isAttributeSSHPublicKeySet {
-						log.Trace("SyncExternalUsers[%s]: Adding LDAP Public SSH Keys for user %s", s.Name, usr.Name)
-						if addLdapSSHPublicKeys(usr, s, su.SSHPublicKey) {
-							sshKeysNeedUpdate = true
-						}
 					}
 				} else if updateExisting {
 					existingUsers = append(existingUsers, usr.ID)
-
-					// Synchronize SSH Public Key if that attribute is set
-					if isAttributeSSHPublicKeySet && synchronizeLdapSSHPublicKeys(usr, s, su.SSHPublicKey) {
-						sshKeysNeedUpdate = true
-					}
 
 					// Check if user data has changed
 					if (len(s.LDAP().AdminFilter) > 0 && usr.IsAdmin != su.IsAdmin) ||
@@ -1751,14 +1527,6 @@ func SyncExternalUsers(ctx context.Context, updateExisting bool) error {
 							log.Error("SyncExternalUsers[%s]: Error updating user %s: %v", s.Name, usr.Name, err)
 						}
 					}
-				}
-			}
-
-			// Rewrite authorized_keys file if LDAP Public SSH Key attribute is set and any key was added or removed
-			if sshKeysNeedUpdate {
-				err = RewriteAllPublicKeys()
-				if err != nil {
-					log.Error("RewriteAllPublicKeys: %v", err)
 				}
 			}
 

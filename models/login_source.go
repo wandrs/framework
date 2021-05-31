@@ -528,10 +528,6 @@ func LoginViaLDAP(user *User, login, password string, source *LoginSource) (*Use
 	}
 
 	if user != nil {
-		if isAttributeSSHPublicKeySet && synchronizeLdapSSHPublicKeys(user, source, sr.SSHPublicKey) {
-			return user, RewriteAllPublicKeys()
-		}
-
 		return user, nil
 	}
 
@@ -558,10 +554,6 @@ func LoginViaLDAP(user *User, login, password string, source *LoginSource) (*Use
 	}
 
 	err := CreateUser(user)
-
-	if err == nil && isAttributeSSHPublicKeySet && addLdapSSHPublicKeys(user, source, sr.SSHPublicKey) {
-		err = RewriteAllPublicKeys()
-	}
 
 	return user, err
 }
