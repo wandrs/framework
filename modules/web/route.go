@@ -15,7 +15,7 @@ import (
 	"go.wandrs.dev/framework/modules/context"
 	"go.wandrs.dev/framework/modules/web/middleware"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 )
 
 // Wrap converts all kinds of routes to standard library one

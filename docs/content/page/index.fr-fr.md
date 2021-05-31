@@ -254,7 +254,7 @@ Le but de ce projet est de fournir de la manière la plus simple, la plus rapide
 
 ## Composants
 
-* Framework web : [Chi](http://github.com/go-chi/chi)
+* Framework web : [Chi](http://github.com/go-chi/chi/v5)
 * ORM: [XORM](https://xorm.io)
 * Interface graphique :
   * [Semantic UI](http://semantic-ui.com/)
