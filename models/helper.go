@@ -12,14 +12,6 @@ func keysInt64(m map[int64]struct{}) []int64 {
 	return keys
 }
 
-func valuesRepository(m map[int64]*Repository) []*Repository {
-	values := make([]*Repository, 0, len(m))
-	for _, v := range m {
-		values = append(values, v)
-	}
-	return values
-}
-
 func valuesUser(m map[int64]*User) []*User {
 	values := make([]*User, 0, len(m))
 	for _, v := range m {

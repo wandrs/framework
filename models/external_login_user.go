@@ -7,8 +7,6 @@ package models
 import (
 	"time"
 
-	"go.wandrs.dev/framework/modules/structs"
-
 	"github.com/markbates/goth"
 	"xorm.io/builder"
 )
@@ -164,24 +162,4 @@ func FindExternalUsersByProvider(opts FindExternalUserOptions) ([]ExternalLoginU
 		return nil, err
 	}
 	return users, nil
-}
-
-// UpdateMigrationsByType updates all migrated repositories' posterid from gitServiceType to replace originalAuthorID to posterID
-func UpdateMigrationsByType(tp structs.GitServiceType, externalUserID string, userID int64) error {
-	if err := UpdateIssuesMigrationsByType(tp, externalUserID, userID); err != nil {
-		return err
-	}
-
-	if err := UpdateCommentsMigrationsByType(tp, externalUserID, userID); err != nil {
-		return err
-	}
-
-	if err := UpdateReleasesMigrationsByType(tp, externalUserID, userID); err != nil {
-		return err
-	}
-
-	if err := UpdateReactionsMigrationsByType(tp, externalUserID, userID); err != nil {
-		return err
-	}
-	return UpdateReviewsMigrationsByType(tp, externalUserID, userID)
 }

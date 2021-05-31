@@ -13,7 +13,6 @@ import (
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/storage"
 	"go.wandrs.dev/framework/modules/structs"
-	"go.wandrs.dev/framework/modules/util"
 
 	"xorm.io/builder"
 	"xorm.io/xorm"
@@ -27,11 +26,6 @@ func (org *User) IsOwnedBy(uid int64) (bool, error) {
 // IsOrgMember returns true if given user is member of organization.
 func (org *User) IsOrgMember(uid int64) (bool, error) {
 	return IsOrganizationMember(org.ID, uid)
-}
-
-// CanCreateOrgRepo returns true if given user can create repo in organization
-func (org *User) CanCreateOrgRepo(uid int64) (bool, error) {
-	return CanCreateOrgRepo(org.ID, uid)
 }
 
 func (org *User) getTeam(e Engine, name string) (*Team, error) {
@@ -126,15 +120,6 @@ func (org *User) RemoveMember(uid int64) error {
 	return RemoveOrgUser(org.ID, uid)
 }
 
-func (org *User) removeOrgRepo(e Engine, repoID int64) error {
-	return removeOrgRepo(e, org.ID, repoID)
-}
-
-// RemoveOrgRepo removes all team-repository relations of organization.
-func (org *User) RemoveOrgRepo(repoID int64) error {
-	return org.removeOrgRepo(x, repoID)
-}
-
 // CreateOrganization creates record of a new organization.
 func CreateOrganization(org, owner *User) (err error) {
 	if !owner.CanCreateOrganization() {
@@ -192,33 +177,14 @@ func CreateOrganization(org, owner *User) (err error) {
 
 	// Create default owner team.
 	t := &Team{
-		OrgID:                   org.ID,
-		LowerName:               strings.ToLower(ownerTeamName),
-		Name:                    ownerTeamName,
-		Authorize:               AccessModeOwner,
-		NumMembers:              1,
-		IncludesAllRepositories: true,
-		CanCreateOrgRepo:        true,
+		OrgID:      org.ID,
+		LowerName:  strings.ToLower(ownerTeamName),
+		Name:       ownerTeamName,
+		Authorize:  AccessModeOwner,
+		NumMembers: 1,
 	}
 	if _, err = sess.Insert(t); err != nil {
 		return fmt.Errorf("insert owner team: %v", err)
-	}
-
-	// insert units for team
-	units := make([]TeamUnit, 0, len(AllRepoUnitTypes))
-	for _, tp := range AllRepoUnitTypes {
-		units = append(units, TeamUnit{
-			OrgID:  org.ID,
-			TeamID: t.ID,
-			Type:   tp,
-		})
-	}
-
-	if _, err = sess.Insert(&units); err != nil {
-		if err := sess.Rollback(); err != nil {
-			log.Error("CreateOrganization: sess.Rollback: %v", err)
-		}
-		return err
 	}
 
 	if _, err = sess.Insert(&TeamUser{
@@ -283,34 +249,16 @@ func DeleteOrganization(org *User) (err error) {
 }
 
 func deleteOrg(e *xorm.Session, u *User) error {
-	// Check ownership of repository.
-	count, err := getRepositoryCount(e, u)
-	if err != nil {
-		return fmt.Errorf("GetRepositoryCount: %v", err)
-	} else if count > 0 {
-		return ErrUserOwnRepos{UID: u.ID}
-	}
-
 	if err := deleteBeans(e,
 		&Team{OrgID: u.ID},
 		&OrgUser{OrgID: u.ID},
 		&TeamUser{OrgID: u.ID},
-		&TeamUnit{OrgID: u.ID},
 	); err != nil {
 		return fmt.Errorf("deleteBeans: %v", err)
 	}
 
-	if _, err = e.ID(u.ID).Delete(new(User)); err != nil {
+	if _, err := e.ID(u.ID).Delete(new(User)); err != nil {
 		return fmt.Errorf("Delete: %v", err)
-	}
-
-	// FIXME: system notice
-	// Note: There are something just cannot be roll back,
-	//	so just keep error logs of those operations.
-	path := UserPath(u.Name)
-
-	if err := util.RemoveAll(path); err != nil {
-		return fmt.Errorf("Failed to RemoveAll %s: %v", path, err)
 	}
 
 	if len(u.Avatar) > 0 {
@@ -639,24 +587,6 @@ func removeOrgUser(sess *xorm.Session, orgID, userID int64) error {
 	if err != nil {
 		return fmt.Errorf("AccessibleReposEnv: %v", err)
 	}
-	repoIDs, err := env.RepoIDs(1, org.NumRepos)
-	if err != nil {
-		return fmt.Errorf("GetUserRepositories [%d]: %v", userID, err)
-	}
-	for _, repoID := range repoIDs {
-		if err = watchRepo(sess, userID, repoID, false); err != nil {
-			return err
-		}
-	}
-
-	if len(repoIDs) > 0 {
-		if _, err = sess.
-			Where("user_id = ?", userID).
-			In("repo_id", repoIDs).
-			Delete(new(Access)); err != nil {
-			return err
-		}
-	}
 
 	// Delete member in his/her teams.
 	teams, err := getUserOrgTeams(sess, org.ID, userID)
@@ -685,32 +615,6 @@ func RemoveOrgUser(orgID, userID int64) error {
 	return sess.Commit()
 }
 
-func removeOrgRepo(e Engine, orgID, repoID int64) error {
-	teamRepos := make([]*TeamRepo, 0, 10)
-	if err := e.Find(&teamRepos, &TeamRepo{OrgID: orgID, RepoID: repoID}); err != nil {
-		return err
-	}
-
-	if len(teamRepos) == 0 {
-		return nil
-	}
-
-	if _, err := e.Delete(&TeamRepo{
-		OrgID:  orgID,
-		RepoID: repoID,
-	}); err != nil {
-		return err
-	}
-
-	teamIDs := make([]int64, len(teamRepos))
-	for i, teamRepo := range teamRepos {
-		teamIDs[i] = teamRepo.TeamID
-	}
-
-	_, err := e.Decr("num_repos").In("id", teamIDs).Update(new(Team))
-	return err
-}
-
 func (org *User) getUserTeams(e Engine, userID int64, cols ...string) ([]*Team, error) {
 	teams := make([]*Team, 0, org.NumTeams)
 	return teams, e.
@@ -732,11 +636,6 @@ func (org *User) getUserTeamIDs(e Engine, userID int64) ([]int64, error) {
 		Join("INNER", "team_user", "`team_user`.team_id = team.id").
 		And("`team_user`.uid = ?", userID).
 		Find(&teamIDs)
-}
-
-// TeamsWithAccessToRepo returns all teams that have given access level to the repository.
-func (org *User) TeamsWithAccessToRepo(repoID int64, mode AccessMode) ([]*Team, error) {
-	return GetTeamsWithAccessToRepo(org.ID, repoID, mode)
 }
 
 // GetUserTeamIDs returns of all team IDs of the organization that user is member of.

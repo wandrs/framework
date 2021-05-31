@@ -770,30 +770,6 @@ func (err ErrTwoFactorNotEnrolled) Error() string {
 	return fmt.Sprintf("user not enrolled in 2FA [uid: %d]", err.UID)
 }
 
-//  ____ ___        .__                    .___
-// |    |   \______ |  |   _________     __| _/
-// |    |   /\____ \|  |  /  _ \__  \   / __ |
-// |    |  / |  |_> >  |_(  <_> ) __ \_/ /_/ |
-// |______/  |   __/|____/\____(____  /\____ |
-//           |__|                   \/      \/
-//
-
-// ErrUploadNotExist represents a "UploadNotExist" kind of error.
-type ErrUploadNotExist struct {
-	ID   int64
-	UUID string
-}
-
-// IsErrUploadNotExist checks if an error is a ErrUploadNotExist.
-func IsErrUploadNotExist(err error) bool {
-	_, ok := err.(ErrAttachmentNotExist)
-	return ok
-}
-
-func (err ErrUploadNotExist) Error() string {
-	return fmt.Sprintf("attachment does not exist [id: %d, uuid: %s]", err.ID, err.UUID)
-}
-
 //  ___________         __                             .__    .____                 .__          ____ ___
 //  \_   _____/__  ____/  |_  ___________  ____ _____  |  |   |    |    ____   ____ |__| ____   |    |   \______ ___________
 //   |    __)_\  \/  /\   __\/ __ \_  __ \/    \\__  \ |  |   |    |   /  _ \ / ___\|  |/    \  |    |   /  ___// __ \_  __ \

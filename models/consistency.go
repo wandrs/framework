@@ -67,8 +67,6 @@ func assertCount(t *testing.T, bean interface{}, expected int) {
 }
 
 func (user *User) checkForConsistency(t *testing.T) {
-	assertCount(t, &Repository{OwnerID: user.ID}, user.NumRepos)
-	assertCount(t, &Star{UID: user.ID}, user.NumStars)
 	assertCount(t, &OrgUser{OrgID: user.ID}, user.NumMembers)
 	assertCount(t, &Team{OrgID: user.ID}, user.NumTeams)
 	assertCount(t, &Follow{UserID: user.ID}, user.NumFollowing)
@@ -81,7 +79,6 @@ func (user *User) checkForConsistency(t *testing.T) {
 
 func (team *Team) checkForConsistency(t *testing.T) {
 	assertCount(t, &TeamUser{TeamID: team.ID}, team.NumMembers)
-	assertCount(t, &TeamRepo{TeamID: team.ID}, team.NumRepos)
 }
 
 // CountOrphanedObjects count subjects with have no existing refobject anymore
