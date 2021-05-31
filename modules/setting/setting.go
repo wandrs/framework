@@ -842,9 +842,6 @@ func NewContext() {
 		}
 	}
 
-	newAttachmentService()
-	newLFSService()
-
 	timeFormatKey := Cfg.Section("time").Key("FORMAT").MustString("")
 	if timeFormatKey != "" {
 		TimeFormat = map[string]string{
@@ -901,8 +898,6 @@ func NewContext() {
 
 	SSH.BuiltinServerUser = Cfg.Section("server").Key("BUILTIN_SSH_SERVER_USER").MustString(RunUser)
 
-	newRepository()
-
 	newPictureService()
 
 	if err = Cfg.Section("ui").MapTo(&UI); err != nil {
@@ -920,8 +915,6 @@ func NewContext() {
 	u := *appURL
 	u.Path = path.Join(u.Path, "api", "swagger")
 	API.SwaggerURL = u.String()
-
-	newGit()
 
 	sec = Cfg.Section("mirror")
 	Mirror.MinInterval = sec.Key("MIN_INTERVAL").MustDuration(10 * time.Minute)
@@ -1164,11 +1157,7 @@ func NewServices() {
 	newMailService()
 	newRegisterMailService()
 	newNotifyMailService()
-	newWebhookService()
 	newMigrationsService()
-	newIndexerService()
-	newTaskService()
 	NewQueueService()
-	newProject()
 	newMimeTypeMap()
 }
