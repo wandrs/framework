@@ -15,7 +15,7 @@ import (
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/util"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 // argsSet checks that all the required arguments are set. args is a list of

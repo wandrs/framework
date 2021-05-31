@@ -11,7 +11,7 @@ import (
 	"go.wandrs.dev/framework/modules/private"
 	"go.wandrs.dev/framework/modules/setting"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func runSendMail(c *cli.Context) error {
