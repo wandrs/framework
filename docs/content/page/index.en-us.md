@@ -267,7 +267,7 @@ Windows, on architectures like amd64, i386, ARM, PowerPC, and others.
 
 ## Components
 
-* Web framework: [Chi](http://github.com/go-chi/chi)
+* Web framework: [Chi](http://github.com/go-chi/chi/v5)
 * ORM: [XORM](https://xorm.io)
 * UI components:
   * [Semantic UI](http://semantic-ui.com/)

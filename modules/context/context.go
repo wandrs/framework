@@ -32,7 +32,7 @@ import (
 	"go.wandrs.dev/framework/modules/web/middleware"
 	"go.wandrs.dev/session"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/unknwon/com"
 	"github.com/unknwon/i18n"

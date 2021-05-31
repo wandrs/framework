@@ -28,7 +28,7 @@ require (
 	github.com/ethantkoenig/rupture v1.0.0
 	github.com/gliderlabs/ssh v0.3.2
 	github.com/go-asn1-ber/asn1-ber v1.5.3 // indirect
-	github.com/go-chi/chi v1.5.4
+	github.com/go-chi/chi/v5 v5.0.3
 	github.com/go-chi/cors v1.2.0
 	github.com/go-enry/go-enry/v2 v2.6.1
 	github.com/go-git/go-billy/v5 v5.1.0
