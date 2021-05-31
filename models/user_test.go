@@ -157,15 +157,6 @@ func TestDeleteUser(t *testing.T) {
 		assert.NoError(t, PrepareTestDatabase())
 		user := AssertExistsAndLoadBean(t, &User{ID: userID}).(*User)
 
-		ownedRepos := make([]*Repository, 0, 10)
-		assert.NoError(t, x.Find(&ownedRepos, &Repository{OwnerID: userID}))
-		if len(ownedRepos) > 0 {
-			err := DeleteUser(user)
-			assert.Error(t, err)
-			assert.True(t, IsErrUserOwnRepos(err))
-			return
-		}
-
 		orgUsers := make([]*OrgUser, 0, 10)
 		assert.NoError(t, x.Find(&orgUsers, &OrgUser{UID: userID}))
 		for _, orgUser := range orgUsers {
@@ -176,7 +167,6 @@ func TestDeleteUser(t *testing.T) {
 		}
 		assert.NoError(t, DeleteUser(user))
 		AssertNotExistsBean(t, &User{ID: userID})
-		CheckConsistencyFor(t, &User{}, &Repository{})
 	}
 	test(2)
 	test(4)
@@ -252,28 +242,6 @@ func BenchmarkHashPassword(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		u.SetPassword(pass)
 	}
-}
-
-func TestGetOrgRepositoryIDs(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-	user2 := AssertExistsAndLoadBean(t, &User{ID: 2}).(*User)
-	user4 := AssertExistsAndLoadBean(t, &User{ID: 4}).(*User)
-	user5 := AssertExistsAndLoadBean(t, &User{ID: 5}).(*User)
-
-	accessibleRepos, err := user2.GetOrgRepositoryIDs()
-	assert.NoError(t, err)
-	// User 2's team has access to private repos 3, 5, repo 32 is a public repo of the organization
-	assert.Equal(t, []int64{3, 5, 23, 24, 32}, accessibleRepos)
-
-	accessibleRepos, err = user4.GetOrgRepositoryIDs()
-	assert.NoError(t, err)
-	// User 4's team has access to private repo 3, repo 32 is a public repo of the organization
-	assert.Equal(t, []int64{3, 32}, accessibleRepos)
-
-	accessibleRepos, err = user5.GetOrgRepositoryIDs()
-	assert.NoError(t, err)
-	// User 5's team has no access to any repo
-	assert.Len(t, accessibleRepos, 0)
 }
 
 func TestNewGitSig(t *testing.T) {

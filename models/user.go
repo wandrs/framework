@@ -114,9 +114,8 @@ type User struct {
 	LoginSource int64 `xorm:"NOT NULL DEFAULT 0"`
 	LoginName   string
 	Type        UserType
-	OwnedOrgs   []*User       `xorm:"-"`
-	Orgs        []*User       `xorm:"-"`
-	Repos       []*Repository `xorm:"-"`
+	OwnedOrgs   []*User `xorm:"-"`
+	Orgs        []*User `xorm:"-"`
 	Location    string
 	Website     string
 	Rands       string `xorm:"VARCHAR(10)"`
@@ -248,35 +247,6 @@ func (u *User) IsLocal() bool {
 // IsOAuth2 returns true if user login type is LoginOAuth2.
 func (u *User) IsOAuth2() bool {
 	return u.LoginType == LoginOAuth2
-}
-
-// HasForkedRepo checks if user has already forked a repository with given ID.
-func (u *User) HasForkedRepo(repoID int64) bool {
-	_, has := HasForkedRepo(u.ID, repoID)
-	return has
-}
-
-// MaxCreationLimit returns the number of repositories a user is allowed to create
-func (u *User) MaxCreationLimit() int {
-	if u.MaxRepoCreation <= -1 {
-		return setting.Repository.MaxCreationLimit
-	}
-	return u.MaxRepoCreation
-}
-
-// CanCreateRepo returns if user login can create a repository
-// NOTE: functions calling this assume a failure due to repository count limit; if new checks are added, those functions should be revised
-func (u *User) CanCreateRepo() bool {
-	if u.IsAdmin {
-		return true
-	}
-	if u.MaxRepoCreation <= -1 {
-		if setting.Repository.MaxCreationLimit <= -1 {
-			return true
-		}
-		return u.NumRepos < setting.Repository.MaxCreationLimit
-	}
-	return u.NumRepos < u.MaxRepoCreation
 }
 
 // CanCreateOrganization returns true if user can create organisation.
@@ -484,120 +454,6 @@ func (u *User) getOrganizationCount(e Engine) (int64, error) {
 // GetOrganizationCount returns count of membership of organization of user.
 func (u *User) GetOrganizationCount() (int64, error) {
 	return u.getOrganizationCount(x)
-}
-
-// GetRepositories returns repositories that user owns, including private repositories.
-func (u *User) GetRepositories(listOpts ListOptions, names ...string) (err error) {
-	u.Repos, _, err = GetUserRepositories(&SearchRepoOptions{Actor: u, Private: true, ListOptions: listOpts, LowerNames: names})
-	return err
-}
-
-// GetRepositoryIDs returns repositories IDs where user owned and has unittypes
-// Caller shall check that units is not globally disabled
-func (u *User) GetRepositoryIDs(units ...UnitType) ([]int64, error) {
-	var ids []int64
-
-	sess := x.Table("repository").Cols("repository.id")
-
-	if len(units) > 0 {
-		sess = sess.Join("INNER", "repo_unit", "repository.id = repo_unit.repo_id")
-		sess = sess.In("repo_unit.type", units)
-	}
-
-	return ids, sess.Where("owner_id = ?", u.ID).Find(&ids)
-}
-
-// GetActiveRepositoryIDs returns non-archived repositories IDs where user owned and has unittypes
-// Caller shall check that units is not globally disabled
-func (u *User) GetActiveRepositoryIDs(units ...UnitType) ([]int64, error) {
-	var ids []int64
-
-	sess := x.Table("repository").Cols("repository.id")
-
-	if len(units) > 0 {
-		sess = sess.Join("INNER", "repo_unit", "repository.id = repo_unit.repo_id")
-		sess = sess.In("repo_unit.type", units)
-	}
-
-	sess.Where(builder.Eq{"is_archived": false})
-
-	return ids, sess.Where("owner_id = ?", u.ID).GroupBy("repository.id").Find(&ids)
-}
-
-// GetOrgRepositoryIDs returns repositories IDs where user's team owned and has unittypes
-// Caller shall check that units is not globally disabled
-func (u *User) GetOrgRepositoryIDs(units ...UnitType) ([]int64, error) {
-	var ids []int64
-
-	if err := x.Table("repository").
-		Cols("repository.id").
-		Join("INNER", "team_user", "repository.owner_id = team_user.org_id").
-		Join("INNER", "team_repo", "(? != ? and repository.is_private != ?) OR (team_user.team_id = team_repo.team_id AND repository.id = team_repo.repo_id)", true, u.IsRestricted, true).
-		Where("team_user.uid = ?", u.ID).
-		GroupBy("repository.id").Find(&ids); err != nil {
-		return nil, err
-	}
-
-	if len(units) > 0 {
-		return FilterOutRepoIdsWithoutUnitAccess(u, ids, units...)
-	}
-
-	return ids, nil
-}
-
-// GetActiveOrgRepositoryIDs returns non-archived repositories IDs where user's team owned and has unittypes
-// Caller shall check that units is not globally disabled
-func (u *User) GetActiveOrgRepositoryIDs(units ...UnitType) ([]int64, error) {
-	var ids []int64
-
-	if err := x.Table("repository").
-		Cols("repository.id").
-		Join("INNER", "team_user", "repository.owner_id = team_user.org_id").
-		Join("INNER", "team_repo", "(? != ? and repository.is_private != ?) OR (team_user.team_id = team_repo.team_id AND repository.id = team_repo.repo_id)", true, u.IsRestricted, true).
-		Where("team_user.uid = ?", u.ID).
-		Where(builder.Eq{"is_archived": false}).
-		GroupBy("repository.id").Find(&ids); err != nil {
-		return nil, err
-	}
-
-	if len(units) > 0 {
-		return FilterOutRepoIdsWithoutUnitAccess(u, ids, units...)
-	}
-
-	return ids, nil
-}
-
-// GetAccessRepoIDs returns all repositories IDs where user's or user is a team member organizations
-// Caller shall check that units is not globally disabled
-func (u *User) GetAccessRepoIDs(units ...UnitType) ([]int64, error) {
-	ids, err := u.GetRepositoryIDs(units...)
-	if err != nil {
-		return nil, err
-	}
-	ids2, err := u.GetOrgRepositoryIDs(units...)
-	if err != nil {
-		return nil, err
-	}
-	return append(ids, ids2...), nil
-}
-
-// GetActiveAccessRepoIDs returns all non-archived repositories IDs where user's or user is a team member organizations
-// Caller shall check that units is not globally disabled
-func (u *User) GetActiveAccessRepoIDs(units ...UnitType) ([]int64, error) {
-	ids, err := u.GetActiveRepositoryIDs(units...)
-	if err != nil {
-		return nil, err
-	}
-	ids2, err := u.GetActiveOrgRepositoryIDs(units...)
-	if err != nil {
-		return nil, err
-	}
-	return append(ids, ids2...), nil
-}
-
-// GetMirrorRepositories returns mirror repositories that user owns, including private repositories.
-func (u *User) GetMirrorRepositories() ([]*Repository, error) {
-	return GetUserMirrorRepositories(u.ID)
 }
 
 // GetOwnedOrganizations returns all organizations that user owns.
@@ -1099,42 +955,13 @@ func deleteUser(e Engine, u *User) error {
 	// Note: A user owns any repository or belongs to any organization
 	//	cannot perform delete operation.
 
-	// Check ownership of repository.
-	count, err := getRepositoryCount(e, u)
-	if err != nil {
-		return fmt.Errorf("GetRepositoryCount: %v", err)
-	} else if count > 0 {
-		return ErrUserOwnRepos{UID: u.ID}
-	}
-
 	// Check membership of organization.
-	count, err = u.getOrganizationCount(e)
+	count, err := u.getOrganizationCount(e)
 	if err != nil {
 		return fmt.Errorf("GetOrganizationCount: %v", err)
 	} else if count > 0 {
 		return ErrUserHasOrgs{UID: u.ID}
 	}
-
-	// ***** START: Watch *****
-	watchedRepoIDs := make([]int64, 0, 10)
-	if err = e.Table("watch").Cols("watch.repo_id").
-		Where("watch.user_id = ?", u.ID).And("watch.mode <>?", RepoWatchModeDont).Find(&watchedRepoIDs); err != nil {
-		return fmt.Errorf("get all watches: %v", err)
-	}
-	if _, err = e.Decr("num_watches").In("id", watchedRepoIDs).NoAutoTime().Update(new(Repository)); err != nil {
-		return fmt.Errorf("decrease repository num_watches: %v", err)
-	}
-	// ***** END: Watch *****
-
-	// ***** START: Star *****
-	starredRepoIDs := make([]int64, 0, 10)
-	if err = e.Table("star").Cols("star.repo_id").
-		Where("star.uid = ?", u.ID).Find(&starredRepoIDs); err != nil {
-		return fmt.Errorf("get all stars: %v", err)
-	} else if _, err = e.Decr("num_stars").In("id", starredRepoIDs).NoAutoTime().Update(new(Repository)); err != nil {
-		return fmt.Errorf("decrease repository num_stars: %v", err)
-	}
-	// ***** END: Star *****
 
 	// ***** START: Follow *****
 	followeeIDs := make([]int64, 0, 10)
@@ -1156,19 +983,12 @@ func deleteUser(e Engine, u *User) error {
 
 	if err = deleteBeans(e,
 		&AccessToken{UID: u.ID},
-		&Collaboration{UserID: u.ID},
-		&Access{UserID: u.ID},
-		&Watch{UserID: u.ID},
-		&Star{UID: u.ID},
 		&Follow{UserID: u.ID},
 		&Follow{FollowID: u.ID},
 		&Action{UserID: u.ID},
-		&IssueUser{UID: u.ID},
 		&EmailAddress{UID: u.ID},
 		&UserOpenID{UID: u.ID},
-		&Reaction{UserID: u.ID},
 		&TeamUser{UID: u.ID},
-		&Collaboration{UserID: u.ID},
 		&Stopwatch{UserID: u.ID},
 	); err != nil {
 		return fmt.Errorf("deleteBeans: %v", err)
@@ -1640,45 +1460,6 @@ func SearchUsers(opts *SearchUserOptions) (users []*User, _ int64, _ error) {
 
 	users = make([]*User, 0, opts.PageSize)
 	return users, count, sess.Find(&users)
-}
-
-// GetStarredRepos returns the repos starred by a particular user
-func GetStarredRepos(userID int64, private bool, listOptions ListOptions) ([]*Repository, error) {
-	sess := x.Where("star.uid=?", userID).
-		Join("LEFT", "star", "`repository`.id=`star`.repo_id")
-	if !private {
-		sess = sess.And("is_private=?", false)
-	}
-
-	if listOptions.Page != 0 {
-		sess = listOptions.setSessionPagination(sess)
-
-		repos := make([]*Repository, 0, listOptions.PageSize)
-		return repos, sess.Find(&repos)
-	}
-
-	repos := make([]*Repository, 0, 10)
-	return repos, sess.Find(&repos)
-}
-
-// GetWatchedRepos returns the repos watched by a particular user
-func GetWatchedRepos(userID int64, private bool, listOptions ListOptions) ([]*Repository, error) {
-	sess := x.Where("watch.user_id=?", userID).
-		And("`watch`.mode<>?", RepoWatchModeDont).
-		Join("LEFT", "watch", "`repository`.id=`watch`.repo_id")
-	if !private {
-		sess = sess.And("is_private=?", false)
-	}
-
-	if listOptions.Page != 0 {
-		sess = listOptions.setSessionPagination(sess)
-
-		repos := make([]*Repository, 0, listOptions.PageSize)
-		return repos, sess.Find(&repos)
-	}
-
-	repos := make([]*Repository, 0, 10)
-	return repos, sess.Find(&repos)
 }
 
 // deleteKeysMarkedForDeletion returns true if ssh keys needs update

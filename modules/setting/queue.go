@@ -10,8 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"go.wandrs.dev/framework/modules/log"
 )
 
 // QueueSettings represent the settings for a queue from the ini
@@ -111,57 +109,14 @@ func NewQueueService() {
 	Queue.QueueName = sec.Key("QUEUE_NAME").MustString("_queue")
 	Queue.SetName = sec.Key("SET_NAME").MustString("")
 
-	// Now handle the old issue_indexer configuration
-	section := Cfg.Section("queue.issue_indexer")
-	sectionMap := map[string]bool{}
-	for _, key := range section.Keys() {
-		sectionMap[key.Name()] = true
-	}
-	if _, ok := sectionMap["TYPE"]; !ok {
-		switch Indexer.IssueQueueType {
-		case LevelQueueType:
-			_, _ = section.NewKey("TYPE", "level")
-		case ChannelQueueType:
-			_, _ = section.NewKey("TYPE", "persistable-channel")
-		case RedisQueueType:
-			_, _ = section.NewKey("TYPE", "redis")
-		default:
-			log.Fatal("Unsupported indexer queue type: %v",
-				Indexer.IssueQueueType)
-		}
-	}
-	if _, ok := sectionMap["LENGTH"]; !ok {
-		_, _ = section.NewKey("LENGTH", fmt.Sprintf("%d", Indexer.UpdateQueueLength))
-	}
-	if _, ok := sectionMap["BATCH_LENGTH"]; !ok {
-		_, _ = section.NewKey("BATCH_LENGTH", fmt.Sprintf("%d", Indexer.IssueQueueBatchNumber))
-	}
-	if _, ok := sectionMap["DATADIR"]; !ok {
-		_, _ = section.NewKey("DATADIR", Indexer.IssueQueueDir)
-	}
-	if _, ok := sectionMap["CONN_STR"]; !ok {
-		_, _ = section.NewKey("CONN_STR", Indexer.IssueQueueConnStr)
-	}
-
 	// Handle the old mailer configuration
-	section = Cfg.Section("queue.mailer")
-	sectionMap = map[string]bool{}
+	section := Cfg.Section("queue.mailer")
+	sectionMap := map[string]bool{}
 	for _, key := range section.Keys() {
 		sectionMap[key.Name()] = true
 	}
 	if _, ok := sectionMap["LENGTH"]; !ok {
 		_, _ = section.NewKey("LENGTH", fmt.Sprintf("%d", Cfg.Section("mailer").Key("SEND_BUFFER_LEN").MustInt(100)))
-	}
-
-	// Handle the old test pull requests configuration
-	// Please note this will be a unique queue
-	section = Cfg.Section("queue.pr_patch_checker")
-	sectionMap = map[string]bool{}
-	for _, key := range section.Keys() {
-		sectionMap[key.Name()] = true
-	}
-	if _, ok := sectionMap["LENGTH"]; !ok {
-		_, _ = section.NewKey("LENGTH", fmt.Sprintf("%d", Repository.PullRequestQueueLength))
 	}
 }
 
