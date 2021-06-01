@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -65,6 +66,36 @@ type Context struct {
 	IsBasicAuth bool
 
 	Org *Organization
+}
+
+func (ctx *Context) Map(val interface{}) middleware.TypeMapper {
+	ctx.Req = ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), reflect.TypeOf(val), reflect.ValueOf(val)))
+	return ctx
+}
+
+func (ctx *Context) MapTo(val interface{}, ifacePtr interface{}) middleware.TypeMapper {
+	typ := reflect.TypeOf(ifacePtr)
+
+	for typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+
+	if typ.Kind() != reflect.Interface {
+		panic("ifacePtr must be pointer")
+	}
+
+
+	ctx.Req =  ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), typ, reflect.ValueOf(val)))
+	return ctx
+}
+
+func (ctx *Context) Set(typ reflect.Type, value reflect.Value) middleware.TypeMapper {
+	ctx.Req = ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), typ, value))
+	return ctx
+}
+
+func (ctx *Context) GetVal(typ reflect.Type) reflect.Value {
+	return ctx.Req.Context().Value(typ).(reflect.Value)
 }
 
 // GetData returns the data

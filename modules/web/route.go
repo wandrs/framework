@@ -30,6 +30,7 @@ func Wrap(handlers ...interface{}) http.HandlerFunc {
 			func(ctx *context.Context),
 			func(ctx *context.Context) goctx.CancelFunc,
 			func(*context.APIContext),
+			//func(ctx *context.APIContext, i ...interface{}),
 			func(*context.PrivateContext),
 			func(http.Handler) http.Handler:
 		default:
@@ -71,6 +72,11 @@ func Wrap(handlers ...interface{}) http.HandlerFunc {
 				if ctx.Written() {
 					return
 				}
+			//case func(ctx *context.APIContext, i ...interface{}):
+			//	ctx := context.GetAPIContext(req)
+			//	if ctx.Written() {
+			//		return
+			//	}
 			case func(*context.PrivateContext):
 				ctx := context.GetPrivateContext(req)
 				t(ctx)
