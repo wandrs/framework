@@ -21,8 +21,6 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"go.wandrs.dev/framework/modules/git"
-	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/dustin/go-humanize"
@@ -265,26 +263,61 @@ func IsLetter(ch rune) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || ch >= 0x80 && unicode.IsLetter(ch)
 }
 
-// EntryIcon returns the octicon class for displaying files/directories
-func EntryIcon(entry *git.TreeEntry) string {
-	switch {
-	case entry.IsLink():
-		te, err := entry.FollowLink()
-		if err != nil {
-			log.Debug(err.Error())
-			return "file-symlink-file"
-		}
-		if te.IsDir() {
-			return "file-submodule"
-		}
-		return "file-symlink-file"
-	case entry.IsDir():
-		return "file-directory"
-	case entry.IsSubModule():
-		return "file-submodule"
+// DetectContentType extends http.DetectContentType with more content types.
+func DetectContentType(data []byte) string {
+	ct := http.DetectContentType(data)
+
+	if len(data) > sniffLen {
+		data = data[:sniffLen]
 	}
 
-	return "file"
+	if setting.UI.SVG.Enabled &&
+		((strings.Contains(ct, "text/plain") || strings.Contains(ct, "text/html")) && svgTagRegex.Match(data) ||
+			strings.Contains(ct, "text/xml") && svgTagInXMLRegex.Match(data)) {
+
+		// SVG is unsupported.  https://github.com/golang/go/issues/15888
+		return SVGMimeType
+	}
+	return ct
+}
+
+// IsRepresentableAsText returns true if file content can be represented as
+// plain text or is empty.
+func IsRepresentableAsText(data []byte) bool {
+	return IsTextFile(data) || IsSVGImageFile(data)
+}
+
+// IsTextFile returns true if file content format is plain text or empty.
+func IsTextFile(data []byte) bool {
+	if len(data) == 0 {
+		return true
+	}
+	return strings.Contains(DetectContentType(data), "text/")
+}
+
+// IsImageFile detects if data is an image format
+func IsImageFile(data []byte) bool {
+	return strings.Contains(DetectContentType(data), "image/")
+}
+
+// IsSVGImageFile detects if data is an SVG image format
+func IsSVGImageFile(data []byte) bool {
+	return strings.Contains(DetectContentType(data), SVGMimeType)
+}
+
+// IsPDFFile detects if data is a pdf format
+func IsPDFFile(data []byte) bool {
+	return strings.Contains(DetectContentType(data), "application/pdf")
+}
+
+// IsVideoFile detects if data is an video format
+func IsVideoFile(data []byte) bool {
+	return strings.Contains(DetectContentType(data), "video/")
+}
+
+// IsAudioFile detects if data is an video format
+func IsAudioFile(data []byte) bool {
+	return strings.Contains(DetectContentType(data), "audio/")
 }
 
 // SetupGiteaRoot Sets GITEA_ROOT if it is not already set and returns the value

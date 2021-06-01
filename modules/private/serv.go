@@ -53,7 +53,6 @@ type ServCommandResults struct {
 	UserID      int64
 	OwnerName   string
 	RepoName    string
-	RepoID      int64
 }
 
 // ErrServCommand is an error returned from ServCommmand.

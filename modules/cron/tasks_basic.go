@@ -9,66 +9,7 @@ import (
 	"time"
 
 	"go.wandrs.dev/framework/models"
-	"go.wandrs.dev/framework/modules/migrations"
-	repository_service "go.wandrs.dev/framework/modules/repository"
-	"go.wandrs.dev/framework/modules/setting"
-	mirror_service "go.wandrs.dev/framework/services/mirror"
 )
-
-func registerUpdateMirrorTask() {
-	RegisterTaskFatal("update_mirrors", &BaseConfig{
-		Enabled:         true,
-		RunAtStart:      false,
-		Schedule:        "@every 10m",
-		NoSuccessNotice: true,
-	}, func(ctx context.Context, _ *models.User, _ Config) error {
-		return mirror_service.Update(ctx)
-	})
-}
-
-func registerRepoHealthCheck() {
-	type RepoHealthCheckConfig struct {
-		BaseConfig
-		Timeout time.Duration
-		Args    []string `delim:" "`
-	}
-	RegisterTaskFatal("repo_health_check", &RepoHealthCheckConfig{
-		BaseConfig: BaseConfig{
-			Enabled:    true,
-			RunAtStart: false,
-			Schedule:   "@every 24h",
-		},
-		Timeout: 60 * time.Second,
-		Args:    []string{},
-	}, func(ctx context.Context, _ *models.User, config Config) error {
-		rhcConfig := config.(*RepoHealthCheckConfig)
-		return repository_service.GitFsck(ctx, rhcConfig.Timeout, rhcConfig.Args)
-	})
-}
-
-func registerCheckRepoStats() {
-	RegisterTaskFatal("check_repo_stats", &BaseConfig{
-		Enabled:    true,
-		RunAtStart: true,
-		Schedule:   "@every 24h",
-	}, func(ctx context.Context, _ *models.User, _ Config) error {
-		return models.CheckRepoStats(ctx)
-	})
-}
-
-func registerArchiveCleanup() {
-	RegisterTaskFatal("archive_cleanup", &OlderThanConfig{
-		BaseConfig: BaseConfig{
-			Enabled:    true,
-			RunAtStart: true,
-			Schedule:   "@every 24h",
-		},
-		OlderThan: 24 * time.Hour,
-	}, func(ctx context.Context, _ *models.User, config Config) error {
-		acConfig := config.(*OlderThanConfig)
-		return models.DeleteOldRepositoryArchives(ctx, acConfig.OlderThan)
-	})
-}
 
 func registerSyncExternalUsers() {
 	RegisterTaskFatal("sync_external_users", &UpdateExistingConfig{
@@ -81,31 +22,6 @@ func registerSyncExternalUsers() {
 	}, func(ctx context.Context, _ *models.User, config Config) error {
 		realConfig := config.(*UpdateExistingConfig)
 		return models.SyncExternalUsers(ctx, realConfig.UpdateExisting)
-	})
-}
-
-func registerDeletedBranchesCleanup() {
-	RegisterTaskFatal("deleted_branches_cleanup", &OlderThanConfig{
-		BaseConfig: BaseConfig{
-			Enabled:    true,
-			RunAtStart: true,
-			Schedule:   "@every 24h",
-		},
-		OlderThan: 24 * time.Hour,
-	}, func(ctx context.Context, _ *models.User, config Config) error {
-		realConfig := config.(*OlderThanConfig)
-		models.RemoveOldDeletedBranches(ctx, realConfig.OlderThan)
-		return nil
-	})
-}
-
-func registerUpdateMigrationPosterID() {
-	RegisterTaskFatal("update_migration_poster_id", &BaseConfig{
-		Enabled:    true,
-		RunAtStart: true,
-		Schedule:   "@every 24h",
-	}, func(ctx context.Context, _ *models.User, _ Config) error {
-		return migrations.UpdateMigrationPosterID(ctx)
 	})
 }
 
@@ -126,14 +42,6 @@ func registerCleanupHookTaskTable() {
 }
 
 func initBasicTasks() {
-	registerUpdateMirrorTask()
-	registerRepoHealthCheck()
-	registerCheckRepoStats()
-	registerArchiveCleanup()
 	registerSyncExternalUsers()
-	registerDeletedBranchesCleanup()
-	if !setting.Repository.DisableMigrations {
-		registerUpdateMigrationPosterID()
-	}
 	registerCleanupHookTaskTable()
 }

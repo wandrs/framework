@@ -15,11 +15,7 @@ import (
 
 	"go.wandrs.dev/framework/models"
 	"go.wandrs.dev/framework/modules/auth/oauth2"
-	"go.wandrs.dev/framework/modules/git"
-	"go.wandrs.dev/framework/modules/graceful"
-	"go.wandrs.dev/framework/modules/log"
 	pwd "go.wandrs.dev/framework/modules/password"
-	repo_module "go.wandrs.dev/framework/modules/repository"
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/storage"
 
@@ -33,7 +29,6 @@ var (
 		Usage: "Command line interface to perform common administrative operations",
 		Subcommands: []*cli.Command{
 			subcmdUser,
-			subcmdRepoSyncReleases,
 			subcmdRegenerate,
 			subcmdAuth,
 			subcmdSendMail,
@@ -150,12 +145,6 @@ var (
 		Action: runDeleteUser,
 	}
 
-	subcmdRepoSyncReleases = &cli.Command{
-		Name:   "repo-sync-releases",
-		Usage:  "Synchronize repository releases with tags",
-		Action: runRepoSyncReleases,
-	}
-
 	subcmdRegenerate = &cli.Command{
 		Name:  "regenerate",
 		Usage: "Regenerate specific files",
@@ -163,18 +152,6 @@ var (
 			microcmdRegenHooks,
 			microcmdRegenKeys,
 		},
-	}
-
-	microcmdRegenHooks = &cli.Command{
-		Name:   "hooks",
-		Usage:  "Regenerate git-hooks",
-		Action: runRegenerateHooks,
-	}
-
-	microcmdRegenKeys = &cli.Command{
-		Name:   "keys",
-		Usage:  "Regenerate authorized_keys file",
-		Action: runRegenerateKeys,
 	}
 
 	subcmdAuth = &cli.Command{
@@ -520,86 +497,6 @@ func runDeleteUser(c *cli.Context) error {
 	}
 
 	return models.DeleteUser(user)
-}
-
-func runRepoSyncReleases(_ *cli.Context) error {
-	if err := initDB(); err != nil {
-		return err
-	}
-
-	log.Trace("Synchronizing repository releases (this may take a while)")
-	for page := 1; ; page++ {
-		repos, count, err := models.SearchRepositoryByName(&models.SearchRepoOptions{
-			ListOptions: models.ListOptions{
-				PageSize: models.RepositoryListDefaultPageSize,
-				Page:     page,
-			},
-			Private: true,
-		})
-		if err != nil {
-			return fmt.Errorf("SearchRepositoryByName: %v", err)
-		}
-		if len(repos) == 0 {
-			break
-		}
-		log.Trace("Processing next %d repos of %d", len(repos), count)
-		for _, repo := range repos {
-			log.Trace("Synchronizing repo %s with path %s", repo.FullName(), repo.RepoPath())
-			gitRepo, err := git.OpenRepository(repo.RepoPath())
-			if err != nil {
-				log.Warn("OpenRepository: %v", err)
-				continue
-			}
-
-			oldnum, err := getReleaseCount(repo.ID)
-			if err != nil {
-				log.Warn(" GetReleaseCountByRepoID: %v", err)
-			}
-			log.Trace(" currentNumReleases is %d, running SyncReleasesWithTags", oldnum)
-
-			if err = repo_module.SyncReleasesWithTags(repo, gitRepo); err != nil {
-				log.Warn(" SyncReleasesWithTags: %v", err)
-				gitRepo.Close()
-				continue
-			}
-
-			count, err = getReleaseCount(repo.ID)
-			if err != nil {
-				log.Warn(" GetReleaseCountByRepoID: %v", err)
-				gitRepo.Close()
-				continue
-			}
-
-			log.Trace(" repo %s releases synchronized to tags: from %d to %d",
-				repo.FullName(), oldnum, count)
-			gitRepo.Close()
-		}
-	}
-
-	return nil
-}
-
-func getReleaseCount(id int64) (int64, error) {
-	return models.GetReleaseCountByRepoID(
-		id,
-		models.FindReleasesOptions{
-			IncludeTags: true,
-		},
-	)
-}
-
-func runRegenerateHooks(_ *cli.Context) error {
-	if err := initDB(); err != nil {
-		return err
-	}
-	return repo_module.SyncRepositoryHooks(graceful.GetManager().ShutdownContext())
-}
-
-func runRegenerateKeys(_ *cli.Context) error {
-	if err := initDB(); err != nil {
-		return err
-	}
-	return models.RewriteAllPublicKeys()
 }
 
 func parseOAuth2Config(c *cli.Context) *models.OAuth2Config {

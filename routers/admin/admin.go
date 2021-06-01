@@ -19,7 +19,6 @@ import (
 	"go.wandrs.dev/framework/modules/base"
 	"go.wandrs.dev/framework/modules/context"
 	"go.wandrs.dev/framework/modules/cron"
-	"go.wandrs.dev/framework/modules/git"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/process"
 	"go.wandrs.dev/framework/modules/queue"
@@ -242,9 +241,6 @@ func Config(ctx *context.Context) {
 	ctx.Data["DisableRouterLog"] = setting.DisableRouterLog
 	ctx.Data["RunUser"] = setting.RunUser
 	ctx.Data["RunMode"] = strings.Title(setting.RunMode)
-	if version, err := git.LocalVersion(); err == nil {
-		ctx.Data["GitVersion"] = version.Original()
-	}
 	ctx.Data["RepoRootPath"] = setting.RepoRootPath
 	ctx.Data["CustomRootPath"] = setting.CustomPath
 	ctx.Data["StaticRootPath"] = setting.StaticRootPath
