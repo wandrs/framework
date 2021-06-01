@@ -64,8 +64,7 @@ type Context struct {
 	IsSigned    bool
 	IsBasicAuth bool
 
-	Repo *Repository
-	Org  *Organization
+	Org *Organization
 }
 
 // GetData returns the data
@@ -76,37 +75,6 @@ func (ctx *Context) GetData() map[string]interface{} {
 // IsUserSiteAdmin returns true if current user is a site admin
 func (ctx *Context) IsUserSiteAdmin() bool {
 	return ctx.IsSigned && ctx.User.IsAdmin
-}
-
-// IsUserRepoOwner returns true if current user owns current repo
-func (ctx *Context) IsUserRepoOwner() bool {
-	return ctx.Repo.IsOwner()
-}
-
-// IsUserRepoAdmin returns true if current user is admin in current repo
-func (ctx *Context) IsUserRepoAdmin() bool {
-	return ctx.Repo.IsAdmin()
-}
-
-// IsUserRepoWriter returns true if current user has write privilege in current repo
-func (ctx *Context) IsUserRepoWriter(unitTypes []models.UnitType) bool {
-	for _, unitType := range unitTypes {
-		if ctx.Repo.CanWrite(unitType) {
-			return true
-		}
-	}
-
-	return false
-}
-
-// IsUserRepoReaderSpecific returns true if current user can read current repo's specific part
-func (ctx *Context) IsUserRepoReaderSpecific(unitType models.UnitType) bool {
-	return ctx.Repo.CanRead(unitType)
-}
-
-// IsUserRepoReaderAny returns true if current user can read any part of current repo
-func (ctx *Context) IsUserRepoReaderAny() bool {
-	return ctx.Repo.HasAccess()
 }
 
 // RedirectToUser redirect to a differently-named user
@@ -246,7 +214,6 @@ func (ctx *Context) notFoundInternal(title string, err error) {
 		}
 	}
 
-	ctx.Data["IsRepo"] = ctx.Repo.Repository != nil
 	ctx.Data["Title"] = "Page Not Found"
 	ctx.HTML(http.StatusNotFound, base.TplName("status/404"))
 }
@@ -727,8 +694,6 @@ func Contexter() func(next http.Handler) http.Handler {
 
 			ctx.Data["EnableSwagger"] = setting.API.EnableSwagger
 			ctx.Data["EnableOpenIDSignIn"] = setting.Service.EnableOpenIDSignIn
-			ctx.Data["DisableMigrations"] = setting.Repository.DisableMigrations
-			ctx.Data["DisableStars"] = setting.Repository.DisableStars
 
 			ctx.Data["ManifestData"] = setting.ManifestData
 
