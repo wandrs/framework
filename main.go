@@ -17,9 +17,6 @@ import (
 
 	"go.wandrs.dev/framework/cmd"
 	"go.wandrs.dev/framework/modules/log"
-	_ "go.wandrs.dev/framework/modules/markup/csv"
-	_ "go.wandrs.dev/framework/modules/markup/markdown"
-	_ "go.wandrs.dev/framework/modules/markup/orgmode"
 	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/urfave/cli/v2"
@@ -58,22 +55,17 @@ arguments - which can alternatively be run by running the subcommand web.`
 	app.Version = Version + formatBuiltWith()
 	app.Commands = []*cli.Command{
 		cmd.CmdWeb,
-		cmd.CmdServ,
-		cmd.CmdHook,
 		cmd.CmdDump,
 		cmd.CmdCert,
 		cmd.CmdAdmin,
 		cmd.CmdGenerate,
 		cmd.CmdMigrate,
-		cmd.CmdKeys,
 		cmd.CmdConvert,
 		cmd.CmdDoctor,
 		cmd.CmdManager,
 		cmd.Cmdembedded,
 		cmd.CmdMigrateStorage,
 		cmd.CmdDocs,
-		cmd.CmdDumpRepository,
-		cmd.CmdRestoreRepository,
 	}
 	// Now adjust these commands to add our global configuration options
 

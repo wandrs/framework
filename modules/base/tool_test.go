@@ -337,8 +337,6 @@ func TestIsAudioFile(t *testing.T) {
 	assert.False(t, IsAudioFile([]byte("plain text")))
 }
 
-// TODO: Test EntryIcon
-
 func TestSetupGiteaRoot(t *testing.T) {
 	_ = os.Setenv("GITEA_ROOT", "test")
 	assert.EqualValues(t, "test", SetupGiteaRoot())

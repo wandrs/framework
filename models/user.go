@@ -6,7 +6,6 @@
 package models
 
 import (
-	"container/list"
 	"context"
 	"crypto/sha256"
 	"crypto/subtle"
@@ -20,7 +19,6 @@ import (
 	"unicode/utf8"
 
 	"go.wandrs.dev/framework/modules/base"
-	"go.wandrs.dev/framework/modules/git"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/storage"
@@ -340,15 +338,6 @@ func (u *User) GetFollowing(listOptions ListOptions) ([]*User, error) {
 
 	users := make([]*User, 0, 8)
 	return users, sess.Find(&users)
-}
-
-// NewGitSig generates and returns the signature of given user.
-func (u *User) NewGitSig() *git.Signature {
-	return &git.Signature{
-		Name:  u.GitName(),
-		Email: u.GetEmail(),
-		When:  time.Now(),
-	}
 }
 
 func hashPassword(passwd, salt, algo string) string {
@@ -1177,55 +1166,6 @@ func GetUserIDsByNames(names []string, ignoreNonExistent bool) ([]int64, error) 
 		ids = append(ids, u.ID)
 	}
 	return ids, nil
-}
-
-// UserCommit represents a commit with validation of user.
-type UserCommit struct {
-	User *User
-	*git.Commit
-}
-
-// ValidateCommitWithEmail check if author's e-mail of commit is corresponding to a user.
-func ValidateCommitWithEmail(c *git.Commit) *User {
-	if c.Author == nil {
-		return nil
-	}
-	u, err := GetUserByEmail(c.Author.Email)
-	if err != nil {
-		return nil
-	}
-	return u
-}
-
-// ValidateCommitsWithEmails checks if authors' e-mails of commits are corresponding to users.
-func ValidateCommitsWithEmails(oldCommits *list.List) *list.List {
-	var (
-		u          *User
-		emails     = map[string]*User{}
-		newCommits = list.New()
-		e          = oldCommits.Front()
-	)
-	for e != nil {
-		c := e.Value.(*git.Commit)
-
-		if c.Author != nil {
-			if v, ok := emails[c.Author.Email]; !ok {
-				u, _ = GetUserByEmail(c.Author.Email)
-				emails[c.Author.Email] = u
-			} else {
-				u = v
-			}
-		} else {
-			u = nil
-		}
-
-		newCommits.PushBack(UserCommit{
-			User:   u,
-			Commit: c,
-		})
-		e = e.Next()
-	}
-	return newCommits
 }
 
 // GetUserByEmail returns the user object by given e-mail if exists.

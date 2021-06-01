@@ -16,36 +16,17 @@ import (
 	"go.wandrs.dev/framework/modules/cache"
 	"go.wandrs.dev/framework/modules/cron"
 	"go.wandrs.dev/framework/modules/eventsource"
-	"go.wandrs.dev/framework/modules/git"
-	"go.wandrs.dev/framework/modules/highlight"
-	code_indexer "go.wandrs.dev/framework/modules/indexer/code"
-	issue_indexer "go.wandrs.dev/framework/modules/indexer/issues"
-	stats_indexer "go.wandrs.dev/framework/modules/indexer/stats"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/markup"
 	"go.wandrs.dev/framework/modules/markup/external"
-	repo_migrations "go.wandrs.dev/framework/modules/migrations"
-	"go.wandrs.dev/framework/modules/notification"
 	"go.wandrs.dev/framework/modules/setting"
-	"go.wandrs.dev/framework/modules/ssh"
 	"go.wandrs.dev/framework/modules/storage"
 	"go.wandrs.dev/framework/modules/svg"
-	"go.wandrs.dev/framework/modules/task"
 	"go.wandrs.dev/framework/modules/translation"
 	"go.wandrs.dev/framework/services/mailer"
-	mirror_service "go.wandrs.dev/framework/services/mirror"
-	pull_service "go.wandrs.dev/framework/services/pull"
-	"go.wandrs.dev/framework/services/repository"
-	"go.wandrs.dev/framework/services/webhook"
 )
 
 func checkRunMode() {
-	switch setting.RunMode {
-	case "dev", "test":
-		git.Debug = true
-	default:
-		git.Debug = false
-	}
 	log.Info("Run Mode: %s", strings.Title(setting.RunMode))
 }
 
@@ -55,12 +36,8 @@ func NewServices() {
 	if err := storage.Init(); err != nil {
 		log.Fatal("storage init failed: %v", err)
 	}
-	if err := repository.NewContext(); err != nil {
-		log.Fatal("repository init failed: %v", err)
-	}
 	mailer.NewContext()
 	_ = cache.NewContext()
-	notification.NewContext()
 }
 
 // In case of problems connecting to DB, retry connection. Eg, PGSQL in Docker Container on Synology
@@ -127,9 +104,6 @@ func GlobalInit(ctx context.Context) {
 		log.Fatal("Gitea is not installed")
 	}
 
-	if err := git.Init(ctx); err != nil {
-		log.Fatal("Git module init failed: %v", err)
-	}
 	setting.CheckLFSVersion()
 	log.Trace("AppPath: %s", setting.AppPath)
 	log.Trace("AppWorkPath: %s", setting.AppWorkPath)
@@ -142,7 +116,6 @@ func GlobalInit(ctx context.Context) {
 
 	NewServices()
 
-	highlight.NewContext()
 	external.RegisterRenderers()
 	markup.Init()
 
@@ -165,30 +138,8 @@ func GlobalInit(ctx context.Context) {
 
 	// Booting long running goroutines.
 	cron.NewContext()
-	issue_indexer.InitIssueIndexer(false)
-	code_indexer.Init()
-	if err := stats_indexer.Init(); err != nil {
-		log.Fatal("Failed to initialize repository stats indexer queue: %v", err)
-	}
-	mirror_service.InitSyncMirrors()
-	webhook.InitDeliverHooks()
-	if err := pull_service.Init(); err != nil {
-		log.Fatal("Failed to initialize test pull requests queue: %v", err)
-	}
-	if err := task.Init(); err != nil {
-		log.Fatal("Failed to initialize task scheduler: %v", err)
-	}
-	if err := repo_migrations.Init(); err != nil {
-		log.Fatal("Failed to initialize repository migrations: %v", err)
-	}
 	eventsource.GetManager().Init()
 
-	if setting.SSH.StartBuiltinServer {
-		ssh.Listen(setting.SSH.ListenHost, setting.SSH.ListenPort, setting.SSH.ServerCiphers, setting.SSH.ServerKeyExchanges, setting.SSH.ServerMACs)
-		log.Info("SSH server started on %s:%d. Cipher list (%v), key exchange algorithms (%v), MACs (%v)", setting.SSH.ListenHost, setting.SSH.ListenPort, setting.SSH.ServerCiphers, setting.SSH.ServerKeyExchanges, setting.SSH.ServerMACs)
-	} else {
-		ssh.Unused()
-	}
 	sso.Init()
 
 	svg.Init()

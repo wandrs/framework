@@ -23,8 +23,6 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"go.wandrs.dev/framework/modules/git"
-	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/dustin/go-humanize"
@@ -331,28 +329,6 @@ func IsVideoFile(data []byte) bool {
 // IsAudioFile detects if data is an video format
 func IsAudioFile(data []byte) bool {
 	return strings.Contains(DetectContentType(data), "audio/")
-}
-
-// EntryIcon returns the octicon class for displaying files/directories
-func EntryIcon(entry *git.TreeEntry) string {
-	switch {
-	case entry.IsLink():
-		te, err := entry.FollowLink()
-		if err != nil {
-			log.Debug(err.Error())
-			return "file-symlink-file"
-		}
-		if te.IsDir() {
-			return "file-submodule"
-		}
-		return "file-symlink-file"
-	case entry.IsDir():
-		return "file-directory"
-	case entry.IsSubModule():
-		return "file-submodule"
-	}
-
-	return "file"
 }
 
 // SetupGiteaRoot Sets GITEA_ROOT if it is not already set and returns the value

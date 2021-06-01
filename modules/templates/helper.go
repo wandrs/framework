@@ -29,13 +29,10 @@ import (
 	"go.wandrs.dev/framework/modules/emoji"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/markup"
-	"go.wandrs.dev/framework/modules/repository"
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/svg"
 	"go.wandrs.dev/framework/modules/timeutil"
 	"go.wandrs.dev/framework/modules/util"
-	"go.wandrs.dev/framework/services/gitdiff"
-	mirror_service "go.wandrs.dev/framework/services/mirror"
 
 	"github.com/editorconfig/editorconfig-core-go/v2"
 	jsoniter "github.com/json-iterator/go"
@@ -100,7 +97,6 @@ func NewFuncMap() []template.FuncMap {
 		"FileSize":      base.FileSize,
 		"PrettyNumber":  base.PrettyNumber,
 		"Subtract":      base.Subtract,
-		"EntryIcon":     base.EntryIcon,
 		"MigrationIcon": MigrationIcon,
 		"Add": func(a ...int) int {
 			sum := 0
@@ -116,7 +112,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return sum
 		},
-		"ActionIcon": ActionIcon,
 		"DateFmtLong": func(t time.Time) string {
 			return t.Format(time.RFC1123Z)
 		},
@@ -139,29 +134,22 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return str[start:end]
 		},
-		"EllipsisString":        base.EllipsisString,
-		"DiffTypeToStr":         DiffTypeToStr,
-		"DiffLineTypeToStr":     DiffLineTypeToStr,
-		"Sha1":                  Sha1,
-		"ShortSha":              base.ShortSha,
-		"MD5":                   base.EncodeMD5,
-		"ActionContent2Commits": ActionContent2Commits,
-		"PathEscape":            url.PathEscape,
+		"EllipsisString":    base.EllipsisString,
+		"DiffTypeToStr":     DiffTypeToStr,
+		"DiffLineTypeToStr": DiffLineTypeToStr,
+		"Sha1":              Sha1,
+		"ShortSha":          base.ShortSha,
+		"MD5":               base.EncodeMD5,
+		"PathEscape":        url.PathEscape,
 		"EscapePound": func(str string) string {
 			return strings.NewReplacer("%", "%25", "#", "%23", " ", "%20", "?", "%3F").Replace(str)
 		},
-		"PathEscapeSegments":             util.PathEscapeSegments,
-		"URLJoin":                        util.URLJoin,
-		"RenderCommitMessage":            RenderCommitMessage,
-		"RenderCommitMessageLink":        RenderCommitMessageLink,
-		"RenderCommitMessageLinkSubject": RenderCommitMessageLinkSubject,
-		"RenderCommitBody":               RenderCommitBody,
-		"RenderIssueTitle":               RenderIssueTitle,
-		"RenderEmoji":                    RenderEmoji,
-		"RenderEmojiPlain":               emoji.ReplaceAliases,
-		"ReactionToEmoji":                ReactionToEmoji,
-		"RenderNote":                     RenderNote,
-		"IsMultilineCommitMessage":       IsMultilineCommitMessage,
+		"PathEscapeSegments": util.PathEscapeSegments,
+		"URLJoin":            util.URLJoin,
+		"RenderEmoji":        RenderEmoji,
+		"RenderEmojiPlain":   emoji.ReplaceAliases,
+		"ReactionToEmoji":    ReactionToEmoji,
+		"RenderNote":         RenderNote,
 		"ThemeColorMetaTag": func() string {
 			return setting.UI.ThemeColorMetaTag
 		},
@@ -294,31 +282,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return float32(n) * 100 / float32(sum)
 		},
-		"CommentMustAsDiff": gitdiff.CommentMustAsDiff,
-		"MirrorAddress":     mirror_service.Address,
-		"MirrorFullAddress": mirror_service.AddressNoCredentials,
-		"MirrorUserName":    mirror_service.Username,
-		"MirrorPassword":    mirror_service.Password,
-		"CommitType": func(commit interface{}) string {
-			switch commit.(type) {
-			case models.SignCommitWithStatuses:
-				return "SignCommitWithStatuses"
-			case models.SignCommit:
-				return "SignCommit"
-			case models.UserCommit:
-				return "UserCommit"
-			default:
-				return ""
-			}
-		},
-		"NotificationSettings": func() map[string]interface{} {
-			return map[string]interface{}{
-				"MinTimeout":            int(setting.UI.Notification.MinTimeout / time.Millisecond),
-				"TimeoutStep":           int(setting.UI.Notification.TimeoutStep / time.Millisecond),
-				"MaxTimeout":            int(setting.UI.Notification.MaxTimeout / time.Millisecond),
-				"EventSourceUpdateTime": int(setting.UI.Notification.EventSourceUpdateTime / time.Millisecond),
-			}
-		},
 		"containGeneric": func(arr interface{}, v interface{}) bool {
 			arrV := reflect.ValueOf(arr)
 			if arrV.Kind() == reflect.String && reflect.ValueOf(v).Kind() == reflect.String {
@@ -352,7 +315,6 @@ func NewFuncMap() []template.FuncMap {
 		"avatarHTML":     AvatarHTML,
 		"avatarByAction": AvatarByAction,
 		"avatarByEmail":  AvatarByEmail,
-		"repoAvatar":     RepoAvatar,
 		"SortArrow": func(normSort, revSort, urlSort string, isDefault bool) template.HTML {
 			// if needed
 			if len(normSort) == 0 || len(urlSort) == 0 {
@@ -587,17 +549,6 @@ func AvatarByAction(action *models.Action, others ...interface{}) template.HTML 
 	return Avatar(action.ActUser, others...)
 }
 
-// RepoAvatar renders repo avatars. args: repo, size(int), class (string)
-func RepoAvatar(repo *models.Repository, others ...interface{}) template.HTML {
-	size, class := parseOthers(models.DefaultAvatarPixelSize, "ui avatar image", others...)
-
-	src := repo.RelAvatarLink()
-	if src != "" {
-		return AvatarHTML(src, size, class, repo.FullName())
-	}
-	return template.HTML("")
-}
-
 // AvatarByEmail renders avatars by email address. args: email, name, size (int), class (string)
 func AvatarByEmail(email string, name string, others ...interface{}) template.HTML {
 	size, class := parseOthers(models.DefaultAvatarPixelSize, "ui avatar image", others...)
@@ -783,72 +734,12 @@ func RenderNote(msg, urlPrefix string, metas map[string]string) template.HTML {
 	return template.HTML(string(fullMessage))
 }
 
-// IsMultilineCommitMessage checks to see if a commit message contains multiple lines.
-func IsMultilineCommitMessage(msg string) bool {
-	return strings.Count(strings.TrimSpace(msg), "\n") >= 1
-}
-
 // Actioner describes an action
 type Actioner interface {
 	GetOpType() models.ActionType
 	GetActUserName() string
-	GetRepoUserName() string
-	GetRepoName() string
-	GetRepoPath() string
-	GetRepoLink() string
-	GetBranch() string
 	GetContent() string
 	GetCreate() time.Time
-	GetIssueInfos() []string
-}
-
-// ActionIcon accepts an action operation type and returns an icon class name.
-func ActionIcon(opType models.ActionType) string {
-	switch opType {
-	case models.ActionCreateRepo, models.ActionTransferRepo:
-		return "repo"
-	case models.ActionCommitRepo, models.ActionPushTag, models.ActionDeleteTag, models.ActionDeleteBranch:
-		return "git-commit"
-	case models.ActionCreateIssue:
-		return "issue-opened"
-	case models.ActionCreatePullRequest:
-		return "git-pull-request"
-	case models.ActionCommentIssue, models.ActionCommentPull:
-		return "comment-discussion"
-	case models.ActionMergePullRequest:
-		return "git-merge"
-	case models.ActionCloseIssue, models.ActionClosePullRequest:
-		return "issue-closed"
-	case models.ActionReopenIssue, models.ActionReopenPullRequest:
-		return "issue-reopened"
-	case models.ActionMirrorSyncPush, models.ActionMirrorSyncCreate, models.ActionMirrorSyncDelete:
-		return "mirror"
-	case models.ActionApprovePullRequest:
-		return "check"
-	case models.ActionRejectPullRequest:
-		return "diff"
-	case models.ActionPublishRelease:
-		return "tag"
-	case models.ActionPullReviewDismissed:
-		return "x"
-	default:
-		return "question"
-	}
-}
-
-// ActionContent2Commits converts action content to push commits
-func ActionContent2Commits(act Actioner) *repository.PushCommits {
-	push := repository.NewPushCommits()
-
-	if act == nil || act.GetContent() == "" {
-		return push
-	}
-
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
-	if err := json.Unmarshal([]byte(act.GetContent()), push); err != nil {
-		log.Error("json.Unmarshal:\n%s\nERROR: %v", act.GetContent(), err)
-	}
-	return push
 }
 
 // DiffTypeToStr returns diff type name
