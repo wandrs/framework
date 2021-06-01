@@ -15,7 +15,6 @@ import (
 
 	"go.wandrs.dev/framework/models"
 	"go.wandrs.dev/framework/modules/auth/sso"
-	"go.wandrs.dev/framework/modules/git"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/web/middleware"
@@ -272,39 +271,6 @@ func APIContexter() func(http.Handler) http.Handler {
 	}
 }
 
-// ReferencesGitRepo injects the GitRepo into the Context
-func ReferencesGitRepo(allowEmpty bool) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			ctx := GetAPIContext(req)
-			// Empty repository does not have reference information.
-			if !allowEmpty && ctx.Repo.Repository.IsEmpty {
-				return
-			}
-
-			// For API calls.
-			if ctx.Repo.GitRepo == nil {
-				repoPath := models.RepoPath(ctx.Repo.Owner.Name, ctx.Repo.Repository.Name)
-				gitRepo, err := git.OpenRepository(repoPath)
-				if err != nil {
-					ctx.Error(http.StatusInternalServerError, "RepoRef Invalid repo "+repoPath, err)
-					return
-				}
-				ctx.Repo.GitRepo = gitRepo
-				// We opened it, we should close it
-				defer func() {
-					// If it's been set to nil then assume someone else has closed it.
-					if ctx.Repo.GitRepo != nil {
-						ctx.Repo.GitRepo.Close()
-					}
-				}()
-			}
-
-			next.ServeHTTP(w, req)
-		})
-	}
-}
-
 // NotFound handles 404s for APIContext
 // String will replace message, errors will be added to a slice
 func (ctx *APIContext) NotFound(objs ...interface{}) {
@@ -327,64 +293,5 @@ func (ctx *APIContext) NotFound(objs ...interface{}) {
 		"message":           message,
 		"documentation_url": setting.API.SwaggerURL,
 		"errors":            errors,
-	})
-}
-
-// RepoRefForAPI handles repository reference names when the ref name is not explicitly given
-func RepoRefForAPI(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		ctx := GetAPIContext(req)
-		// Empty repository does not have reference information.
-		if ctx.Repo.Repository.IsEmpty {
-			return
-		}
-
-		var err error
-
-		if ctx.Repo.GitRepo == nil {
-			repoPath := models.RepoPath(ctx.Repo.Owner.Name, ctx.Repo.Repository.Name)
-			ctx.Repo.GitRepo, err = git.OpenRepository(repoPath)
-			if err != nil {
-				ctx.InternalServerError(err)
-				return
-			}
-			// We opened it, we should close it
-			defer func() {
-				// If it's been set to nil then assume someone else has closed it.
-				if ctx.Repo.GitRepo != nil {
-					ctx.Repo.GitRepo.Close()
-				}
-			}()
-		}
-
-		refName := getRefName(ctx.Context, RepoRefAny)
-
-		if ctx.Repo.GitRepo.IsBranchExist(refName) {
-			ctx.Repo.Commit, err = ctx.Repo.GitRepo.GetBranchCommit(refName)
-			if err != nil {
-				ctx.InternalServerError(err)
-				return
-			}
-			ctx.Repo.CommitID = ctx.Repo.Commit.ID.String()
-		} else if ctx.Repo.GitRepo.IsTagExist(refName) {
-			ctx.Repo.Commit, err = ctx.Repo.GitRepo.GetTagCommit(refName)
-			if err != nil {
-				ctx.InternalServerError(err)
-				return
-			}
-			ctx.Repo.CommitID = ctx.Repo.Commit.ID.String()
-		} else if len(refName) == 40 {
-			ctx.Repo.CommitID = refName
-			ctx.Repo.Commit, err = ctx.Repo.GitRepo.GetCommit(refName)
-			if err != nil {
-				ctx.NotFound("GetCommit", err)
-				return
-			}
-		} else {
-			ctx.NotFound(fmt.Errorf("not exist: '%s'", ctx.Params("*")))
-			return
-		}
-
-		next.ServeHTTP(w, req)
 	})
 }
