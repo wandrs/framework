@@ -72,7 +72,6 @@ func checkConfigurationFiles(logger log.Logger, autofix bool) error {
 
 	configurationFiles := []configurationFile{
 		{"Configuration File Path", setting.CustomConf, false, true, false},
-		{"Repository Root Path", setting.RepoRootPath, true, true, true},
 		{"Data Root Path", setting.AppDataPath, true, true, true},
 		{"Custom File Root Path", setting.CustomPath, true, false, false},
 		{"Work directory", setting.AppWorkPath, true, true, false},

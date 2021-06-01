@@ -17,7 +17,6 @@ import (
 	"go.wandrs.dev/framework/modules/auth/oauth2"
 	"go.wandrs.dev/framework/modules/base"
 	"go.wandrs.dev/framework/modules/context"
-	"go.wandrs.dev/framework/modules/eventsource"
 	"go.wandrs.dev/framework/modules/hcaptcha"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/password"
@@ -1090,12 +1089,13 @@ func HandleSignOut(ctx *context.Context) {
 
 // SignOut sign out from login status
 func SignOut(ctx *context.Context) {
-	if ctx.User != nil {
-		eventsource.GetManager().SendMessageBlocking(ctx.User.ID, &eventsource.Event{
-			Name: "logout",
-			Data: ctx.Session.ID(),
-		})
-	}
+	// TODO(tamal): removed evetnsource, should be replaced by nats
+	// if ctx.User != nil {
+	// 	eventsource.GetManager().SendMessageBlocking(ctx.User.ID, &eventsource.Event{
+	// 		Name: "logout",
+	// 		Data: ctx.Session.ID(),
+	// 	})
+	// }
 	HandleSignOut(ctx)
 	ctx.Redirect(setting.AppSubURL + "/")
 }

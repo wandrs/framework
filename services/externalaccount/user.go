@@ -5,10 +5,7 @@
 package externalaccount
 
 import (
-	"strings"
-
 	"go.wandrs.dev/framework/models"
-	"go.wandrs.dev/framework/modules/structs"
 
 	"github.com/markbates/goth"
 )
@@ -40,23 +37,5 @@ func LinkAccountToUser(user *models.User, gothUser goth.User) error {
 		ExpiresAt:         gothUser.ExpiresAt,
 	}
 
-	if err := models.LinkExternalToUser(user, externalLoginUser); err != nil {
-		return err
-	}
-
-	externalID := externalLoginUser.ExternalID
-
-	var tp structs.GitServiceType
-	for _, s := range structs.SupportedFullGitService {
-		if strings.EqualFold(s.Name(), gothUser.Provider) {
-			tp = s
-			break
-		}
-	}
-
-	if tp.Name() != "" {
-		return models.UpdateMigrationsByType(tp, externalID, user.ID)
-	}
-
-	return nil
+	return models.LinkExternalToUser(user, externalLoginUser)
 }

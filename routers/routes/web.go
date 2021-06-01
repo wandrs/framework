@@ -31,7 +31,6 @@ import (
 	apiv1 "go.wandrs.dev/framework/routers/api/v1"
 	"go.wandrs.dev/framework/routers/api/v1/misc"
 	"go.wandrs.dev/framework/routers/dev"
-	"go.wandrs.dev/framework/routers/events"
 	"go.wandrs.dev/framework/routers/org"
 	"go.wandrs.dev/framework/routers/private"
 	"go.wandrs.dev/framework/routers/user"
@@ -332,8 +331,6 @@ func RegisterRoutes(m *web.Route) {
 
 		})
 	}, reqSignOut)
-
-	m.Any("/user/events", events.Events)
 
 	m.Group("/login/oauth", func() {
 		m.Get("/authorize", bindIgnErr(forms.AuthorizationForm{}), user.AuthorizeOAuth)

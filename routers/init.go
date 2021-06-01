@@ -15,7 +15,6 @@ import (
 	"go.wandrs.dev/framework/modules/auth/sso"
 	"go.wandrs.dev/framework/modules/cache"
 	"go.wandrs.dev/framework/modules/cron"
-	"go.wandrs.dev/framework/modules/eventsource"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/markup"
 	"go.wandrs.dev/framework/modules/markup/external"
@@ -138,7 +137,6 @@ func GlobalInit(ctx context.Context) {
 
 	// Booting long running goroutines.
 	cron.NewContext()
-	eventsource.GetManager().Init()
 
 	sso.Init()
 
