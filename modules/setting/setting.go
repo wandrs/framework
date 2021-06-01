@@ -202,13 +202,6 @@ var (
 		SearchRepoDescription bool
 		UseServiceWorker      bool
 
-		Notification struct {
-			MinTimeout            time.Duration
-			TimeoutStep           time.Duration
-			MaxTimeout            time.Duration
-			EventSourceUpdateTime time.Duration
-		} `ini:"ui.notification"`
-
 		SVG struct {
 			Enabled bool `ini:"ENABLE_RENDER"`
 		} `ini:"ui.svg"`
@@ -246,17 +239,6 @@ var (
 		DefaultTheme:        `gitea`,
 		Themes:              []string{`gitea`, `arc-green`},
 		Reactions:           []string{`+1`, `-1`, `laugh`, `hooray`, `confused`, `heart`, `rocket`, `eyes`},
-		Notification: struct {
-			MinTimeout            time.Duration
-			TimeoutStep           time.Duration
-			MaxTimeout            time.Duration
-			EventSourceUpdateTime time.Duration
-		}{
-			MinTimeout:            10 * time.Second,
-			TimeoutStep:           10 * time.Second,
-			MaxTimeout:            60 * time.Second,
-			EventSourceUpdateTime: 10 * time.Second,
-		},
 		SVG: struct {
 			Enabled bool `ini:"ENABLE_RENDER"`
 		}{

@@ -4,12 +4,6 @@
 
 package structs
 
-// SearchResults results of a successful search
-type SearchResults struct {
-	OK   bool          `json:"ok"`
-	Data []*Repository `json:"data"`
-}
-
 // SearchError error of a failed search
 type SearchError struct {
 	OK    bool   `json:"ok"`

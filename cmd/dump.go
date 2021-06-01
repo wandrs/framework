@@ -220,34 +220,6 @@ func runDump(ctx *cli.Context) error {
 	}
 	defer w.Close()
 
-	if ctx.IsSet("skip-repository") && ctx.Bool("skip-repository") {
-		log.Info("Skip dumping local repositories")
-	} else {
-		log.Info("Dumping local repositories... %s", setting.RepoRootPath)
-		if err := addRecursiveExclude(w, "repos", setting.RepoRootPath, []string{absFileName}, verbose); err != nil {
-			fatal("Failed to include repositories: %v", err)
-		}
-
-		if ctx.IsSet("skip-lfs-data") && ctx.Bool("skip-lfs-data") {
-			log.Info("Skip dumping LFS data")
-		} else if err := storage.LFS.IterateObjects(func(objPath string, object storage.Object) error {
-			info, err := object.Stat()
-			if err != nil {
-				return err
-			}
-
-			return w.Write(archiver.File{
-				FileInfo: archiver.FileInfo{
-					FileInfo:   info,
-					CustomName: path.Join("data", "lfs", objPath),
-				},
-				ReadCloser: object,
-			})
-		}); err != nil {
-			fatal("Failed to dump LFS objects: %v", err)
-		}
-	}
-
 	tmpDir := ctx.String("tempdir")
 	if _, err := os.Stat(tmpDir); os.IsNotExist(err) {
 		fatal("Path does not exist: %s", tmpDir)
@@ -319,8 +291,6 @@ func runDump(ctx *cli.Context) error {
 			excludes = append(excludes, opts.ProviderConfig)
 		}
 
-		excludes = append(excludes, setting.RepoRootPath)
-		excludes = append(excludes, setting.LFS.Path)
 		excludes = append(excludes, setting.Attachment.Path)
 		excludes = append(excludes, setting.LogRootPath)
 		excludes = append(excludes, absFileName)

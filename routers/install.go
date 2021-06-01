@@ -112,8 +112,6 @@ func Install(ctx *context.Context) {
 
 	// Application general settings
 	form.AppName = setting.AppName
-	form.RepoRootPath = setting.RepoRootPath
-	form.LFSRootPath = setting.LFS.Path
 
 	// Note(unknown): it's hard for Windows users change a running user,
 	// 	so just use current one if config says default.
@@ -217,24 +215,6 @@ func InstallPost(ctx *context.Context) {
 		return
 	}
 
-	// Test repository root path.
-	form.RepoRootPath = strings.ReplaceAll(form.RepoRootPath, "\\", "/")
-	if err = os.MkdirAll(form.RepoRootPath, os.ModePerm); err != nil {
-		ctx.Data["Err_RepoRootPath"] = true
-		ctx.RenderWithErr(ctx.Tr("install.invalid_repo_path", err), tplInstall, &form)
-		return
-	}
-
-	// Test LFS root path if not empty, empty meaning disable LFS
-	if form.LFSRootPath != "" {
-		form.LFSRootPath = strings.ReplaceAll(form.LFSRootPath, "\\", "/")
-		if err := os.MkdirAll(form.LFSRootPath, os.ModePerm); err != nil {
-			ctx.Data["Err_LFSRootPath"] = true
-			ctx.RenderWithErr(ctx.Tr("install.invalid_lfs_path", err), tplInstall, &form)
-			return
-		}
-	}
-
 	// Test log root path.
 	form.LogRootPath = strings.ReplaceAll(form.LogRootPath, "\\", "/")
 	if err = os.MkdirAll(form.LogRootPath, os.ModePerm); err != nil {
@@ -324,7 +304,6 @@ func InstallPost(ctx *context.Context) {
 	cfg.Section("database").Key("LOG_SQL").SetValue("false") // LOG_SQL is rarely helpful
 
 	cfg.Section("").Key("APP_NAME").SetValue(form.AppName)
-	cfg.Section("repository").Key("ROOT").SetValue(form.RepoRootPath)
 	cfg.Section("").Key("RUN_USER").SetValue(form.RunUser)
 	cfg.Section("server").Key("SSH_DOMAIN").SetValue(form.Domain)
 	cfg.Section("server").Key("DOMAIN").SetValue(form.Domain)
