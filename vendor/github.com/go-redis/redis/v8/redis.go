@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sync/atomic"
 	"time"
 
 	"github.com/go-redis/redis/v8/internal"
 	"github.com/go-redis/redis/v8/internal/pool"
 	"github.com/go-redis/redis/v8/internal/proto"
-	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/label"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // Nil reply returned by Redis when key does not exist.
@@ -130,7 +130,20 @@ func (hs hooks) processTxPipeline(
 }
 
 func (hs hooks) withContext(ctx context.Context, fn func() error) error {
-	return fn()
+	done := ctx.Done()
+	if done == nil {
+		return fn()
+	}
+
+	errc := make(chan error, 1)
+	go func() { errc <- fn() }()
+
+	select {
+	case <-done:
+		return ctx.Err()
+	case err := <-errc:
+		return err
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -213,7 +226,10 @@ func (c *baseClient) _getConn(ctx context.Context) (*pool.Conn, error) {
 		return cn, nil
 	}
 
-	if err := c.initConn(ctx, cn); err != nil {
+	err = internal.WithSpan(ctx, "redis.init_conn", func(ctx context.Context, span trace.Span) error {
+		return c.initConn(ctx, cn)
+	})
+	if err != nil {
 		c.connPool.Remove(ctx, cn, err)
 		if err := errors.Unwrap(err); err != nil {
 			return nil, err
@@ -236,9 +252,6 @@ func (c *baseClient) initConn(ctx context.Context, cn *pool.Conn) error {
 		c.opt.OnConnect == nil {
 		return nil
 	}
-
-	ctx, span := internal.StartSpan(ctx, "redis.init_conn")
-	defer span.End()
 
 	connPool := pool.NewSingleConnPool(c.connPool, cn)
 	conn := newConn(ctx, c.opt, connPool)
@@ -287,45 +300,25 @@ func (c *baseClient) releaseConn(ctx context.Context, cn *pool.Conn, err error) 
 func (c *baseClient) withConn(
 	ctx context.Context, fn func(context.Context, *pool.Conn) error,
 ) error {
-	ctx, span := internal.StartSpan(ctx, "redis.with_conn")
-	defer span.End()
-
-	cn, err := c.getConn(ctx)
-	if err != nil {
-		return err
-	}
-
-	if span.IsRecording() {
-		if remoteAddr := cn.RemoteAddr(); remoteAddr != nil {
-			span.SetAttributes(attribute.String("net.peer.ip", remoteAddr.String()))
+	return internal.WithSpan(ctx, "redis.with_conn", func(ctx context.Context, span trace.Span) error {
+		cn, err := c.getConn(ctx)
+		if err != nil {
+			return err
 		}
-	}
 
-	defer func() {
-		c.releaseConn(ctx, cn, err)
-	}()
+		if span.IsRecording() {
+			if remoteAddr := cn.RemoteAddr(); remoteAddr != nil {
+				span.SetAttributes(label.String("net.peer.ip", remoteAddr.String()))
+			}
+		}
 
-	done := ctx.Done() //nolint:ifshort
+		defer func() {
+			c.releaseConn(ctx, cn, err)
+		}()
 
-	if done == nil {
 		err = fn(ctx, cn)
 		return err
-	}
-
-	errc := make(chan error, 1)
-	go func() { errc <- fn(ctx, cn) }()
-
-	select {
-	case <-done:
-		_ = cn.Close()
-		// Wait for the goroutine to finish and send something.
-		<-errc
-
-		err = ctx.Err()
-		return err
-	case err = <-errc:
-		return err
-	}
+	})
 }
 
 func (c *baseClient) process(ctx context.Context, cmd Cmder) error {
@@ -333,48 +326,43 @@ func (c *baseClient) process(ctx context.Context, cmd Cmder) error {
 	for attempt := 0; attempt <= c.opt.MaxRetries; attempt++ {
 		attempt := attempt
 
-		retry, err := c._process(ctx, cmd, attempt)
+		var retry bool
+		err := internal.WithSpan(ctx, "redis.process", func(ctx context.Context, span trace.Span) error {
+			if attempt > 0 {
+				if err := internal.Sleep(ctx, c.retryBackoff(attempt)); err != nil {
+					return err
+				}
+			}
+
+			retryTimeout := true
+			err := c.withConn(ctx, func(ctx context.Context, cn *pool.Conn) error {
+				err := cn.WithWriter(ctx, c.opt.WriteTimeout, func(wr *proto.Writer) error {
+					return writeCmd(wr, cmd)
+				})
+				if err != nil {
+					return err
+				}
+
+				err = cn.WithReader(ctx, c.cmdTimeout(cmd), cmd.readReply)
+				if err != nil {
+					retryTimeout = cmd.readTimeout() == nil
+					return err
+				}
+
+				return nil
+			})
+			if err == nil {
+				return nil
+			}
+			retry = shouldRetry(err, retryTimeout)
+			return err
+		})
 		if err == nil || !retry {
 			return err
 		}
-
 		lastErr = err
 	}
 	return lastErr
-}
-
-func (c *baseClient) _process(ctx context.Context, cmd Cmder, attempt int) (bool, error) {
-	if attempt > 0 {
-		if err := internal.Sleep(ctx, c.retryBackoff(attempt)); err != nil {
-			return false, err
-		}
-	}
-
-	retryTimeout := uint32(1)
-	err := c.withConn(ctx, func(ctx context.Context, cn *pool.Conn) error {
-		err := cn.WithWriter(ctx, c.opt.WriteTimeout, func(wr *proto.Writer) error {
-			return writeCmd(wr, cmd)
-		})
-		if err != nil {
-			return err
-		}
-
-		err = cn.WithReader(ctx, c.cmdTimeout(cmd), cmd.readReply)
-		if err != nil {
-			if cmd.readTimeout() == nil {
-				atomic.StoreUint32(&retryTimeout, 1)
-			}
-			return err
-		}
-
-		return nil
-	})
-	if err == nil {
-		return false, nil
-	}
-
-	retry := shouldRetry(err, atomic.LoadUint32(&retryTimeout) == 1)
-	return retry, err
 }
 
 func (c *baseClient) retryBackoff(attempt int) time.Duration {

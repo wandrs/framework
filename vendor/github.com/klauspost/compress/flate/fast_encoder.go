@@ -6,7 +6,6 @@
 package flate
 
 import (
-	"encoding/binary"
 	"fmt"
 	"math/bits"
 )
@@ -66,15 +65,26 @@ func load32(b []byte, i int) uint32 {
 }
 
 func load64(b []byte, i int) uint64 {
-	return binary.LittleEndian.Uint64(b[i:])
+	// Help the compiler eliminate bounds checks on the read so it can be done in a single read.
+	b = b[i:]
+	b = b[:8]
+	return uint64(b[0]) | uint64(b[1])<<8 | uint64(b[2])<<16 | uint64(b[3])<<24 |
+		uint64(b[4])<<32 | uint64(b[5])<<40 | uint64(b[6])<<48 | uint64(b[7])<<56
 }
 
 func load3232(b []byte, i int32) uint32 {
-	return binary.LittleEndian.Uint32(b[i:])
+	// Help the compiler eliminate bounds checks on the read so it can be done in a single read.
+	b = b[i:]
+	b = b[:4]
+	return uint32(b[0]) | uint32(b[1])<<8 | uint32(b[2])<<16 | uint32(b[3])<<24
 }
 
 func load6432(b []byte, i int32) uint64 {
-	return binary.LittleEndian.Uint64(b[i:])
+	// Help the compiler eliminate bounds checks on the read so it can be done in a single read.
+	b = b[i:]
+	b = b[:8]
+	return uint64(b[0]) | uint64(b[1])<<8 | uint64(b[2])<<16 | uint64(b[3])<<24 |
+		uint64(b[4])<<32 | uint64(b[5])<<40 | uint64(b[6])<<48 | uint64(b[7])<<56
 }
 
 func hash(u uint32) uint32 {
@@ -117,7 +127,7 @@ func (e *fastGen) addBlock(src []byte) int32 {
 // hash4 returns the hash of u to fit in a hash table with h bits.
 // Preferably h should be a constant and should always be <32.
 func hash4u(u uint32, h uint8) uint32 {
-	return (u * prime4bytes) >> ((32 - h) & reg8SizeMask32)
+	return (u * prime4bytes) >> ((32 - h) & 31)
 }
 
 type tableEntryPrev struct {
@@ -128,25 +138,25 @@ type tableEntryPrev struct {
 // hash4x64 returns the hash of the lowest 4 bytes of u to fit in a hash table with h bits.
 // Preferably h should be a constant and should always be <32.
 func hash4x64(u uint64, h uint8) uint32 {
-	return (uint32(u) * prime4bytes) >> ((32 - h) & reg8SizeMask32)
+	return (uint32(u) * prime4bytes) >> ((32 - h) & 31)
 }
 
 // hash7 returns the hash of the lowest 7 bytes of u to fit in a hash table with h bits.
 // Preferably h should be a constant and should always be <64.
 func hash7(u uint64, h uint8) uint32 {
-	return uint32(((u << (64 - 56)) * prime7bytes) >> ((64 - h) & reg8SizeMask64))
+	return uint32(((u << (64 - 56)) * prime7bytes) >> ((64 - h) & 63))
 }
 
 // hash8 returns the hash of u to fit in a hash table with h bits.
 // Preferably h should be a constant and should always be <64.
 func hash8(u uint64, h uint8) uint32 {
-	return uint32((u * prime8bytes) >> ((64 - h) & reg8SizeMask64))
+	return uint32((u * prime8bytes) >> ((64 - h) & 63))
 }
 
 // hash6 returns the hash of the lowest 6 bytes of u to fit in a hash table with h bits.
 // Preferably h should be a constant and should always be <64.
 func hash6(u uint64, h uint8) uint32 {
-	return uint32(((u << (64 - 48)) * prime6bytes) >> ((64 - h) & reg8SizeMask64))
+	return uint32(((u << (64 - 48)) * prime6bytes) >> ((64 - h) & 63))
 }
 
 // matchlen will return the match length between offsets and t in src.
@@ -215,9 +225,9 @@ func (e *fastGen) Reset() {
 func matchLen(a, b []byte) int {
 	b = b[:len(a)]
 	var checked int
-	if len(a) >= 4 {
+	if len(a) > 4 {
 		// Try 4 bytes first
-		if diff := binary.LittleEndian.Uint32(a) ^ binary.LittleEndian.Uint32(b); diff != 0 {
+		if diff := load32(a, 0) ^ load32(b, 0); diff != 0 {
 			return bits.TrailingZeros32(diff) >> 3
 		}
 		// Switch to 8 byte matching.
@@ -226,7 +236,7 @@ func matchLen(a, b []byte) int {
 		b = b[4:]
 		for len(a) >= 8 {
 			b = b[:len(a)]
-			if diff := binary.LittleEndian.Uint64(a) ^ binary.LittleEndian.Uint64(b); diff != 0 {
+			if diff := load64(a, 0) ^ load64(b, 0); diff != 0 {
 				return checked + (bits.TrailingZeros64(diff) >> 3)
 			}
 			checked += 8
@@ -237,7 +247,7 @@ func matchLen(a, b []byte) int {
 	b = b[:len(a)]
 	for i := range a {
 		if a[i] != b[i] {
-			return i + checked
+			return int(i) + checked
 		}
 	}
 	return len(a) + checked

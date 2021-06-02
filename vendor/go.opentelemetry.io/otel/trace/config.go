@@ -17,7 +17,7 @@ package trace
 import (
 	"time"
 
-	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/label"
 )
 
 // TracerConfig is a group of options for a Tracer.
@@ -39,21 +39,18 @@ func NewTracerConfig(options ...TracerOption) *TracerConfig {
 // TracerOption applies an option to a TracerConfig.
 type TracerOption interface {
 	ApplyTracer(*TracerConfig)
-
-	// A private method to prevent users implementing the
-	// interface and so future additions to it will not
-	// violate compatibility.
-	private()
 }
 
 // SpanConfig is a group of options for a Span.
 type SpanConfig struct {
 	// Attributes describe the associated qualities of a Span.
-	Attributes []attribute.KeyValue
+	Attributes []label.KeyValue
 	// Timestamp is a time in a Span life-cycle.
 	Timestamp time.Time
 	// Links are the associations a Span has with other Spans.
 	Links []Link
+	// Record is the recording state of a Span.
+	Record bool
 	// NewRoot identifies a Span as the root Span for a new trace. This is
 	// commonly used when an existing trace crosses trust boundaries and the
 	// remote parent span context should be ignored for security.
@@ -77,11 +74,6 @@ func NewSpanConfig(options ...SpanOption) *SpanConfig {
 // SpanOption applies an option to a SpanConfig.
 type SpanOption interface {
 	ApplySpan(*SpanConfig)
-
-	// A private method to prevent users implementing the
-	// interface and so future additions to it will not
-	// violate compatibility.
-	private()
 }
 
 // NewEventConfig applies all the EventOptions to a returned SpanConfig. If no
@@ -102,11 +94,6 @@ func NewEventConfig(options ...EventOption) *SpanConfig {
 // EventOption applies span event options to a SpanConfig.
 type EventOption interface {
 	ApplyEvent(*SpanConfig)
-
-	// A private method to prevent users implementing the
-	// interface and so future additions to it will not
-	// violate compatibility.
-	private()
 }
 
 // LifeCycleOption applies span life-cycle options to a SpanConfig. These
@@ -117,13 +104,12 @@ type LifeCycleOption interface {
 	EventOption
 }
 
-type attributeSpanOption []attribute.KeyValue
+type attributeSpanOption []label.KeyValue
 
 func (o attributeSpanOption) ApplySpan(c *SpanConfig)  { o.apply(c) }
 func (o attributeSpanOption) ApplyEvent(c *SpanConfig) { o.apply(c) }
-func (attributeSpanOption) private()                   {}
 func (o attributeSpanOption) apply(c *SpanConfig) {
-	c.Attributes = append(c.Attributes, []attribute.KeyValue(o)...)
+	c.Attributes = append(c.Attributes, []label.KeyValue(o)...)
 }
 
 // WithAttributes adds the attributes related to a span life-cycle event.
@@ -135,7 +121,7 @@ func (o attributeSpanOption) apply(c *SpanConfig) {
 // If multiple of these options are passed the attributes of each successive
 // option will extend the attributes instead of overwriting. There is no
 // guarantee of uniqueness in the resulting attributes.
-func WithAttributes(attributes ...attribute.KeyValue) LifeCycleOption {
+func WithAttributes(attributes ...label.KeyValue) LifeCycleOption {
 	return attributeSpanOption(attributes)
 }
 
@@ -143,7 +129,6 @@ type timestampSpanOption time.Time
 
 func (o timestampSpanOption) ApplySpan(c *SpanConfig)  { o.apply(c) }
 func (o timestampSpanOption) ApplyEvent(c *SpanConfig) { o.apply(c) }
-func (timestampSpanOption) private()                   {}
 func (o timestampSpanOption) apply(c *SpanConfig)      { c.Timestamp = time.Time(o) }
 
 // WithTimestamp sets the time of a Span life-cycle moment (e.g. started,
@@ -155,7 +140,6 @@ func WithTimestamp(t time.Time) LifeCycleOption {
 type linksSpanOption []Link
 
 func (o linksSpanOption) ApplySpan(c *SpanConfig) { c.Links = append(c.Links, []Link(o)...) }
-func (linksSpanOption) private()                  {}
 
 // WithLinks adds links to a Span. The links are added to the existing Span
 // links, i.e. this does not overwrite.
@@ -163,10 +147,20 @@ func WithLinks(links ...Link) SpanOption {
 	return linksSpanOption(links)
 }
 
+type recordSpanOption bool
+
+func (o recordSpanOption) ApplySpan(c *SpanConfig) { c.Record = bool(o) }
+
+// WithRecord specifies that the span should be recorded. It is important to
+// note that implementations may override this option, i.e. if the span is a
+// child of an un-sampled trace.
+func WithRecord() SpanOption {
+	return recordSpanOption(true)
+}
+
 type newRootSpanOption bool
 
 func (o newRootSpanOption) ApplySpan(c *SpanConfig) { c.NewRoot = bool(o) }
-func (newRootSpanOption) private()                  {}
 
 // WithNewRoot specifies that the Span should be treated as a root Span. Any
 // existing parent span context will be ignored when defining the Span's trace
@@ -178,7 +172,6 @@ func WithNewRoot() SpanOption {
 type spanKindSpanOption SpanKind
 
 func (o spanKindSpanOption) ApplySpan(c *SpanConfig) { c.SpanKind = SpanKind(o) }
-func (o spanKindSpanOption) private()                {}
 
 // WithSpanKind sets the SpanKind of a Span.
 func WithSpanKind(kind SpanKind) SpanOption {
@@ -201,5 +194,3 @@ type instrumentationVersionOption string
 func (i instrumentationVersionOption) ApplyTracer(config *TracerConfig) {
 	config.InstrumentationVersion = string(i)
 }
-
-func (instrumentationVersionOption) private() {}

@@ -5,7 +5,6 @@
 package flate
 
 import (
-	"encoding/binary"
 	"io"
 )
 
@@ -207,7 +206,7 @@ func (w *huffmanBitWriter) write(b []byte) {
 }
 
 func (w *huffmanBitWriter) writeBits(b int32, nb uint16) {
-	w.bits |= uint64(b) << w.nbits
+	w.bits |= uint64(b) << (w.nbits & 63)
 	w.nbits += nb
 	if w.nbits >= 48 {
 		w.writeOutBits()
@@ -421,11 +420,13 @@ func (w *huffmanBitWriter) writeOutBits() {
 	w.bits >>= 48
 	w.nbits -= 48
 	n := w.nbytes
-
-	// We over-write, but faster...
-	binary.LittleEndian.PutUint64(w.bytes[n:], bits)
+	w.bytes[n] = byte(bits)
+	w.bytes[n+1] = byte(bits >> 8)
+	w.bytes[n+2] = byte(bits >> 16)
+	w.bytes[n+3] = byte(bits >> 24)
+	w.bytes[n+4] = byte(bits >> 32)
+	w.bytes[n+5] = byte(bits >> 40)
 	n += 6
-
 	if n >= bufferFlushSize {
 		if w.err != nil {
 			n = 0
@@ -434,7 +435,6 @@ func (w *huffmanBitWriter) writeOutBits() {
 		w.write(w.bytes[:n])
 		n = 0
 	}
-
 	w.nbytes = n
 }
 
@@ -759,7 +759,7 @@ func (w *huffmanBitWriter) writeTokens(tokens []token, leCodes, oeCodes []hcode)
 		} else {
 			// inlined
 			c := lengths[lengthCode&31]
-			w.bits |= uint64(c.code) << w.nbits
+			w.bits |= uint64(c.code) << (w.nbits & 63)
 			w.nbits += c.len
 			if w.nbits >= 48 {
 				w.writeOutBits()
@@ -779,7 +779,7 @@ func (w *huffmanBitWriter) writeTokens(tokens []token, leCodes, oeCodes []hcode)
 		} else {
 			// inlined
 			c := offs[offsetCode&31]
-			w.bits |= uint64(c.code) << w.nbits
+			w.bits |= uint64(c.code) << (w.nbits & 63)
 			w.nbits += c.len
 			if w.nbits >= 48 {
 				w.writeOutBits()
@@ -830,8 +830,8 @@ func (w *huffmanBitWriter) writeBlockHuff(eof bool, input []byte, sync bool) {
 	// Assume header is around 70 bytes:
 	// https://stackoverflow.com/a/25454430
 	const guessHeaderSizeBits = 70 * 8
-	estBits := histogramSize(input, w.literalFreq[:], !eof && !sync)
-	estBits += w.lastHeader + len(input)/32
+	estBits, estExtra := histogramSize(input, w.literalFreq[:], !eof && !sync)
+	estBits += w.lastHeader + 15
 	if w.lastHeader == 0 {
 		estBits += guessHeaderSizeBits
 	}
@@ -845,9 +845,9 @@ func (w *huffmanBitWriter) writeBlockHuff(eof bool, input []byte, sync bool) {
 		return
 	}
 
-	reuseSize := 0
 	if w.lastHeader > 0 {
-		reuseSize = w.literalEncoding.bitLength(w.literalFreq[:256])
+		reuseSize := w.literalEncoding.bitLength(w.literalFreq[:256])
+		estBits += estExtra
 
 		if estBits < reuseSize {
 			// We owe an EOB
@@ -859,10 +859,6 @@ func (w *huffmanBitWriter) writeBlockHuff(eof bool, input []byte, sync bool) {
 	const numLiterals = endBlockMarker + 1
 	const numOffsets = 1
 	if w.lastHeader == 0 {
-		if !eof && !sync {
-			// Generate a slightly suboptimal tree that can be used for all.
-			fillHist(w.literalFreq[:numLiterals])
-		}
 		w.literalFreq[endBlockMarker] = 1
 		w.literalEncoding.generate(w.literalFreq[:numLiterals], 15)
 
@@ -882,14 +878,19 @@ func (w *huffmanBitWriter) writeBlockHuff(eof bool, input []byte, sync bool) {
 	for _, t := range input {
 		// Bitwriting inlined, ~30% speedup
 		c := encoding[t]
-		w.bits |= uint64(c.code) << w.nbits
+		w.bits |= uint64(c.code) << ((w.nbits) & 63)
 		w.nbits += c.len
 		if w.nbits >= 48 {
 			bits := w.bits
 			w.bits >>= 48
 			w.nbits -= 48
 			n := w.nbytes
-			binary.LittleEndian.PutUint64(w.bytes[n:], bits)
+			w.bytes[n] = byte(bits)
+			w.bytes[n+1] = byte(bits >> 8)
+			w.bytes[n+2] = byte(bits >> 16)
+			w.bytes[n+3] = byte(bits >> 24)
+			w.bytes[n+4] = byte(bits >> 32)
+			w.bytes[n+5] = byte(bits >> 40)
 			n += 6
 			if n >= bufferFlushSize {
 				if w.err != nil {
