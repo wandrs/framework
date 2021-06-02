@@ -510,11 +510,9 @@ func (b *Bucket) GetRandomDoc(context ...*memcached.ClientContext) (*gomemcached
 	// We may need to select the bucket before GetRandomDoc()
 	// will work. This is sometimes done at startup (see defaultMkConn())
 	// but not always, depending on the auth type.
-	if conn.LastBucket() != b.Name {
-		_, err = conn.SelectBucket(b.Name)
-		if err != nil {
-			return nil, err
-		}
+	_, err = conn.SelectBucket(b.Name)
+	if err != nil {
+		return nil, err
 	}
 
 	// get a randomm document from the connection
@@ -535,7 +533,7 @@ func (b *Bucket) CreateScope(scope string) error {
 	client := pool.client
 	b.RUnlock()
 	args := map[string]interface{}{"name": scope}
-	return client.parsePostURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/scopes", args, nil)
+	return client.parsePostURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/collections", args, nil)
 }
 
 func (b *Bucket) DropScope(scope string) error {
@@ -543,7 +541,7 @@ func (b *Bucket) DropScope(scope string) error {
 	pool := b.pool
 	client := pool.client
 	b.RUnlock()
-	return client.parseDeleteURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/scopes/"+uriAdj(scope), nil, nil)
+	return client.parseDeleteURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/collections/"+uriAdj(scope), nil, nil)
 }
 
 func (b *Bucket) CreateCollection(scope string, collection string) error {
@@ -552,7 +550,7 @@ func (b *Bucket) CreateCollection(scope string, collection string) error {
 	client := pool.client
 	b.RUnlock()
 	args := map[string]interface{}{"name": collection}
-	return client.parsePostURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/scopes/"+uriAdj(scope)+"/collections", args, nil)
+	return client.parsePostURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/collections/"+uriAdj(scope), args, nil)
 }
 
 func (b *Bucket) DropCollection(scope string, collection string) error {
@@ -560,7 +558,7 @@ func (b *Bucket) DropCollection(scope string, collection string) error {
 	pool := b.pool
 	client := pool.client
 	b.RUnlock()
-	return client.parseDeleteURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/scopes/"+uriAdj(scope)+"/collections/"+uriAdj(collection), nil, nil)
+	return client.parseDeleteURLResponseTerse("/pools/default/buckets/"+uriAdj(b.Name)+"/collections/"+uriAdj(scope)+"/"+uriAdj(collection), nil, nil)
 }
 
 func (b *Bucket) FlushCollection(scope string, collection string) error {
@@ -705,8 +703,7 @@ func doHTTPRequestForStreaming(req *http.Request) (*http.Response, error) {
 
 		if skipVerify {
 			tr = &http.Transport{
-				TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
-				MaxIdleConnsPerHost: MaxIdleConnsPerHost,
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 			}
 		} else {
 			// Handle cases with cert
@@ -717,8 +714,7 @@ func doHTTPRequestForStreaming(req *http.Request) (*http.Response, error) {
 			}
 
 			tr = &http.Transport{
-				TLSClientConfig:     cfg,
-				MaxIdleConnsPerHost: MaxIdleConnsPerHost,
+				TLSClientConfig: cfg,
 			}
 		}
 
@@ -755,8 +751,7 @@ func doHTTPRequest(req *http.Request) (*http.Response, error) {
 
 		if skipVerify {
 			tr = &http.Transport{
-				TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
-				MaxIdleConnsPerHost: MaxIdleConnsPerHost,
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 			}
 		} else {
 			// Handle cases with cert
@@ -767,12 +762,11 @@ func doHTTPRequest(req *http.Request) (*http.Response, error) {
 			}
 
 			tr = &http.Transport{
-				TLSClientConfig:     cfg,
-				MaxIdleConnsPerHost: MaxIdleConnsPerHost,
+				TLSClientConfig: cfg,
 			}
 		}
 
-		client = &http.Client{Transport: tr, Timeout: ClientTimeOut}
+		client = &http.Client{Transport: tr}
 
 	} else if client == nil {
 		client = HTTPClient
@@ -1352,10 +1346,6 @@ func (b *Bucket) GetCollectionsManifest() (*Manifest, error) {
 
 	b.RLock()
 	pools := b.getConnPools(true /* already locked */)
-	if len(pools) == 0 {
-		b.RUnlock()
-		return nil, fmt.Errorf("Unable to get connection to retrieve collections manifest: no connection pool. No collections access to bucket %s.", b.Name)
-	}
 	pool := pools[0] // Any pool will do, so use the first one.
 	b.RUnlock()
 	client, err := pool.Get()

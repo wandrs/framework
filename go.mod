@@ -1,92 +1,67 @@
 module go.wandrs.dev/framework
 
-go 1.14
+go 1.16
 
 require (
-	cloud.google.com/go v0.78.0 // indirect
 	code.gitea.io/gitea-vet v0.2.1
 	gitea.com/lunny/levelqueue v0.3.0
 	github.com/NYTimes/gziphandler v1.1.1
-	github.com/PuerkitoBio/goquery v1.5.1
-	github.com/alecthomas/chroma v0.8.2
-	github.com/andybalholm/brotli v1.0.1 // indirect
-	github.com/boombuler/barcode v1.0.1 // indirect
-	github.com/caddyserver/certmagic v0.13.0
+	github.com/PuerkitoBio/goquery v1.6.1
+	github.com/alecthomas/chroma v0.9.1
+	github.com/caddyserver/certmagic v0.13.1
 	github.com/chi-middleware/proxy v1.1.1
-	github.com/couchbase/go-couchbase v0.0.0-20210224140812-5740cd35f448 // indirect
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/editorconfig/editorconfig-core-go/v2 v2.4.2
-	github.com/go-asn1-ber/asn1-ber v1.5.3 // indirect
 	github.com/go-chi/chi/v5 v5.0.3
 	github.com/go-chi/cors v1.2.0
 	github.com/go-ldap/ldap/v3 v3.3.0
-	github.com/go-redis/redis/v8 v8.8.2
+	github.com/go-redis/redis/v8 v8.4.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-swagger/go-swagger v0.27.0
-	github.com/go-testfixtures/testfixtures/v3 v3.6.0
+	github.com/go-testfixtures/testfixtures/v3 v3.6.1
 	github.com/gobwas/glob v0.2.3
 	github.com/gogs/chardet v0.0.0-20191104214054-4b6791f73a28
 	github.com/gogs/cron v0.0.0-20171120032916-9f6c956d3e14
 	github.com/google/uuid v1.2.0
-	github.com/gopherjs/gopherjs v0.0.0-20190910122728-9d188e94fb99 // indirect
 	github.com/gorilla/context v1.1.1
-	github.com/gorilla/mux v1.8.0 // indirect
-	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/issue9/identicon v1.2.0
 	github.com/jaytaylor/html2text v0.0.0-20200412013138-3577fbdbcff7
 	github.com/json-iterator/go v1.1.11
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
-	github.com/klauspost/compress v1.12.1 // indirect
-	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/lafriks/xormstore v1.4.0
 	github.com/lib/pq v1.10.2
 	github.com/markbates/goth v1.67.1
-	github.com/mattn/go-isatty v0.0.12
-	github.com/mattn/go-runewidth v0.0.12 // indirect
+	github.com/mattn/go-isatty v0.0.13
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/mholt/archiver/v3 v3.5.0
-	github.com/microcosm-cc/bluemonday v1.0.8
-	github.com/miekg/dns v1.1.40 // indirect
-	github.com/minio/md5-simd v1.1.2 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.9
 	github.com/minio/minio-go/v7 v7.0.10
-	github.com/minio/sha256-simd v1.0.0 // indirect
-	github.com/mrjones/oauth v0.0.0-20190623134757-126b35219450 // indirect
 	github.com/msteinert/pam v0.0.0-20201130170657-e61372126161
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/oliamb/cutter v0.2.2
-	github.com/pelletier/go-toml v1.9.0 // indirect
-	github.com/pierrec/lz4/v4 v4.1.3 // indirect
 	github.com/pquerna/otp v1.3.0
 	github.com/prometheus/client_golang v1.10.0
 	github.com/quasoft/websspi v1.0.0
-	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/shurcooL/httpfs v0.0.0-20190707220628-8d4bc4ba7749 // indirect
 	github.com/shurcooL/vfsgen v0.0.0-20200824052919-0d455de96546
-	github.com/smartystreets/assertions v1.1.1 // indirect
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/syndtr/goleveldb v1.0.0
 	github.com/tstranex/u2f v1.0.0
-	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/unknwon/com v1.0.1
 	github.com/unknwon/i18n v0.0.0-20210321134014-0ebbf2df1c44
 	github.com/unknwon/paginater v0.0.0-20200328080006-042474bd0eae
-	github.com/unrolled/render v1.1.1
+	github.com/unrolled/render v1.4.0
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/yohcop/openid-go v1.0.0
-	github.com/yuin/goldmark v1.3.5
-	github.com/yuin/goldmark-highlighting v0.0.0-20200307114337-60d527fdb691
+	github.com/yuin/goldmark v1.3.7
+	github.com/yuin/goldmark-highlighting v0.0.0-20210516132338-9216f9c5aa01
 	github.com/yuin/goldmark-meta v1.0.0
 	go.jolheiser.com/hcaptcha v0.0.4
 	go.jolheiser.com/pwn v0.0.3
-	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.16.0 // indirect
 	go.wandrs.dev/binding v0.0.0-20210531104511-aa760cf3a6c4
 	go.wandrs.dev/cache v0.0.0-20210531105734-7f9e41f0042f
 	go.wandrs.dev/cache/memcache v0.0.0-20210531105734-7f9e41f0042f
@@ -96,14 +71,12 @@ require (
 	go.wandrs.dev/session/memcache v0.0.0-20210531080514-72628304c241
 	go.wandrs.dev/session/mysql v0.0.0-20210531080514-72628304c241
 	go.wandrs.dev/session/postgres v0.0.0-20210531080514-72628304c241
-	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
+	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
 	golang.org/x/net v0.0.0-20210421230115-4e50805a0758
-	golang.org/x/oauth2 v0.0.0-20210413134643-5e61552d6c78 // indirect
-	golang.org/x/sys v0.0.0-20210421221651-33663a62ff08
+	golang.org/x/sys v0.0.0-20210525143221-35b2ab0089ea
 	golang.org/x/text v0.3.6
 	golang.org/x/tools v0.1.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/ini.v1 v1.62.0
 	gopkg.in/yaml.v2 v2.4.0

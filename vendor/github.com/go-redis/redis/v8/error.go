@@ -65,11 +65,8 @@ func isRedisError(err error) bool {
 }
 
 func isBadConn(err error, allowTimeout bool) bool {
-	switch err {
-	case nil:
+	if err == nil {
 		return false
-	case context.Canceled, context.DeadlineExceeded:
-		return true
 	}
 
 	if isRedisError(err) {

@@ -228,7 +228,8 @@ func (p *ConnPool) Get(ctx context.Context) (*Conn, error) {
 		return nil, ErrClosed
 	}
 
-	if err := p.waitTurn(ctx); err != nil {
+	err := p.waitTurn(ctx)
+	if err != nil {
 		return nil, err
 	}
 
@@ -476,7 +477,6 @@ func (p *ConnPool) ReapStaleConns() (int, error) {
 		p.connsMu.Lock()
 		cn := p.reapStaleConn()
 		p.connsMu.Unlock()
-
 		p.freeTurn()
 
 		if cn != nil {

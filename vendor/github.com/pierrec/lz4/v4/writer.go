@@ -35,7 +35,6 @@ type Writer struct {
 	data    []byte                    // pending data
 	idx     int                       // size of pending data
 	handler func(int)
-	legacy  bool
 }
 
 func (*Writer) private() {}
@@ -64,11 +63,9 @@ func (w *Writer) isNotConcurrent() bool {
 
 // init sets up the Writer when in newState. It does not change the Writer state.
 func (w *Writer) init() error {
-	w.frame.InitW(w.src, w.num, w.legacy)
-	if true || !w.isNotConcurrent() {
-		size := w.frame.Descriptor.Flags.BlockSizeIndex()
-		w.data = size.Get()
-	}
+	w.frame.InitW(w.src, w.num)
+	size := w.frame.Descriptor.Flags.BlockSizeIndex()
+	w.data = size.Get()
 	w.idx = 0
 	return w.frame.Descriptor.Write(w.frame, w.src)
 }
@@ -129,19 +126,20 @@ func (w *Writer) write(data []byte, safe bool) error {
 		w.handler(len(block.Data))
 		return err
 	}
+	size := w.frame.Descriptor.Flags.BlockSizeIndex()
 	c := make(chan *lz4stream.FrameDataBlock)
 	w.frame.Blocks.Blocks <- c
-	go func(c chan *lz4stream.FrameDataBlock, data []byte, safe bool) {
-		b := lz4stream.NewFrameDataBlock(w.frame)
+	go func(c chan *lz4stream.FrameDataBlock, data []byte, size lz4block.BlockSizeIndex, safe bool) {
+		b := lz4stream.NewFrameDataBlock(size)
 		c <- b.Compress(w.frame, data, w.level)
 		<-c
 		w.handler(len(b.Data))
-		b.Close(w.frame)
+		b.CloseW(w.frame)
 		if safe {
 			// safe to put it back as the last usage of it was FrameDataBlock.Write() called before c is closed
-			lz4block.Put(data)
+			size.Put(data)
 		}
-	}(c, data, safe)
+	}(c, data, size, safe)
 
 	return nil
 }
@@ -167,7 +165,8 @@ func (w *Writer) Close() (err error) {
 	err = w.frame.CloseW(w.src, w.num)
 	// It is now safe to free the buffer.
 	if w.data != nil {
-		lz4block.Put(w.data)
+		size := w.frame.Descriptor.Flags.BlockSizeIndex()
+		size.Put(w.data)
 		w.data = nil
 	}
 	return
@@ -205,13 +204,13 @@ func (w *Writer) ReadFrom(r io.Reader) (n int64, err error) {
 	data := size.Get()
 	if w.isNotConcurrent() {
 		// Keep the same buffer for the whole process.
-		defer lz4block.Put(data)
+		defer size.Put(data)
 	}
 	for !done {
 		rn, err = io.ReadFull(r, data)
 		switch err {
 		case nil:
-		case io.EOF, io.ErrUnexpectedEOF: // read may be partial
+		case io.EOF:
 			done = true
 		default:
 			return

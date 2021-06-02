@@ -81,8 +81,6 @@ const (
 	TypeCDNSKEY    uint16 = 60
 	TypeOPENPGPKEY uint16 = 61
 	TypeCSYNC      uint16 = 62
-	TypeSVCB       uint16 = 64
-	TypeHTTPS      uint16 = 65
 	TypeSPF        uint16 = 99
 	TypeUINFO      uint16 = 100
 	TypeUID        uint16 = 101
@@ -245,8 +243,8 @@ type ANY struct {
 
 func (rr *ANY) String() string { return rr.Hdr.String() }
 
-func (*ANY) parse(c *zlexer, origin string) *ParseError {
-	return &ParseError{err: "ANY records do not have a presentation format"}
+func (rr *ANY) parse(c *zlexer, origin string) *ParseError {
+	panic("dns: internal error: parse should never be called on ANY")
 }
 
 // NULL RR. See RFC 1035.
@@ -260,8 +258,8 @@ func (rr *NULL) String() string {
 	return ";" + rr.Hdr.String() + rr.Data
 }
 
-func (*NULL) parse(c *zlexer, origin string) *ParseError {
-	return &ParseError{err: "NULL records do not have a presentation format"}
+func (rr *NULL) parse(c *zlexer, origin string) *ParseError {
+	panic("dns: internal error: parse should never be called on NULL")
 }
 
 // CNAME RR. See RFC 1034.
