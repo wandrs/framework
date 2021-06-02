@@ -165,9 +165,6 @@ func NewFuncMap() []template.FuncMap {
 		"UseServiceWorker": func() bool {
 			return setting.UI.UseServiceWorker
 		},
-		"EnableTimetracking": func() bool {
-			return setting.Service.EnableTimetracking
-		},
 		"FilenameIsImage": func(filename string) bool {
 			mimeType := mime.TypeByExtension(filepath.Ext(filename))
 			return strings.HasPrefix(mimeType, "image/")
@@ -244,9 +241,8 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return dict, nil
 		},
-		"Printf":   fmt.Sprintf,
-		"Escape":   Escape,
-		"Sec2Time": models.SecToTime,
+		"Printf": fmt.Sprintf,
+		"Escape": Escape,
 		"ParseDeadline": func(deadline string) []string {
 			return strings.Split(deadline, "|")
 		},
@@ -310,11 +306,10 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return false
 		},
-		"svg":            SVG,
-		"avatar":         Avatar,
-		"avatarHTML":     AvatarHTML,
-		"avatarByAction": AvatarByAction,
-		"avatarByEmail":  AvatarByEmail,
+		"svg":           SVG,
+		"avatar":        Avatar,
+		"avatarHTML":    AvatarHTML,
+		"avatarByEmail": AvatarByEmail,
 		"SortArrow": func(normSort, revSort, urlSort string, isDefault bool) template.HTML {
 			// if needed
 			if len(normSort) == 0 || len(urlSort) == 0 {
@@ -338,19 +333,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			// the table is NOT sorted with this header
 			return ""
-		},
-		"RenderLabels": func(labels []*models.Label) template.HTML {
-			html := `<span class="labels-list">`
-			for _, label := range labels {
-				// Protect against nil value in labels - shouldn't happen but would cause a panic if so
-				if label == nil {
-					continue
-				}
-				html += fmt.Sprintf("<div class='ui label' style='color: %s; background-color: %s'>%s</div> ",
-					label.ForegroundColor(), label.Color, RenderEmoji(label.Name))
-			}
-			html += "</span>"
-			return template.HTML(html)
 		},
 	}}
 }
@@ -419,9 +401,8 @@ func NewTextFuncMap() []texttmpl.FuncMap {
 			}
 			return dict, nil
 		},
-		"Printf":   fmt.Sprintf,
-		"Escape":   Escape,
-		"Sec2Time": models.SecToTime,
+		"Printf": fmt.Sprintf,
+		"Escape": Escape,
 		"ParseDeadline": func(deadline string) []string {
 			return strings.Split(deadline, "|")
 		},
@@ -534,19 +515,7 @@ func Avatar(item interface{}, others ...interface{}) template.HTML {
 			return AvatarHTML(src, size, class, user.DisplayName())
 		}
 	}
-	if user, ok := item.(*models.Collaborator); ok {
-		src := user.RealSizedAvatarLink(size * models.AvatarRenderedSizeFactor)
-		if src != "" {
-			return AvatarHTML(src, size, class, user.DisplayName())
-		}
-	}
 	return template.HTML("")
-}
-
-// AvatarByAction renders user avatars from action. args: action, size (int), class (string)
-func AvatarByAction(action *models.Action, others ...interface{}) template.HTML {
-	action.LoadActUser()
-	return Avatar(action.ActUser, others...)
 }
 
 // AvatarByEmail renders avatars by email address. args: email, name, size (int), class (string)
@@ -732,14 +701,6 @@ func RenderNote(msg, urlPrefix string, metas map[string]string) template.HTML {
 		return ""
 	}
 	return template.HTML(string(fullMessage))
-}
-
-// Actioner describes an action
-type Actioner interface {
-	GetOpType() models.ActionType
-	GetActUserName() string
-	GetContent() string
-	GetCreate() time.Time
 }
 
 // DiffTypeToStr returns diff type name

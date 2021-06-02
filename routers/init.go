@@ -103,7 +103,6 @@ func GlobalInit(ctx context.Context) {
 		log.Fatal("Gitea is not installed")
 	}
 
-	setting.CheckLFSVersion()
 	log.Trace("AppPath: %s", setting.AppPath)
 	log.Trace("AppWorkPath: %s", setting.AppWorkPath)
 	log.Trace("Custom path: %s", setting.CustomPath)
@@ -132,8 +131,6 @@ func GlobalInit(ctx context.Context) {
 	if err := models.InitOAuth2(); err != nil {
 		log.Fatal("Failed to initialize OAuth2 support: %v", err)
 	}
-
-	models.NewRepoContext()
 
 	// Booting long running goroutines.
 	cron.NewContext()

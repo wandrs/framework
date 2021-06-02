@@ -29,7 +29,6 @@ var (
 		Usage: "Command line interface to perform common administrative operations",
 		Subcommands: []*cli.Command{
 			subcmdUser,
-			subcmdRegenerate,
 			subcmdAuth,
 			subcmdSendMail,
 		},
@@ -143,15 +142,6 @@ var (
 			},
 		},
 		Action: runDeleteUser,
-	}
-
-	subcmdRegenerate = &cli.Command{
-		Name:  "regenerate",
-		Usage: "Regenerate specific files",
-		Subcommands: []*cli.Command{
-			microcmdRegenHooks,
-			microcmdRegenKeys,
-		},
 	}
 
 	subcmdAuth = &cli.Command{

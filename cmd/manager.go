@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/private"
 
@@ -254,6 +255,31 @@ var (
 		},
 	}
 )
+
+func setup(logPath string, debug bool) {
+	_ = log.DelLogger("console")
+	if debug {
+		_ = log.NewLogger(1000, "console", "console", `{"level":"trace","stacktracelevel":"NONE","stderr":true}`)
+	} else {
+		_ = log.NewLogger(1000, "console", "console", `{"level":"fatal","stacktracelevel":"NONE","stderr":true}`)
+	}
+	setting.NewContext()
+	if debug {
+		setting.RunMode = "dev"
+	}
+}
+
+func fail(userMessage, logMessage string, args ...interface{}) {
+	fmt.Fprintln(os.Stderr, "Gitea:", userMessage)
+
+	if len(logMessage) > 0 {
+		if !setting.IsProd() {
+			fmt.Fprintf(os.Stderr, logMessage+"\n", args...)
+		}
+	}
+
+	os.Exit(1)
+}
 
 func runRemoveLogger(c *cli.Context) error {
 	setup("manager", c.Bool("debug"))

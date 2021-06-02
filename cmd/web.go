@@ -176,10 +176,6 @@ func listen(m http.Handler, handleRedirector bool) error {
 	}
 	log.Info("Listen: %v://%s%s", setting.Protocol, listenAddr, setting.AppSubURL)
 
-	if setting.LFS.StartServer {
-		log.Info("LFS server enabled")
-	}
-
 	var err error
 	switch setting.Protocol {
 	case setting.HTTP:

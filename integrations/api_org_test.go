@@ -54,15 +54,6 @@ func TestAPIOrgCreate(t *testing.T) {
 		DecodeJSON(t, resp, &apiOrg)
 		assert.EqualValues(t, org.UserName, apiOrg.UserName)
 
-		req = NewRequestf(t, "GET", "/api/v1/orgs/%s/repos", org.UserName)
-		resp = session.MakeRequest(t, req, http.StatusOK)
-
-		var repos []*api.Repository
-		DecodeJSON(t, resp, &repos)
-		for _, repo := range repos {
-			assert.False(t, repo.Private)
-		}
-
 		req = NewRequestf(t, "GET", "/api/v1/orgs/%s/members", org.UserName)
 		resp = session.MakeRequest(t, req, http.StatusOK)
 

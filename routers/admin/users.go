@@ -206,7 +206,6 @@ func EditUser(ctx *context.Context) {
 	ctx.Data["PageIsAdmin"] = true
 	ctx.Data["PageIsAdminUsers"] = true
 	ctx.Data["DisableRegularOrgCreation"] = setting.Admin.DisableRegularOrgCreation
-	ctx.Data["DisableMigrations"] = setting.Repository.DisableMigrations
 
 	prepareUserInfo(ctx)
 	if ctx.Written() {
@@ -222,7 +221,6 @@ func EditUserPost(ctx *context.Context) {
 	ctx.Data["Title"] = ctx.Tr("admin.users.edit_account")
 	ctx.Data["PageIsAdmin"] = true
 	ctx.Data["PageIsAdminUsers"] = true
-	ctx.Data["DisableMigrations"] = setting.Repository.DisableMigrations
 
 	u := prepareUserInfo(ctx)
 	if ctx.Written() {
@@ -304,7 +302,6 @@ func EditUserPost(ctx *context.Context) {
 	u.Email = form.Email
 	u.Website = form.Website
 	u.Location = form.Location
-	u.MaxRepoCreation = form.MaxRepoCreation
 	u.IsActive = form.Active
 	u.IsAdmin = form.Admin
 	u.IsRestricted = form.Restricted
@@ -347,11 +344,6 @@ func DeleteUser(ctx *context.Context) {
 
 	if err = models.DeleteUser(u); err != nil {
 		switch {
-		case models.IsErrUserOwnRepos(err):
-			ctx.Flash.Error(ctx.Tr("admin.users.still_own_repo"))
-			ctx.JSON(http.StatusOK, map[string]interface{}{
-				"redirect": setting.AppSubURL + "/admin/users/" + ctx.Params(":userid"),
-			})
 		case models.IsErrUserHasOrgs(err):
 			ctx.Flash.Error(ctx.Tr("admin.users.still_has_org"))
 			ctx.JSON(http.StatusOK, map[string]interface{}{

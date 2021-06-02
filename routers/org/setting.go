@@ -83,42 +83,17 @@ func SettingsPost(ctx *context.Context) {
 	org.Name = form.Name
 	org.LowerName = strings.ToLower(form.Name)
 
-	if ctx.User.IsAdmin {
-		org.MaxRepoCreation = form.MaxRepoCreation
-	}
-
 	org.FullName = form.FullName
 	org.Description = form.Description
 	org.Website = form.Website
 	org.Location = form.Location
 	org.RepoAdminChangeTeamAccess = form.RepoAdminChangeTeamAccess
 
-	visibilityChanged := form.Visibility != org.Visibility
 	org.Visibility = form.Visibility
 
 	if err := models.UpdateUser(org); err != nil {
 		ctx.ServerError("UpdateUser", err)
 		return
-	}
-
-	// update forks visibility
-	if visibilityChanged {
-		if err := org.GetRepositories(models.ListOptions{Page: 1, PageSize: org.NumRepos}); err != nil {
-			ctx.ServerError("GetRepositories", err)
-			return
-		}
-		for _, repo := range org.Repos {
-			repo.OwnerName = org.Name
-			if err := models.UpdateRepository(repo, true); err != nil {
-				ctx.ServerError("UpdateRepository", err)
-				return
-			}
-		}
-	} else if nameChanged {
-		if err := models.UpdateRepositoryOwnerNames(org.ID, org.Name); err != nil {
-			ctx.ServerError("UpdateRepository", err)
-			return
-		}
 	}
 
 	log.Trace("Organization setting updated: %s", org.Name)
@@ -162,12 +137,7 @@ func SettingsDelete(ctx *context.Context) {
 		}
 
 		if err := models.DeleteOrganization(org); err != nil {
-			if models.IsErrUserOwnRepos(err) {
-				ctx.Flash.Error(ctx.Tr("form.org_still_own_repo"))
-				ctx.Redirect(ctx.Org.OrgLink + "/settings/delete")
-			} else {
-				ctx.ServerError("DeleteOrganization", err)
-			}
+			ctx.ServerError("DeleteOrganization", err)
 		} else {
 			log.Trace("Organization deleted: %s", org.Name)
 			ctx.Redirect(setting.AppSubURL + "/")
@@ -178,42 +148,10 @@ func SettingsDelete(ctx *context.Context) {
 	ctx.HTML(http.StatusOK, tplSettingsDelete)
 }
 
-// Webhooks render webhook list page
-func Webhooks(ctx *context.Context) {
-	ctx.Data["Title"] = ctx.Tr("org.settings")
-	ctx.Data["PageIsSettingsHooks"] = true
-	ctx.Data["BaseLink"] = ctx.Org.OrgLink + "/settings/hooks"
-	ctx.Data["BaseLinkNew"] = ctx.Org.OrgLink + "/settings/hooks"
-	ctx.Data["Description"] = ctx.Tr("org.settings.hooks_desc")
-
-	ws, err := models.GetWebhooksByOrgID(ctx.Org.Organization.ID, models.ListOptions{})
-	if err != nil {
-		ctx.ServerError("GetWebhooksByOrgId", err)
-		return
-	}
-
-	ctx.Data["Webhooks"] = ws
-	ctx.HTML(http.StatusOK, tplSettingsHooks)
-}
-
-// DeleteWebhook response for delete webhook
-func DeleteWebhook(ctx *context.Context) {
-	if err := models.DeleteWebhookByOrgID(ctx.Org.Organization.ID, ctx.QueryInt64("id")); err != nil {
-		ctx.Flash.Error("DeleteWebhookByOrgID: " + err.Error())
-	} else {
-		ctx.Flash.Success(ctx.Tr("repo.settings.webhook_deletion_success"))
-	}
-
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"redirect": ctx.Org.OrgLink + "/settings/hooks",
-	})
-}
-
 // Labels render organization labels page
 func Labels(ctx *context.Context) {
 	ctx.Data["Title"] = ctx.Tr("repo.labels")
 	ctx.Data["PageIsOrgSettingsLabels"] = true
 	ctx.Data["RequireTribute"] = true
-	ctx.Data["LabelTemplates"] = models.LabelTemplates
 	ctx.HTML(http.StatusOK, tplSettingsLabels)
 }

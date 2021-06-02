@@ -49,8 +49,6 @@ func MainTest(m *testing.M, pathToGiteaRoot string) {
 
 	setting.AppURL = "https://try.gitea.io/"
 	setting.RunUser = "runuser"
-	setting.SSH.Port = 3000
-	setting.SSH.Domain = "try.gitea.io"
 	setting.Database.UseSQLite3 = true
 	setting.AppDataPath, err = ioutil.TempDir(os.TempDir(), "appdata")
 	if err != nil {

@@ -5,6 +5,12 @@
 
 package models
 
+import (
+	"fmt"
+
+	"go.wandrs.dev/framework/modules/log"
+)
+
 // AccessMode specifies the users access mode
 type AccessMode int
 
@@ -20,3 +26,37 @@ const (
 	// AccessModeOwner owner access
 	AccessModeOwner // 4
 )
+
+func (mode AccessMode) String() string {
+	switch mode {
+	case AccessModeRead:
+		return "read"
+	case AccessModeWrite:
+		return "write"
+	case AccessModeAdmin:
+		return "admin"
+	case AccessModeOwner:
+		return "owner"
+	default:
+		return "none"
+	}
+}
+
+// ColorFormat provides a ColorFormatted version of this AccessMode
+func (mode AccessMode) ColorFormat(s fmt.State) {
+	log.ColorFprintf(s, "%d:%s",
+		log.NewColoredIDValue(mode),
+		mode)
+}
+
+// ParseAccessMode returns corresponding access mode to given permission string.
+func ParseAccessMode(permission string) AccessMode {
+	switch permission {
+	case "write":
+		return AccessModeWrite
+	case "admin":
+		return AccessModeAdmin
+	default:
+		return AccessModeRead
+	}
+}

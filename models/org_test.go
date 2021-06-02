@@ -247,7 +247,6 @@ func TestDeleteOrganization(t *testing.T) {
 	org = AssertExistsAndLoadBean(t, &User{ID: 3}).(*User)
 	err := DeleteOrganization(org)
 	assert.Error(t, err)
-	assert.True(t, IsErrUserOwnRepos(err))
 
 	user := AssertExistsAndLoadBean(t, &User{ID: 5}).(*User)
 	assert.Error(t, DeleteOrganization(user))
@@ -549,22 +548,4 @@ func TestHasOrgVisibleTypePrivate(t *testing.T) {
 	assert.True(t, test1)  // owner of org
 	assert.False(t, test2) // user not a part of org
 	assert.False(t, test3) // logged out user
-}
-
-func TestGetUsersWhoCanCreateOrgRepo(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-
-	users, err := GetUsersWhoCanCreateOrgRepo(3)
-	assert.NoError(t, err)
-	assert.Len(t, users, 2)
-	var ids []int64
-	for i := range users {
-		ids = append(ids, users[i].ID)
-	}
-	assert.ElementsMatch(t, ids, []int64{2, 28})
-
-	users, err = GetUsersWhoCanCreateOrgRepo(7)
-	assert.NoError(t, err)
-	assert.Len(t, users, 1)
-	assert.EqualValues(t, 5, users[0].ID)
 }

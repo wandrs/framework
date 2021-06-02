@@ -127,11 +127,6 @@ type User struct {
 	UpdatedUnix   timeutil.TimeStamp `xorm:"INDEX updated"`
 	LastLoginUnix timeutil.TimeStamp `xorm:"INDEX"`
 
-	// Remember visibility choice for convenience, true for private
-	LastRepoVisibility bool
-	// Maximum repository creation limit, -1 means use global default
-	MaxRepoCreation int `xorm:"NOT NULL DEFAULT -1"`
-
 	// Permissions
 	IsActive                bool `xorm:"INDEX"` // Activate primary email
 	IsAdmin                 bool
@@ -182,10 +177,6 @@ func (u *User) ColorFormat(s fmt.State) {
 
 // BeforeUpdate is invoked from XORM before updating this object.
 func (u *User) BeforeUpdate() {
-	if u.MaxRepoCreation < -1 {
-		u.MaxRepoCreation = -1
-	}
-
 	// Organization does not need email
 	u.Email = strings.ToLower(u.Email)
 	if !u.IsOrganization() {
@@ -752,7 +743,6 @@ func CreateUser(u *User) (err error) {
 	}
 	u.AllowCreateOrganization = setting.Service.DefaultAllowCreateOrganization && !setting.Admin.DisableRegularOrgCreation
 	u.EmailNotificationsPreference = setting.Admin.DefaultEmailNotification
-	u.MaxRepoCreation = -1
 	u.Theme = setting.UI.DefaultTheme
 
 	if _, err = sess.Insert(u); err != nil {
@@ -1036,7 +1026,7 @@ func DeleteInactiveUsers(ctx context.Context, olderThan time.Duration) (err erro
 		}
 		if err = DeleteUser(u); err != nil {
 			// Ignore users that were set inactive by admin.
-			if IsErrUserOwnRepos(err) || IsErrUserHasOrgs(err) {
+			if IsErrUserHasOrgs(err) {
 				continue
 			}
 			return err

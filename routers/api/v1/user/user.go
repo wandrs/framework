@@ -128,35 +128,3 @@ func GetAuthenticatedUser(ctx *context.APIContext) {
 
 	ctx.JSON(http.StatusOK, convert.ToUser(ctx.User, ctx.User))
 }
-
-// GetUserHeatmapData is the handler to get a users heatmap
-func GetUserHeatmapData(ctx *context.APIContext) {
-	// swagger:operation GET /users/{username}/heatmap user userGetHeatmapData
-	// ---
-	// summary: Get a user's heatmap
-	// produces:
-	// - application/json
-	// parameters:
-	// - name: username
-	//   in: path
-	//   description: username of user to get
-	//   type: string
-	//   required: true
-	// responses:
-	//   "200":
-	//     "$ref": "#/responses/UserHeatmapData"
-	//   "404":
-	//     "$ref": "#/responses/notFound"
-
-	user := GetUserByParams(ctx)
-	if ctx.Written() {
-		return
-	}
-
-	heatmap, err := models.GetUserHeatmapDataByUser(user, ctx.User)
-	if err != nil {
-		ctx.Error(http.StatusInternalServerError, "GetUserHeatmapDataByUser", err)
-		return
-	}
-	ctx.JSON(http.StatusOK, heatmap)
-}

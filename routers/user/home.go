@@ -52,49 +52,6 @@ func Dashboard(ctx *context.Context) {
 	ctx.Data["PageIsNews"] = true
 	ctx.Data["SearchLimit"] = setting.UI.User.RepoPagingNum
 
-	if setting.Service.EnableUserHeatmap {
-		data, err := models.GetUserHeatmapDataByUserTeam(ctxUser, ctx.Org.Team, ctx.User)
-		if err != nil {
-			ctx.ServerError("GetUserHeatmapDataByUserTeam", err)
-			return
-		}
-		ctx.Data["HeatmapData"] = data
-	}
-
-	var err error
-	var mirrors []*models.Repository
-	if ctxUser.IsOrganization() {
-		var env models.AccessibleReposEnvironment
-		if ctx.Org.Team != nil {
-			env = ctxUser.AccessibleTeamReposEnv(ctx.Org.Team)
-		} else {
-			env, err = ctxUser.AccessibleReposEnv(ctx.User.ID)
-			if err != nil {
-				ctx.ServerError("AccessibleReposEnv", err)
-				return
-			}
-		}
-		mirrors, err = env.MirrorRepos()
-		if err != nil {
-			ctx.ServerError("env.MirrorRepos", err)
-			return
-		}
-	} else {
-		mirrors, err = ctxUser.GetMirrorRepositories()
-		if err != nil {
-			ctx.ServerError("GetMirrorRepositories", err)
-			return
-		}
-	}
-	ctx.Data["MaxShowRepoNum"] = setting.UI.User.RepoPagingNum
-
-	if err := models.MirrorRepositoryList(mirrors).LoadAttributes(); err != nil {
-		ctx.ServerError("MirrorRepositoryList.LoadAttributes", err)
-		return
-	}
-	ctx.Data["MirrorCount"] = len(mirrors)
-	ctx.Data["Mirrors"] = mirrors
-
 	if ctx.Written() {
 		return
 	}

@@ -16,12 +16,8 @@ func assertUserDeleted(t *testing.T, userID int64) {
 	models.AssertNotExistsBean(t, &models.User{ID: userID})
 	models.AssertNotExistsBean(t, &models.Follow{UserID: userID})
 	models.AssertNotExistsBean(t, &models.Follow{FollowID: userID})
-	models.AssertNotExistsBean(t, &models.Repository{OwnerID: userID})
-	models.AssertNotExistsBean(t, &models.Access{UserID: userID})
 	models.AssertNotExistsBean(t, &models.OrgUser{UID: userID})
-	models.AssertNotExistsBean(t, &models.IssueUser{UID: userID})
 	models.AssertNotExistsBean(t, &models.TeamUser{UID: userID})
-	models.AssertNotExistsBean(t, &models.Star{UID: userID})
 }
 
 func TestUserDeleteAccount(t *testing.T) {
@@ -37,19 +33,4 @@ func TestUserDeleteAccount(t *testing.T) {
 
 	assertUserDeleted(t, 8)
 	models.CheckConsistencyFor(t, &models.User{})
-}
-
-func TestUserDeleteAccountStillOwnRepos(t *testing.T) {
-	defer prepareTestEnv(t)()
-
-	session := loginUser(t, "user2")
-	csrf := GetCSRF(t, session, "/user/settings/account")
-	urlStr := fmt.Sprintf("/user/settings/account/delete?password=%s", userPassword)
-	req := NewRequestWithValues(t, "POST", urlStr, map[string]string{
-		"_csrf": csrf,
-	})
-	session.MakeRequest(t, req, http.StatusFound)
-
-	// user should not have been deleted, because the user still owns repos
-	models.AssertExistsAndLoadBean(t, &models.User{ID: 2})
 }

@@ -122,7 +122,6 @@ func Install(ctx *context.Context) {
 	}
 
 	form.Domain = setting.Domain
-	form.SSHPort = setting.SSH.Port
 	form.HTTPPort = setting.HTTPPort
 	form.AppURL = setting.AppURL
 	form.LogRootPath = setting.LogRootPath
@@ -148,7 +147,6 @@ func Install(ctx *context.Context) {
 	form.RequireSignInView = setting.Service.RequireSignInView
 	form.DefaultKeepEmailPrivate = setting.Service.DefaultKeepEmailPrivate
 	form.DefaultAllowCreateOrganization = setting.Service.DefaultAllowCreateOrganization
-	form.DefaultEnableTimetracking = setting.Service.DefaultEnableTimetracking
 	form.NoReplyAddress = setting.Service.NoReplyAddress
 	form.PasswordAlgorithm = setting.PasswordHashAlgo
 
@@ -309,26 +307,6 @@ func InstallPost(ctx *context.Context) {
 	cfg.Section("server").Key("DOMAIN").SetValue(form.Domain)
 	cfg.Section("server").Key("HTTP_PORT").SetValue(form.HTTPPort)
 	cfg.Section("server").Key("ROOT_URL").SetValue(form.AppURL)
-
-	if form.SSHPort == 0 {
-		cfg.Section("server").Key("DISABLE_SSH").SetValue("true")
-	} else {
-		cfg.Section("server").Key("DISABLE_SSH").SetValue("false")
-		cfg.Section("server").Key("SSH_PORT").SetValue(fmt.Sprint(form.SSHPort))
-	}
-
-	if form.LFSRootPath != "" {
-		cfg.Section("server").Key("LFS_START_SERVER").SetValue("true")
-		cfg.Section("server").Key("LFS_CONTENT_PATH").SetValue(form.LFSRootPath)
-		var secretKey string
-		if secretKey, err = generate.NewJwtSecret(); err != nil {
-			ctx.RenderWithErr(ctx.Tr("install.lfs_jwt_secret_failed", err), tplInstall, &form)
-			return
-		}
-		cfg.Section("server").Key("LFS_JWT_SECRET").SetValue(secretKey)
-	} else {
-		cfg.Section("server").Key("LFS_START_SERVER").SetValue("false")
-	}
 
 	if len(strings.TrimSpace(form.SMTPHost)) > 0 {
 		cfg.Section("mailer").Key("ENABLED").SetValue("true")

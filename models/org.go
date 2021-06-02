@@ -145,7 +145,6 @@ func CreateOrganization(org, owner *User) (err error) {
 		return err
 	}
 	org.UseCustomAvatar = true
-	org.MaxRepoCreation = -1
 	org.NumTeams = 1
 	org.NumMembers = 1
 	org.Type = UserTypeOrganization
@@ -238,11 +237,7 @@ func DeleteOrganization(org *User) (err error) {
 	}
 
 	if err = deleteOrg(sess, org); err != nil {
-		if IsErrUserOwnRepos(err) {
-			return err
-		} else if err != nil {
-			return fmt.Errorf("deleteOrg: %v", err)
-		}
+		return fmt.Errorf("deleteOrg: %v", err)
 	}
 
 	return sess.Commit()
@@ -324,33 +319,6 @@ func IsPublicMembership(orgID, uid int64) (bool, error) {
 		And("is_public=?", true).
 		Table("org_user").
 		Exist()
-}
-
-// CanCreateOrgRepo returns true if user can create repo in organization
-func CanCreateOrgRepo(orgID, uid int64) (bool, error) {
-	if owner, err := IsOrganizationOwner(orgID, uid); owner || err != nil {
-		return owner, err
-	}
-	return x.
-		Where(builder.Eq{"team.can_create_org_repo": true}).
-		Join("INNER", "team_user", "team_user.team_id = team.id").
-		And("team_user.uid = ?", uid).
-		And("team_user.org_id = ?", orgID).
-		Exist(new(Team))
-}
-
-// GetUsersWhoCanCreateOrgRepo returns users which are able to create repo in organization
-func GetUsersWhoCanCreateOrgRepo(orgID int64) ([]*User, error) {
-	return getUsersWhoCanCreateOrgRepo(x, orgID)
-}
-
-func getUsersWhoCanCreateOrgRepo(e Engine, orgID int64) ([]*User, error) {
-	users := make([]*User, 0, 10)
-	return users, x.
-		Join("INNER", "`team_user`", "`team_user`.uid=`user`.id").
-		Join("INNER", "`team`", "`team`.id=`team_user`.team_id").
-		Where(builder.Eq{"team.can_create_org_repo": true}.Or(builder.Eq{"team.authorize": AccessModeOwner})).
-		And("team_user.org_id = ?", orgID).Asc("`user`.name").Find(&users)
 }
 
 func getOrgsByUserID(sess *xorm.Session, userID int64, showAll bool) ([]*User, error) {
