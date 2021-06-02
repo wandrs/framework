@@ -218,9 +218,6 @@ func EditUser(ctx *context.APIContext) {
 	if form.AllowImportLocal != nil {
 		u.AllowImportLocal = *form.AllowImportLocal
 	}
-	if form.MaxRepoCreation != nil {
-		u.MaxRepoCreation = *form.MaxRepoCreation
-	}
 	if form.AllowCreateOrganization != nil {
 		u.AllowCreateOrganization = *form.AllowCreateOrganization
 	}
@@ -276,8 +273,7 @@ func DeleteUser(ctx *context.APIContext) {
 	}
 
 	if err := models.DeleteUser(u); err != nil {
-		if models.IsErrUserOwnRepos(err) ||
-			models.IsErrUserHasOrgs(err) {
+		if models.IsErrUserHasOrgs(err) {
 			ctx.Error(http.StatusUnprocessableEntity, "", err)
 		} else {
 			ctx.Error(http.StatusInternalServerError, "DeleteUser", err)
@@ -285,87 +281,6 @@ func DeleteUser(ctx *context.APIContext) {
 		return
 	}
 	log.Trace("Account deleted by admin(%s): %s", ctx.User.Name, u.Name)
-
-	ctx.Status(http.StatusNoContent)
-}
-
-// CreatePublicKey api for creating a public key to a user
-func CreatePublicKey(ctx *context.APIContext) {
-	// swagger:operation POST /admin/users/{username}/keys admin adminCreatePublicKey
-	// ---
-	// summary: Add a public key on behalf of a user
-	// consumes:
-	// - application/json
-	// produces:
-	// - application/json
-	// parameters:
-	// - name: username
-	//   in: path
-	//   description: username of the user
-	//   type: string
-	//   required: true
-	// - name: key
-	//   in: body
-	//   schema:
-	//     "$ref": "#/definitions/CreateKeyOption"
-	// responses:
-	//   "201":
-	//     "$ref": "#/responses/PublicKey"
-	//   "403":
-	//     "$ref": "#/responses/forbidden"
-	//   "422":
-	//     "$ref": "#/responses/validationError"
-	form := web.GetForm(ctx).(*api.CreateKeyOption)
-	u := user.GetUserByParams(ctx)
-	if ctx.Written() {
-		return
-	}
-	user.CreateUserPublicKey(ctx, *form, u.ID)
-}
-
-// DeleteUserPublicKey api for deleting a user's public key
-func DeleteUserPublicKey(ctx *context.APIContext) {
-	// swagger:operation DELETE /admin/users/{username}/keys/{id} admin adminDeleteUserPublicKey
-	// ---
-	// summary: Delete a user's public key
-	// produces:
-	// - application/json
-	// parameters:
-	// - name: username
-	//   in: path
-	//   description: username of user
-	//   type: string
-	//   required: true
-	// - name: id
-	//   in: path
-	//   description: id of the key to delete
-	//   type: integer
-	//   format: int64
-	//   required: true
-	// responses:
-	//   "204":
-	//     "$ref": "#/responses/empty"
-	//   "403":
-	//     "$ref": "#/responses/forbidden"
-	//   "404":
-	//     "$ref": "#/responses/notFound"
-
-	u := user.GetUserByParams(ctx)
-	if ctx.Written() {
-		return
-	}
-
-	if err := models.DeletePublicKey(u, ctx.ParamsInt64(":id")); err != nil {
-		if models.IsErrKeyNotExist(err) {
-			ctx.NotFound()
-		} else if models.IsErrKeyAccessDenied(err) {
-			ctx.Error(http.StatusForbidden, "", "You do not have access to this key")
-		} else {
-			ctx.Error(http.StatusInternalServerError, "DeleteUserPublicKey", err)
-		}
-		return
-	}
-	log.Trace("Key deleted by admin(%s): %s", ctx.User.Name, u.Name)
 
 	ctx.Status(http.StatusNoContent)
 }

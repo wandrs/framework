@@ -41,13 +41,10 @@ func ToTeam(team *models.Team) *api.Team {
 	}
 
 	return &api.Team{
-		ID:                      team.ID,
-		Name:                    team.Name,
-		Description:             team.Description,
-		IncludesAllRepositories: team.IncludesAllRepositories,
-		CanCreateOrgRepo:        team.CanCreateOrgRepo,
-		Permission:              team.Authorize.String(),
-		Units:                   team.GetUnitNames(),
+		ID:          team.ID,
+		Name:        team.Name,
+		Description: team.Description,
+		Permission:  team.Authorize.String(),
 	}
 }
 

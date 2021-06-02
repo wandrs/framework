@@ -5,7 +5,6 @@
 package swagger
 
 import (
-	"go.wandrs.dev/framework/models"
 	api "go.wandrs.dev/framework/modules/structs"
 )
 
@@ -34,11 +33,4 @@ type swaggerResponseEmailList struct {
 type swaggerModelEditUserOption struct {
 	// in:body
 	Options api.EditUserOption
-}
-
-// UserHeatmapData
-// swagger:response UserHeatmapData
-type swaggerResponseUserHeatmapData struct {
-	// in:body
-	Body []models.UserHeatmapData `json:"body"`
 }

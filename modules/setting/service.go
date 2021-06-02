@@ -14,47 +14,39 @@ import (
 
 // Service settings
 var Service struct {
-	DefaultOrgVisibility                    string
-	DefaultOrgVisibilityMode                structs.VisibleType
-	ActiveCodeLives                         int
-	ResetPwdCodeLives                       int
-	RegisterEmailConfirm                    bool
-	RegisterManualConfirm                   bool
-	EmailDomainWhitelist                    []string
-	EmailDomainBlocklist                    []string
-	DisableRegistration                     bool
-	AllowOnlyInternalRegistration           bool
-	AllowOnlyExternalRegistration           bool
-	ShowRegistrationButton                  bool
-	ShowMilestonesDashboardPage             bool
-	RequireSignInView                       bool
-	EnableNotifyMail                        bool
-	EnableBasicAuth                         bool
-	EnableReverseProxyAuth                  bool
-	EnableReverseProxyAutoRegister          bool
-	EnableReverseProxyEmail                 bool
-	EnableCaptcha                           bool
-	RequireExternalRegistrationCaptcha      bool
-	RequireExternalRegistrationPassword     bool
-	CaptchaType                             string
-	RecaptchaSecret                         string
-	RecaptchaSitekey                        string
-	RecaptchaURL                            string
-	HcaptchaSecret                          string
-	HcaptchaSitekey                         string
-	DefaultKeepEmailPrivate                 bool
-	DefaultAllowCreateOrganization          bool
-	EnableTimetracking                      bool
-	DefaultEnableTimetracking               bool
-	DefaultEnableDependencies               bool
-	AllowCrossRepositoryDependencies        bool
-	DefaultAllowOnlyContributorsToTrackTime bool
-	NoReplyAddress                          string
-	EnableUserHeatmap                       bool
-	AutoWatchNewRepos                       bool
-	AutoWatchOnChanges                      bool
-	DefaultOrgMemberVisible                 bool
-	UserDeleteWithCommentsMaxTime           time.Duration
+	DefaultOrgVisibility                string
+	DefaultOrgVisibilityMode            structs.VisibleType
+	ActiveCodeLives                     int
+	ResetPwdCodeLives                   int
+	RegisterEmailConfirm                bool
+	RegisterManualConfirm               bool
+	EmailDomainWhitelist                []string
+	EmailDomainBlocklist                []string
+	DisableRegistration                 bool
+	AllowOnlyInternalRegistration       bool
+	AllowOnlyExternalRegistration       bool
+	ShowRegistrationButton              bool
+	ShowMilestonesDashboardPage         bool
+	RequireSignInView                   bool
+	EnableNotifyMail                    bool
+	EnableBasicAuth                     bool
+	EnableReverseProxyAuth              bool
+	EnableReverseProxyAutoRegister      bool
+	EnableReverseProxyEmail             bool
+	EnableCaptcha                       bool
+	RequireExternalRegistrationCaptcha  bool
+	RequireExternalRegistrationPassword bool
+	CaptchaType                         string
+	RecaptchaSecret                     string
+	RecaptchaSitekey                    string
+	RecaptchaURL                        string
+	HcaptchaSecret                      string
+	HcaptchaSitekey                     string
+	DefaultKeepEmailPrivate             bool
+	DefaultAllowCreateOrganization      bool
+	NoReplyAddress                      string
+	DefaultOrgMemberVisible             bool
+	UserDeleteWithCommentsMaxTime       time.Duration
 
 	// OpenID settings
 	EnableOpenIDSignIn bool
@@ -105,17 +97,7 @@ func newService() {
 	Service.HcaptchaSitekey = sec.Key("HCAPTCHA_SITEKEY").MustString("")
 	Service.DefaultKeepEmailPrivate = sec.Key("DEFAULT_KEEP_EMAIL_PRIVATE").MustBool()
 	Service.DefaultAllowCreateOrganization = sec.Key("DEFAULT_ALLOW_CREATE_ORGANIZATION").MustBool(true)
-	Service.EnableTimetracking = sec.Key("ENABLE_TIMETRACKING").MustBool(true)
-	if Service.EnableTimetracking {
-		Service.DefaultEnableTimetracking = sec.Key("DEFAULT_ENABLE_TIMETRACKING").MustBool(true)
-	}
-	Service.DefaultEnableDependencies = sec.Key("DEFAULT_ENABLE_DEPENDENCIES").MustBool(true)
-	Service.AllowCrossRepositoryDependencies = sec.Key("ALLOW_CROSS_REPOSITORY_DEPENDENCIES").MustBool(true)
-	Service.DefaultAllowOnlyContributorsToTrackTime = sec.Key("DEFAULT_ALLOW_ONLY_CONTRIBUTORS_TO_TRACK_TIME").MustBool(true)
 	Service.NoReplyAddress = sec.Key("NO_REPLY_ADDRESS").MustString("noreply." + Domain)
-	Service.EnableUserHeatmap = sec.Key("ENABLE_USER_HEATMAP").MustBool(true)
-	Service.AutoWatchNewRepos = sec.Key("AUTO_WATCH_NEW_REPOS").MustBool(true)
-	Service.AutoWatchOnChanges = sec.Key("AUTO_WATCH_ON_CHANGES").MustBool(false)
 	Service.DefaultOrgVisibility = sec.Key("DEFAULT_ORG_VISIBILITY").In("public", structs.ExtractKeysFromMapString(structs.VisibilityModes))
 	Service.DefaultOrgVisibilityMode = structs.VisibilityModes[Service.DefaultOrgVisibility]
 	Service.DefaultOrgMemberVisible = sec.Key("DEFAULT_ORG_MEMBER_VISIBLE").MustBool()

@@ -22,7 +22,6 @@ import (
 	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/util"
 
-	"github.com/unknwon/com"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"mvdan.cc/xurls/v2"
@@ -782,73 +781,7 @@ func fullIssuePatternProcessor(ctx *RenderContext, node *html.Node) {
 }
 
 func issueIndexPatternProcessor(ctx *RenderContext, node *html.Node) {
-	if ctx.Metas == nil {
-		return
-	}
-
-	var (
-		found bool
-		ref   *references.RenderizableReference
-	)
-
-	_, exttrack := ctx.Metas["format"]
-	alphanum := ctx.Metas["style"] == IssueNameStyleAlphanumeric
-
-	// Repos with external issue trackers might still need to reference local PRs
-	// We need to concern with the first one that shows up in the text, whichever it is
-	found, ref = references.FindRenderizableReferenceNumeric(node.Data, exttrack && alphanum)
-	if exttrack && alphanum {
-		if found2, ref2 := references.FindRenderizableReferenceAlphanumeric(node.Data); found2 {
-			if !found || ref2.RefLocation.Start < ref.RefLocation.Start {
-				found = true
-				ref = ref2
-			}
-		}
-	}
-	if !found {
-		return
-	}
-
-	var link *html.Node
-	reftext := node.Data[ref.RefLocation.Start:ref.RefLocation.End]
-	if exttrack && !ref.IsPull {
-		ctx.Metas["index"] = ref.Issue
-		link = createLink(com.Expand(ctx.Metas["format"], ctx.Metas), reftext, "ref-issue")
-	} else {
-		// Path determines the type of link that will be rendered. It's unknown at this point whether
-		// the linked item is actually a PR or an issue. Luckily it's of no real consequence because
-		// Gitea will redirect on click as appropriate.
-		path := "issues"
-		if ref.IsPull {
-			path = "pulls"
-		}
-		if ref.Owner == "" {
-			link = createLink(util.URLJoin(setting.AppURL, ctx.Metas["user"], ctx.Metas["repo"], path, ref.Issue), reftext, "ref-issue")
-		} else {
-			link = createLink(util.URLJoin(setting.AppURL, ref.Owner, ref.Name, path, ref.Issue), reftext, "ref-issue")
-		}
-	}
-
-	if ref.Action == references.XRefActionNone {
-		replaceContent(node, ref.RefLocation.Start, ref.RefLocation.End, link)
-		return
-	}
-
-	// Decorate action keywords if actionable
-	var keyword *html.Node
-	if references.IsXrefActionable(ref, exttrack, alphanum) {
-		keyword = createKeyword(node.Data[ref.ActionLocation.Start:ref.ActionLocation.End])
-	} else {
-		keyword = &html.Node{
-			Type: html.TextNode,
-			Data: node.Data[ref.ActionLocation.Start:ref.ActionLocation.End],
-		}
-	}
-	spaces := &html.Node{
-		Type: html.TextNode,
-		Data: node.Data[ref.ActionLocation.End:ref.RefLocation.Start],
-	}
-	replaceContentList(node, ref.ActionLocation.Start, ref.RefLocation.End, []*html.Node{keyword, spaces, link})
+	return
 }
 
 // fullSha1PatternProcessor renders SHA containing URLs

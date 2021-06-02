@@ -9,7 +9,6 @@ import (
 	"net/http"
 
 	"go.wandrs.dev/binding"
-	"go.wandrs.dev/framework/models"
 	"go.wandrs.dev/framework/modules/context"
 	"go.wandrs.dev/framework/modules/structs"
 	"go.wandrs.dev/framework/modules/web/middleware"
@@ -43,7 +42,6 @@ type UpdateOrgSettingForm struct {
 	Website                   string `binding:"ValidUrl;MaxSize(255)"`
 	Location                  string `binding:"MaxSize(50)"`
 	Visibility                structs.VisibleType
-	MaxRepoCreation           int
 	RepoAdminChangeTeamAccess bool
 }
 
@@ -62,12 +60,10 @@ func (f *UpdateOrgSettingForm) Validate(req *http.Request, errs binding.Errors) 
 
 // CreateTeamForm form for creating team
 type CreateTeamForm struct {
-	TeamName         string `binding:"Required;AlphaDashDot;MaxSize(30)"`
-	Description      string `binding:"MaxSize(255)"`
-	Permission       string
-	Units            []models.UnitType
-	RepoAccess       string
-	CanCreateOrgRepo bool
+	TeamName    string `binding:"Required;AlphaDashDot;MaxSize(30)"`
+	Description string `binding:"MaxSize(255)"`
+	Permission  string
+	RepoAccess  string
 }
 
 // Validate validates the fields

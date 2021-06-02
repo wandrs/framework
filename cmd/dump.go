@@ -291,31 +291,11 @@ func runDump(ctx *cli.Context) error {
 			excludes = append(excludes, opts.ProviderConfig)
 		}
 
-		excludes = append(excludes, setting.Attachment.Path)
 		excludes = append(excludes, setting.LogRootPath)
 		excludes = append(excludes, absFileName)
 		if err := addRecursiveExclude(w, "data", setting.AppDataPath, excludes, verbose); err != nil {
 			fatal("Failed to include data directory: %v", err)
 		}
-	}
-
-	if ctx.IsSet("skip-attachment-data") && ctx.Bool("skip-attachment-data") {
-		log.Info("Skip dumping attachment data")
-	} else if err := storage.Attachments.IterateObjects(func(objPath string, object storage.Object) error {
-		info, err := object.Stat()
-		if err != nil {
-			return err
-		}
-
-		return w.Write(archiver.File{
-			FileInfo: archiver.FileInfo{
-				FileInfo:   info,
-				CustomName: path.Join("data", "attachments", objPath),
-			},
-			ReadCloser: object,
-		})
-	}); err != nil {
-		fatal("Failed to dump attachments: %v", err)
 	}
 
 	// Doesn't check if LogRootPath exists before processing --skip-log intentionally,

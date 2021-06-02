@@ -11,8 +11,6 @@ import (
 	"go.wandrs.dev/framework/models"
 	"go.wandrs.dev/framework/modules/base"
 	"go.wandrs.dev/framework/modules/context"
-	"go.wandrs.dev/framework/modules/markup"
-	"go.wandrs.dev/framework/modules/markup/markdown"
 	"go.wandrs.dev/framework/modules/setting"
 )
 
@@ -38,73 +36,16 @@ func Home(ctx *context.Context) {
 	ctx.Data["PageIsUserProfile"] = true
 	ctx.Data["Title"] = org.DisplayName()
 	if len(org.Description) != 0 {
-		desc, err := markdown.RenderString(&markup.RenderContext{
-			URLPrefix: ctx.Repo.RepoLink,
-			Metas:     map[string]string{"mode": "document"},
-		}, org.Description)
-		if err != nil {
-			ctx.ServerError("RenderString", err)
-			return
-		}
-		ctx.Data["RenderedDescription"] = desc
+		ctx.Data["RenderedDescription"] = org.Description
 	}
 
-	var orderBy models.SearchOrderBy
 	ctx.Data["SortType"] = ctx.Query("sort")
-	switch ctx.Query("sort") {
-	case "newest":
-		orderBy = models.SearchOrderByNewest
-	case "oldest":
-		orderBy = models.SearchOrderByOldest
-	case "recentupdate":
-		orderBy = models.SearchOrderByRecentUpdated
-	case "leastupdate":
-		orderBy = models.SearchOrderByLeastUpdated
-	case "reversealphabetically":
-		orderBy = models.SearchOrderByAlphabeticallyReverse
-	case "alphabetically":
-		orderBy = models.SearchOrderByAlphabetically
-	case "moststars":
-		orderBy = models.SearchOrderByStarsReverse
-	case "feweststars":
-		orderBy = models.SearchOrderByStars
-	case "mostforks":
-		orderBy = models.SearchOrderByForksReverse
-	case "fewestforks":
-		orderBy = models.SearchOrderByForks
-	default:
-		ctx.Data["SortType"] = "recentupdate"
-		orderBy = models.SearchOrderByRecentUpdated
-	}
-
 	keyword := strings.Trim(ctx.Query("q"), " ")
 	ctx.Data["Keyword"] = keyword
 
 	page := ctx.QueryInt("page")
 	if page <= 0 {
 		page = 1
-	}
-
-	var (
-		repos []*models.Repository
-		count int64
-		err   error
-	)
-	repos, count, err = models.SearchRepository(&models.SearchRepoOptions{
-		ListOptions: models.ListOptions{
-			PageSize: setting.UI.User.RepoPagingNum,
-			Page:     page,
-		},
-		Keyword:            keyword,
-		OwnerID:            org.ID,
-		OrderBy:            orderBy,
-		Private:            ctx.IsSigned,
-		Actor:              ctx.User,
-		IncludeDescription: setting.UI.SearchRepoDescription,
-	})
-	if err != nil {
-		ctx.ServerError("SearchRepository", err)
-		return
 	}
 
 	var opts = models.FindOrgMembersOpts{
@@ -135,15 +76,11 @@ func Home(ctx *context.Context) {
 	}
 
 	ctx.Data["Owner"] = org
-	ctx.Data["Repos"] = repos
-	ctx.Data["Total"] = count
 	ctx.Data["MembersTotal"] = membersCount
 	ctx.Data["Members"] = members
 	ctx.Data["Teams"] = org.Teams
 
-	ctx.Data["DisabledMirrors"] = setting.Repository.DisableMirrors
-
-	pager := context.NewPagination(int(count), setting.UI.User.RepoPagingNum, page, 5)
+	pager := context.NewPagination(0, setting.UI.User.RepoPagingNum, page, 5)
 	pager.SetDefaultParams(ctx)
 	ctx.Data["Page"] = pager
 

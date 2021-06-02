@@ -127,7 +127,6 @@ func Dashboard(ctx *context.Context) {
 	// FIXME: update periodically
 	updateSystemStatus()
 	ctx.Data["SysStatus"] = sysStatus
-	ctx.Data["SSH"] = setting.SSH
 	ctx.HTML(http.StatusOK, tplDashboard)
 }
 
@@ -244,16 +243,11 @@ func Config(ctx *context.Context) {
 	ctx.Data["CustomRootPath"] = setting.CustomPath
 	ctx.Data["StaticRootPath"] = setting.StaticRootPath
 	ctx.Data["LogRootPath"] = setting.LogRootPath
-	ctx.Data["ScriptType"] = setting.ScriptType
 	ctx.Data["ReverseProxyAuthUser"] = setting.ReverseProxyAuthUser
 	ctx.Data["ReverseProxyAuthEmail"] = setting.ReverseProxyAuthEmail
 
-	ctx.Data["SSH"] = setting.SSH
-	ctx.Data["LFS"] = setting.LFS
-
 	ctx.Data["Service"] = setting.Service
 	ctx.Data["DbCfg"] = setting.Database
-	ctx.Data["Webhook"] = setting.Webhook
 
 	ctx.Data["MailerEnabled"] = false
 	if setting.MailService != nil {
@@ -288,8 +282,6 @@ func Config(ctx *context.Context) {
 
 	ctx.Data["DisableGravatar"] = setting.DisableGravatar
 	ctx.Data["EnableFederatedAvatar"] = setting.EnableFederatedAvatar
-
-	ctx.Data["Git"] = setting.Git
 
 	type envVar struct {
 		Name, Value string

@@ -164,7 +164,6 @@ func WebRoutes() *web.Route {
 
 	// We use r.Route here over r.Use because this prevents requests that are not for avatars having to go through this additional handler
 	routes.Route("/avatars/*", "GET, HEAD", storageHandler(setting.Avatar.Storage, "avatars", storage.Avatars))
-	routes.Route("/repo-avatars/*", "GET, HEAD", storageHandler(setting.RepoAvatar.Storage, "repo-avatars", storage.RepoAvatars))
 
 	// for health check - doeesn't need to be passed through gzip handler
 	routes.Head("/", func(w http.ResponseWriter, req *http.Request) {
@@ -256,21 +255,6 @@ func RegisterRoutes(m *web.Route) {
 
 	openIDSignUpEnabled := func(ctx *context.Context) {
 		if !setting.Service.EnableOpenIDSignUp {
-			ctx.Error(http.StatusForbidden)
-			return
-		}
-	}
-
-	reqMilestonesDashboardPageEnabled := func(ctx *context.Context) {
-		if !setting.Service.ShowMilestonesDashboardPage {
-			ctx.Error(http.StatusForbidden)
-			return
-		}
-	}
-
-	// webhooksEnabled requires webhooks to be enabled by admin.
-	webhooksEnabled := func(ctx *context.Context) {
-		if setting.DisableWebhooks {
 			ctx.Error(http.StatusForbidden)
 			return
 		}

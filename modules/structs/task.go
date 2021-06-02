@@ -7,17 +7,8 @@ package structs
 // TaskType defines task type
 type TaskType int
 
-// all kinds of task types
-const (
-	TaskTypeMigrateRepo TaskType = iota // migrate repository from external or local disk
-)
-
 // Name returns the task type name
 func (taskType TaskType) Name() string {
-	switch taskType {
-	case TaskTypeMigrateRepo:
-		return "Migrate Repository"
-	}
 	return ""
 }
 

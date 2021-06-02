@@ -589,10 +589,7 @@ func Contexter() func(next http.Handler) http.Handler {
 				Link:    link,
 				Render:  rnd,
 				Session: session.GetSession(req),
-				Repo: &Repository{
-					PullRequest: &PullRequest{},
-				},
-				Org: &Organization{},
+				Org:     &Organization{},
 				Data: map[string]interface{}{
 					"CurrentURL":    setting.AppSubURL + req.URL.RequestURI(),
 					"PageStartTime": startTime,
@@ -651,7 +648,7 @@ func Contexter() func(next http.Handler) http.Handler {
 
 			// If request sends files, parse them here otherwise the Query() can't be parsed and the CsrfToken will be invalid.
 			if ctx.Req.Method == "POST" && strings.Contains(ctx.Req.Header.Get("Content-Type"), "multipart/form-data") {
-				if err := ctx.Req.ParseMultipartForm(setting.Attachment.MaxSize << 20); err != nil && !strings.Contains(err.Error(), "EOF") { // 32MB max size
+				if err := ctx.Req.ParseMultipartForm(32 << 20); err != nil && !strings.Contains(err.Error(), "EOF") { // 32MB max size
 					ctx.ServerError("ParseMultipartForm", err)
 					return
 				}
@@ -696,11 +693,6 @@ func Contexter() func(next http.Handler) http.Handler {
 			ctx.Data["EnableOpenIDSignIn"] = setting.Service.EnableOpenIDSignIn
 
 			ctx.Data["ManifestData"] = setting.ManifestData
-
-			ctx.Data["UnitWikiGlobalDisabled"] = models.UnitTypeWiki.UnitGlobalDisabled()
-			ctx.Data["UnitIssuesGlobalDisabled"] = models.UnitTypeIssues.UnitGlobalDisabled()
-			ctx.Data["UnitPullsGlobalDisabled"] = models.UnitTypePullRequests.UnitGlobalDisabled()
-			ctx.Data["UnitProjectsGlobalDisabled"] = models.UnitTypeProjects.UnitGlobalDisabled()
 
 			ctx.Data["i18n"] = locale
 			ctx.Data["Tr"] = i18n.Tr

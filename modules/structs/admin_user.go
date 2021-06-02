@@ -39,7 +39,6 @@ type EditUserOption struct {
 	Admin                   *bool   `json:"admin"`
 	AllowGitHook            *bool   `json:"allow_git_hook"`
 	AllowImportLocal        *bool   `json:"allow_import_local"`
-	MaxRepoCreation         *int    `json:"max_repo_creation"`
 	ProhibitLogin           *bool   `json:"prohibit_login"`
 	AllowCreateOrganization *bool   `json:"allow_create_organization"`
 	Restricted              *bool   `json:"restricted"`

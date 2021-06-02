@@ -122,15 +122,6 @@ func TestMain(m *testing.M) {
 
 	writerCloser.t = nil
 
-	if err = util.RemoveAll(setting.Indexer.IssuePath); err != nil {
-		fmt.Printf("util.RemoveAll: %v\n", err)
-		os.Exit(1)
-	}
-	if err = util.RemoveAll(setting.Indexer.RepoPath); err != nil {
-		fmt.Printf("Unable to remove repo indexer: %v\n", err)
-		os.Exit(1)
-	}
-
 	os.Exit(exitCode)
 }
 
@@ -163,7 +154,6 @@ func initIntegrationTest() {
 	setting.SetCustomPathAndConf("", "", "")
 	setting.NewContext()
 	util.RemoveAll(models.LocalCopyPath())
-	setting.CheckLFSVersion()
 	setting.InitDBConfig()
 	if err := storage.Init(); err != nil {
 		fmt.Printf("Init storage failed: %v", err)
