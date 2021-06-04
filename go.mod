@@ -84,3 +84,5 @@ require (
 	xorm.io/builder v0.3.9
 	xorm.io/xorm v1.1.0
 )
+
+replace github.com/lafriks/xormstore => github.com/wandrs/xormstore v1.4.1-0.20210604161001-ac29d1fa6fc4
