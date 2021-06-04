@@ -280,7 +280,7 @@ github.com/klauspost/pgzip
 github.com/kr/pretty
 # github.com/kr/text v0.2.0
 github.com/kr/text
-# github.com/lafriks/xormstore v1.4.0
+# github.com/lafriks/xormstore v1.4.0 => github.com/wandrs/xormstore v1.4.1-0.20210604161001-ac29d1fa6fc4
 ## explicit
 github.com/lafriks/xormstore
 github.com/lafriks/xormstore/util
@@ -750,3 +750,4 @@ xorm.io/xorm/log
 xorm.io/xorm/names
 xorm.io/xorm/schemas
 xorm.io/xorm/tags
+# github.com/lafriks/xormstore => github.com/wandrs/xormstore v1.4.1-0.20210604161001-ac29d1fa6fc4
