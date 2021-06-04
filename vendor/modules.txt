@@ -551,9 +551,6 @@ go.wandrs.dev/binding
 # go.wandrs.dev/cache v0.0.0-20210531105734-7f9e41f0042f
 ## explicit
 go.wandrs.dev/cache
-# go.wandrs.dev/cache/memcache v0.0.0-20210531105734-7f9e41f0042f
-## explicit
-go.wandrs.dev/cache/memcache
 # go.wandrs.dev/captcha v0.0.0-20210531101847-946666b98836
 ## explicit
 go.wandrs.dev/captcha
@@ -753,4 +750,3 @@ xorm.io/xorm/log
 xorm.io/xorm/names
 xorm.io/xorm/schemas
 xorm.io/xorm/tags
-# github.com/hashicorp/go-version => github.com/6543/go-version v1.3.1

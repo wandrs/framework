@@ -40,7 +40,6 @@ gitea.com/lunny/levelqueue v0.3.0 h1:MHn1GuSZkxvVEDMyAPqlc7A3cOW+q8RcGhRgH/xtm6I
 gitea.com/lunny/levelqueue v0.3.0/go.mod h1:HBqmLbz56JWpfEGG0prskAV97ATNRoj5LDmPicD22hU=
 gitea.com/xorm/sqlfiddle v0.0.0-20180821085327-62ce714f951a h1:lSA0F4e9A2NcQSqGqTOXqu2aRi/XEQxDCBwM8yJtE6s=
 gitea.com/xorm/sqlfiddle v0.0.0-20180821085327-62ce714f951a/go.mod h1:EXuID2Zs0pAQhH8yz+DNjUbjppKQzKFAn28TMYPB6IU=
-github.com/6543/go-version v1.3.1/go.mod h1:oqFAHCwtLVUTLdhQmVZWYvaHXTdsbB4SY85at64SQEo=
 github.com/Azure/go-ntlmssp v0.0.0-20200615164410-66371956d46c h1:/IBSNwUN8+eKzUzbJPqhK839ygXJ82sde8x3ogr6R28=
 github.com/Azure/go-ntlmssp v0.0.0-20200615164410-66371956d46c/go.mod h1:chxPXzSsl7ZWRAuOIE23GDNzjWuZquvFlgA8xmpunjU=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
@@ -481,6 +480,7 @@ github.com/hashicorp/go-sockaddr v1.0.0/go.mod h1:7Xibr9yA9JjQq1JpNB2Vw7kxv8xerX
 github.com/hashicorp/go-syslog v1.0.0/go.mod h1:qPfqrKkXGihmCqbJM2mZgkZGvKG1dFdvsLplgctolz4=
 github.com/hashicorp/go-uuid v1.0.0/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
 github.com/hashicorp/go-uuid v1.0.1/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
+github.com/hashicorp/go-version v1.2.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
 github.com/hashicorp/go.net v0.0.1/go.mod h1:hjKkEWcCURg++eb33jQU7oqQcI9XDCnUzHA0oac0k90=
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/golang-lru v0.5.1/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
@@ -975,8 +975,6 @@ go.wandrs.dev/binding v0.0.0-20210531104511-aa760cf3a6c4/go.mod h1:yPuDuAeM5bc+F
 go.wandrs.dev/cache v0.0.0-20210531101526-aaa24f392b30/go.mod h1:QSbqCesHO3WuUaTlnCarm3sWmv7dy1OrsfD1UZMj3lY=
 go.wandrs.dev/cache v0.0.0-20210531105734-7f9e41f0042f h1:U3SJ1zPNUyoemBunCQNruSbPysWuQsSbj752BSvVUVg=
 go.wandrs.dev/cache v0.0.0-20210531105734-7f9e41f0042f/go.mod h1:QSbqCesHO3WuUaTlnCarm3sWmv7dy1OrsfD1UZMj3lY=
-go.wandrs.dev/cache/memcache v0.0.0-20210531105734-7f9e41f0042f h1:o0jf1LQCgOMoBCR7/F9Hy6WUJO2ny/M/HyB3bDfhiQ0=
-go.wandrs.dev/cache/memcache v0.0.0-20210531105734-7f9e41f0042f/go.mod h1:g65x5AVJLrjqFlPumKS08YpcdplxhTMhRImUdjEulY4=
 go.wandrs.dev/captcha v0.0.0-20210531101847-946666b98836 h1:Gec/J+r5ziGe4CBOYm7FIWFoXWcFjvb3kj0DwQrjtjc=
 go.wandrs.dev/captcha v0.0.0-20210531101847-946666b98836/go.mod h1:YIfO6klsAG7kOu/ZgTe1DIISXlBChdhFBE0c21DN2dw=
 go.wandrs.dev/session v0.0.0-20210531074458-568b38307750/go.mod h1:jSyEOZU2+v4a1ImBSVocvFSw5R/UNqgm9QbjBK2nmHc=

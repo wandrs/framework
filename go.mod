@@ -64,7 +64,6 @@ require (
 	go.jolheiser.com/pwn v0.0.3
 	go.wandrs.dev/binding v0.0.0-20210531104511-aa760cf3a6c4
 	go.wandrs.dev/cache v0.0.0-20210531105734-7f9e41f0042f
-	go.wandrs.dev/cache/memcache v0.0.0-20210531105734-7f9e41f0042f
 	go.wandrs.dev/captcha v0.0.0-20210531101847-946666b98836
 	go.wandrs.dev/session v0.0.0-20210531080514-72628304c241
 	go.wandrs.dev/session/couchbase v0.0.0-20210531080514-72628304c241
@@ -85,5 +84,3 @@ require (
 	xorm.io/builder v0.3.9
 	xorm.io/xorm v1.1.0
 )
-
-replace github.com/hashicorp/go-version => github.com/6543/go-version v1.3.1
