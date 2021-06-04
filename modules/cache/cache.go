@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	mc "go.wandrs.dev/cache"
-	_ "go.wandrs.dev/cache/memcache" // memcache plugin for cache
 	"go.wandrs.dev/framework/modules/setting"
 )
 
