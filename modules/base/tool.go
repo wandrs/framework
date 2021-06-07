@@ -12,8 +12,10 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -25,6 +27,15 @@ import (
 
 	"github.com/dustin/go-humanize"
 )
+
+// Use at most this many bytes to determine Content Type.
+const sniffLen = 512
+
+// SVGMimeType MIME type of SVG images.
+const SVGMimeType = "image/svg+xml"
+
+var svgTagRegex = regexp.MustCompile(`(?si)\A\s*(?:(<!--.*?-->|<!DOCTYPE\s+svg([\s:]+.*?>|>))\s*)*<svg[\s>\/]`)
+var svgTagInXMLRegex = regexp.MustCompile(`(?si)\A<\?xml\b.*?\?>\s*(?:(<!--.*?-->|<!DOCTYPE\s+svg([\s:]+.*?>|>))\s*)*<svg[\s>\/]`)
 
 // EncodeMD5 encodes string to md5 hex value.
 func EncodeMD5(str string) string {

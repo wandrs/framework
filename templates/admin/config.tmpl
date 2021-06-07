@@ -170,13 +170,6 @@
 				<dt>{{.i18n.Tr "admin.config.default_allow_create_organization"}}</dt>
 				<dd>{{if .Service.DefaultAllowCreateOrganization}}{{svg "octicon-check"}}{{else}}{{svg "octicon-x"}}{{end}}</dd>
 				<dt>{{.i18n.Tr "admin.config.enable_timetracking"}}</dt>
-				<dd>{{if .Service.EnableTimetracking}}{{svg "octicon-check"}}{{else}}{{svg "octicon-x"}}{{end}}</dd>
-				{{if .Service.EnableTimetracking}}
-					<dt>{{.i18n.Tr "admin.config.default_enable_timetracking"}}</dt>
-					<dd>{{if .Service.DefaultEnableTimetracking}}{{svg "octicon-check"}}{{else}}{{svg "octicon-x"}}{{end}}</dd>
-					<dt>{{.i18n.Tr "admin.config.default_allow_only_contributors_to_track_time"}}</dt>
-					<dd>{{if .Service.DefaultAllowOnlyContributorsToTrackTime}}{{svg "octicon-check"}}{{else}}{{svg "octicon-x"}}{{end}}</dd>
-				{{end}}
 				<dt>{{.i18n.Tr "admin.config.default_visibility_organization"}}</dt>
 				<dd>{{.Service.DefaultOrgVisibility}}</dd>
 

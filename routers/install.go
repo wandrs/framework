@@ -27,8 +27,8 @@ import (
 	"go.wandrs.dev/framework/modules/web"
 	"go.wandrs.dev/framework/modules/web/middleware"
 	"go.wandrs.dev/framework/services/forms"
-
 	"go.wandrs.dev/session"
+
 	"gopkg.in/ini.v1"
 )
 

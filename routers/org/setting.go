@@ -52,7 +52,6 @@ func SettingsPost(ctx *context.Context) {
 	}
 
 	org := ctx.Org.Organization
-	nameChanged := org.Name != form.Name
 
 	// Check if organization name has been changed.
 	if org.LowerName != strings.ToLower(form.Name) {
@@ -76,7 +75,6 @@ func SettingsPost(ctx *context.Context) {
 		// reset ctx.org.OrgLink with new name
 		ctx.Org.OrgLink = setting.AppSubURL + "/org/" + form.Name
 		log.Trace("Organization name changed: %s -> %s", org.Name, form.Name)
-		nameChanged = false
 	}
 
 	// In case it's just a case change.

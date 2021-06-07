@@ -10,9 +10,9 @@ import (
 	"os"
 	"time"
 
-	"go.wandrs.dev/framework/modules/setting"
 	"go.wandrs.dev/framework/modules/log"
 	"go.wandrs.dev/framework/modules/private"
+	"go.wandrs.dev/framework/modules/setting"
 
 	"github.com/urfave/cli/v2"
 )

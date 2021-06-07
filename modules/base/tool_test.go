@@ -5,6 +5,7 @@
 package base
 
 import (
+	"encoding/base64"
 	"os"
 	"testing"
 	"time"

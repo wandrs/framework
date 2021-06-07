@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"image"
 	"image/color/palette"
-
 	_ "image/gif"  // for processing gif images
 	_ "image/jpeg" // for processing jpeg images
 	_ "image/png"  // for processing png images

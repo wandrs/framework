@@ -67,11 +67,6 @@ func HandleUsernameChange(ctx *context.Context, user *models.User, newName strin
 			}
 			return err
 		}
-	} else {
-		if err := models.UpdateRepositoryOwnerNames(user.ID, newName); err != nil {
-			ctx.ServerError("UpdateRepository", err)
-			return err
-		}
 	}
 	log.Trace("User name changed: %s -> %s", user.Name, newName)
 	return nil

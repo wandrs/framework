@@ -8,4 +8,4 @@
 |------------|-----------------------------------------------------------------------------|
 | Imports    | Checks for import sorting. stdlib->code.gitea.io->other                     |
 | License    | Checks file headers for some form of `Copyright...YYYY...Gitea/Gogs`        |
-| Migrations | Checks for black-listed packages in `go.wandrs.dev/framework/models/migrations` |
+| Migrations | Checks for black-listed packages in `code.gitea.io/gitea/models/migrations` |
