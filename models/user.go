@@ -462,11 +462,18 @@ func (u *User) GetOrganizations(opts *SearchOrganizationsOptions) error {
 	groupByStr = groupByStr[0 : len(groupByStr)-1]
 
 	// TODO(tamal): Test this query
-	sess.Select("`user`.*, count(repo_id) as org_count").
+
+	sess.Select("`user`.*, count(org_id) as org_count").
 		Table("user").
 		Join("INNER", "org_user", "`org_user`.org_id=`user`.id").
 		And("`org_user`.uid=?", u.ID).
 		GroupBy(groupByStr)
+
+	//sess.Select("`user`.*, count(repo_id) as org_count").
+	//	Table("user").
+	//	Join("INNER", "org_user", "`org_user`.org_id=`user`.id").
+	//	And("`org_user`.uid=?", u.ID).
+	//	GroupBy(groupByStr)
 	if opts.PageSize != 0 {
 		sess = opts.setSessionPagination(sess)
 	}
