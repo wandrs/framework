@@ -84,8 +84,7 @@ func (ctx *Context) MapTo(val interface{}, ifacePtr interface{}) middleware.Type
 		panic("ifacePtr must be pointer")
 	}
 
-
-	ctx.Req =  ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), typ, reflect.ValueOf(val)))
+	ctx.Req = ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), typ, reflect.ValueOf(val)))
 	return ctx
 }
 
@@ -499,9 +498,21 @@ func (ctx *Context) Params(p string) string {
 	return s
 }
 
+// ParamsInt returns the param on route as int
+func (ctx *Context) ParamsInt(p string) int {
+	v, _ := strconv.ParseInt(ctx.Params(p), 10, 0)
+	return int(v)
+}
+
 // ParamsInt64 returns the param on route as int64
 func (ctx *Context) ParamsInt64(p string) int64 {
 	v, _ := strconv.ParseInt(ctx.Params(p), 10, 64)
+	return v
+}
+
+// ParamsFloat64 returns the param on route as float64
+func (ctx *Context) ParamsFloat64(name string) float64 {
+	v, _ := strconv.ParseFloat(ctx.Params(name), 64)
 	return v
 }
 
