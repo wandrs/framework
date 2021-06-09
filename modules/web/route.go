@@ -6,7 +6,9 @@ package web
 
 import (
 	goctx "context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strings"
@@ -16,6 +18,7 @@ import (
 	"go.wandrs.dev/framework/modules/web/middleware"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/gorilla/schema"
 )
 
 // Wrap converts all kinds of routes to standard library one
@@ -167,6 +170,73 @@ func SetForm(data middleware.DataStore, obj interface{}) {
 // GetForm returns the validate form information
 func GetForm(data middleware.DataStore) interface{} {
 	return data.GetData()["__form"]
+}
+
+// Json is middleware to deserialize a JSON payload from the request
+// into the struct that is passed in. The resulting struct is then
+// validated, but no error handling is actually performed here.
+// An interface pointer can be added as a second argument in order
+// to map the struct to a specific interface.
+//
+// For all requests, Json parses the raw query from the URL using matching struct json tags.
+//
+// For POST, PUT, and PATCH requests, it also parses the request body.
+// Request body parameters take precedence over URL query string values.
+//
+// Json follows the Request.ParseForm() method from Go's net/http library.
+// ref: https://github.com/golang/go/blob/700e969d5b23732179ea86cfe67e8d1a0a1cc10a/src/net/http/request.go#L1176
+func Json(jsonStruct interface{}, ifacePtr ...interface{}) func(ctx *context.Context) {
+	return func(ctx *context.Context) {
+		var errors binding.Errors
+		ensureNotPointer(jsonStruct)
+		jsonStruct := reflect.New(reflect.TypeOf(jsonStruct))
+		var err error
+		if ctx.Req.URL != nil {
+			if params := ctx.Req.URL.Query(); len(params) > 0 {
+				d := schema.NewDecoder()
+				d.SetAliasTag("json")
+				err = d.Decode(jsonStruct.Interface(), params)
+			}
+		}
+		if ctx.Req.Method == "POST" || ctx.Req.Method == "PUT" || ctx.Req.Method == "PATCH" {
+			if ctx.Req.Body != nil {
+				v := jsonStruct.Interface()
+				e := json.NewDecoder(ctx.Req.Body).Decode(v)
+				if err == nil {
+					err = e
+				}
+			}
+		}
+		if err != nil && err != io.EOF {
+			errors.Add([]string{}, binding.ERR_DESERIALIZATION, err.Error())
+		}
+		validateAndMap(jsonStruct, ctx, errors, ifacePtr...)
+	}
+}
+
+// Don't pass in pointers to bind to. Can lead to bugs.
+func ensureNotPointer(obj interface{}) {
+	if reflect.TypeOf(obj).Kind() == reflect.Ptr {
+		panic("Pointers are not accepted as binding models")
+	}
+}
+
+// Performs validation and combines errors from validation
+// with errors from deserialization, then maps both the
+// resulting struct and the errors to the context.
+func validateAndMap(obj reflect.Value, ctx *context.Context, errors binding.Errors, ifacePtr ...interface{}) {
+	binding.Validate(ctx.Req, obj.Interface())
+	errors = append(errors, getErrors(ctx)...)
+	ctx.Map(errors)
+	ctx.Map(obj.Elem().Interface())
+	if len(ifacePtr) > 0 {
+		ctx.MapTo(obj.Elem().Interface(), ifacePtr[0])
+	}
+}
+
+// getErrors simply gets the errors from the context (it's kind of a chore)
+func getErrors(ctx *context.Context) binding.Errors {
+	return ctx.GetVal(reflect.TypeOf(binding.Errors{})).Interface().(binding.Errors)
 }
 
 // Route defines a route based on chi's router
