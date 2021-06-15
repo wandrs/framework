@@ -20,32 +20,34 @@ import (
 	"code.gitea.io/gitea/routers/routes"
 
 	context2 "github.com/gorilla/context"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	ini "gopkg.in/ini.v1"
 )
 
 // CmdWeb represents the available web sub-command.
-var CmdWeb = cli.Command{
+var CmdWeb = &cli.Command{
 	Name:  "web",
 	Usage: "Start Gitea web server",
 	Description: `Gitea web server is the only thing you need to run,
 and it takes care of all the other things for you`,
 	Action: runWeb,
 	Flags: []cli.Flag{
-		cli.StringFlag{
-			Name:  "port, p",
-			Value: "3000",
-			Usage: "Temporary port number to prevent conflict",
+		&cli.StringFlag{
+			Name:    "port",
+			Aliases: []string{"p"},
+			Value:   "3000",
+			Usage:   "Temporary port number to prevent conflict",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "install-port",
 			Value: "3000",
 			Usage: "Temporary port number to run the install page on to prevent conflict",
 		},
-		cli.StringFlag{
-			Name:  "pid, P",
-			Value: setting.PIDFile,
-			Usage: "Custom pid file path",
+		&cli.StringFlag{
+			Name:    "pid",
+			Aliases: []string{"P"},
+			Value:   setting.PIDFile,
+			Usage:   "Custom pid file path",
 		},
 	},
 }
@@ -173,10 +175,6 @@ func listen(m http.Handler, handleRedirector bool) error {
 		listenAddr = net.JoinHostPort(listenAddr, setting.HTTPPort)
 	}
 	log.Info("Listen: %v://%s%s", setting.Protocol, listenAddr, setting.AppSubURL)
-
-	if setting.LFS.StartServer {
-		log.Info("LFS server enabled")
-	}
 
 	var err error
 	switch setting.Protocol {

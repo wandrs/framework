@@ -19,7 +19,6 @@ import (
 	"code.gitea.io/gitea/modules/base"
 	"code.gitea.io/gitea/modules/context"
 	"code.gitea.io/gitea/modules/cron"
-	"code.gitea.io/gitea/modules/git"
 	"code.gitea.io/gitea/modules/log"
 	"code.gitea.io/gitea/modules/process"
 	"code.gitea.io/gitea/modules/queue"
@@ -28,9 +27,9 @@ import (
 	"code.gitea.io/gitea/modules/web"
 	"code.gitea.io/gitea/services/forms"
 	"code.gitea.io/gitea/services/mailer"
-	jsoniter "github.com/json-iterator/go"
+	"go.wandrs.dev/session"
 
-	"gitea.com/go-chi/session"
+	jsoniter "github.com/json-iterator/go"
 )
 
 const (
@@ -128,7 +127,6 @@ func Dashboard(ctx *context.Context) {
 	// FIXME: update periodically
 	updateSystemStatus()
 	ctx.Data["SysStatus"] = sysStatus
-	ctx.Data["SSH"] = setting.SSH
 	ctx.HTML(http.StatusOK, tplDashboard)
 }
 
@@ -242,23 +240,14 @@ func Config(ctx *context.Context) {
 	ctx.Data["DisableRouterLog"] = setting.DisableRouterLog
 	ctx.Data["RunUser"] = setting.RunUser
 	ctx.Data["RunMode"] = strings.Title(setting.RunMode)
-	if version, err := git.LocalVersion(); err == nil {
-		ctx.Data["GitVersion"] = version.Original()
-	}
-	ctx.Data["RepoRootPath"] = setting.RepoRootPath
 	ctx.Data["CustomRootPath"] = setting.CustomPath
 	ctx.Data["StaticRootPath"] = setting.StaticRootPath
 	ctx.Data["LogRootPath"] = setting.LogRootPath
-	ctx.Data["ScriptType"] = setting.ScriptType
 	ctx.Data["ReverseProxyAuthUser"] = setting.ReverseProxyAuthUser
 	ctx.Data["ReverseProxyAuthEmail"] = setting.ReverseProxyAuthEmail
 
-	ctx.Data["SSH"] = setting.SSH
-	ctx.Data["LFS"] = setting.LFS
-
 	ctx.Data["Service"] = setting.Service
 	ctx.Data["DbCfg"] = setting.Database
-	ctx.Data["Webhook"] = setting.Webhook
 
 	ctx.Data["MailerEnabled"] = false
 	if setting.MailService != nil {
@@ -293,8 +282,6 @@ func Config(ctx *context.Context) {
 
 	ctx.Data["DisableGravatar"] = setting.DisableGravatar
 	ctx.Data["EnableFederatedAvatar"] = setting.EnableFederatedAvatar
-
-	ctx.Data["Git"] = setting.Git
 
 	type envVar struct {
 		Name, Value string

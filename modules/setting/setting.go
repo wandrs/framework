@@ -30,7 +30,6 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	shellquote "github.com/kballard/go-shellquote"
 	"github.com/unknwon/com"
-	gossh "golang.org/x/crypto/ssh"
 	ini "gopkg.in/ini.v1"
 )
 
@@ -120,47 +119,6 @@ var (
 	StaticURLPrefix      string
 	AbsoluteAssetURL     string
 
-	SSH = struct {
-		Disabled                       bool              `ini:"DISABLE_SSH"`
-		StartBuiltinServer             bool              `ini:"START_SSH_SERVER"`
-		BuiltinServerUser              string            `ini:"BUILTIN_SSH_SERVER_USER"`
-		Domain                         string            `ini:"SSH_DOMAIN"`
-		Port                           int               `ini:"SSH_PORT"`
-		ListenHost                     string            `ini:"SSH_LISTEN_HOST"`
-		ListenPort                     int               `ini:"SSH_LISTEN_PORT"`
-		RootPath                       string            `ini:"SSH_ROOT_PATH"`
-		ServerCiphers                  []string          `ini:"SSH_SERVER_CIPHERS"`
-		ServerKeyExchanges             []string          `ini:"SSH_SERVER_KEY_EXCHANGES"`
-		ServerMACs                     []string          `ini:"SSH_SERVER_MACS"`
-		ServerHostKeys                 []string          `ini:"SSH_SERVER_HOST_KEYS"`
-		KeyTestPath                    string            `ini:"SSH_KEY_TEST_PATH"`
-		KeygenPath                     string            `ini:"SSH_KEYGEN_PATH"`
-		AuthorizedKeysBackup           bool              `ini:"SSH_AUTHORIZED_KEYS_BACKUP"`
-		AuthorizedPrincipalsBackup     bool              `ini:"SSH_AUTHORIZED_PRINCIPALS_BACKUP"`
-		MinimumKeySizeCheck            bool              `ini:"-"`
-		MinimumKeySizes                map[string]int    `ini:"-"`
-		CreateAuthorizedKeysFile       bool              `ini:"SSH_CREATE_AUTHORIZED_KEYS_FILE"`
-		CreateAuthorizedPrincipalsFile bool              `ini:"SSH_CREATE_AUTHORIZED_PRINCIPALS_FILE"`
-		ExposeAnonymous                bool              `ini:"SSH_EXPOSE_ANONYMOUS"`
-		AuthorizedPrincipalsAllow      []string          `ini:"SSH_AUTHORIZED_PRINCIPALS_ALLOW"`
-		AuthorizedPrincipalsEnabled    bool              `ini:"-"`
-		TrustedUserCAKeys              []string          `ini:"SSH_TRUSTED_USER_CA_KEYS"`
-		TrustedUserCAKeysFile          string            `ini:"SSH_TRUSTED_USER_CA_KEYS_FILENAME"`
-		TrustedUserCAKeysParsed        []gossh.PublicKey `ini:"-"`
-	}{
-		Disabled:            false,
-		StartBuiltinServer:  false,
-		Domain:              "",
-		Port:                22,
-		ServerCiphers:       []string{"aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "arcfour256", "arcfour128"},
-		ServerKeyExchanges:  []string{"diffie-hellman-group1-sha1", "diffie-hellman-group14-sha1", "ecdh-sha2-nistp256", "ecdh-sha2-nistp384", "ecdh-sha2-nistp521", "curve25519-sha256@libssh.org"},
-		ServerMACs:          []string{"hmac-sha2-256-etm@openssh.com", "hmac-sha2-256", "hmac-sha1", "hmac-sha1-96"},
-		KeygenPath:          "ssh-keygen",
-		MinimumKeySizeCheck: true,
-		MinimumKeySizes:     map[string]int{"ed25519": 256, "ed25519-sk": 256, "ecdsa": 256, "ecdsa-sk": 256, "rsa": 2048},
-		ServerHostKeys:      []string{"ssh/gitea.rsa", "ssh/gogs.rsa"},
-	}
-
 	// Security settings
 	InstallLock                        bool
 	SecretKey                          string
@@ -202,13 +160,6 @@ var (
 		SearchRepoDescription bool
 		UseServiceWorker      bool
 
-		Notification struct {
-			MinTimeout            time.Duration
-			TimeoutStep           time.Duration
-			MaxTimeout            time.Duration
-			EventSourceUpdateTime time.Duration
-		} `ini:"ui.notification"`
-
 		SVG struct {
 			Enabled bool `ini:"ENABLE_RENDER"`
 		} `ini:"ui.svg"`
@@ -246,17 +197,6 @@ var (
 		DefaultTheme:        `gitea`,
 		Themes:              []string{`gitea`, `arc-green`},
 		Reactions:           []string{`+1`, `-1`, `laugh`, `hooray`, `confused`, `heart`, `rocket`, `eyes`},
-		Notification: struct {
-			MinTimeout            time.Duration
-			TimeoutStep           time.Duration
-			MaxTimeout            time.Duration
-			EventSourceUpdateTime time.Duration
-		}{
-			MinTimeout:            10 * time.Second,
-			TimeoutStep:           10 * time.Second,
-			MaxTimeout:            60 * time.Second,
-			EventSourceUpdateTime: 10 * time.Second,
-		},
 		SVG: struct {
 			Enabled bool `ini:"ENABLE_RENDER"`
 		}{
@@ -341,19 +281,17 @@ var (
 
 	// API settings
 	API = struct {
-		EnableSwagger          bool
-		SwaggerURL             string
-		MaxResponseItems       int
-		DefaultPagingNum       int
-		DefaultGitTreesPerPage int
-		DefaultMaxBlobSize     int64
+		EnableSwagger      bool
+		SwaggerURL         string
+		MaxResponseItems   int
+		DefaultPagingNum   int
+		DefaultMaxBlobSize int64
 	}{
-		EnableSwagger:          true,
-		SwaggerURL:             "",
-		MaxResponseItems:       50,
-		DefaultPagingNum:       30,
-		DefaultGitTreesPerPage: 1000,
-		DefaultMaxBlobSize:     10485760,
+		EnableSwagger:      true,
+		SwaggerURL:         "",
+		MaxResponseItems:   50,
+		DefaultPagingNum:   30,
+		DefaultMaxBlobSize: 10485760,
 	}
 
 	OAuth2 = struct {
@@ -476,7 +414,7 @@ func forcePathSeparator(path string) {
 // This check is ignored under Windows since SSH remote login is not the main
 // method to login on Windows.
 func IsRunUserMatchCurrentUser(runUser string) (string, bool) {
-	if IsWindows || SSH.StartBuiltinServer {
+	if IsWindows {
 		return "", true
 	}
 
@@ -687,97 +625,6 @@ func NewContext() {
 		LandingPageURL = LandingPageHome
 	}
 
-	if len(SSH.Domain) == 0 {
-		SSH.Domain = Domain
-	}
-	SSH.RootPath = path.Join(homeDir, ".ssh")
-	serverCiphers := sec.Key("SSH_SERVER_CIPHERS").Strings(",")
-	if len(serverCiphers) > 0 {
-		SSH.ServerCiphers = serverCiphers
-	}
-	serverKeyExchanges := sec.Key("SSH_SERVER_KEY_EXCHANGES").Strings(",")
-	if len(serverKeyExchanges) > 0 {
-		SSH.ServerKeyExchanges = serverKeyExchanges
-	}
-	serverMACs := sec.Key("SSH_SERVER_MACS").Strings(",")
-	if len(serverMACs) > 0 {
-		SSH.ServerMACs = serverMACs
-	}
-	SSH.KeyTestPath = os.TempDir()
-	if err = Cfg.Section("server").MapTo(&SSH); err != nil {
-		log.Fatal("Failed to map SSH settings: %v", err)
-	}
-	for i, key := range SSH.ServerHostKeys {
-		if !filepath.IsAbs(key) {
-			SSH.ServerHostKeys[i] = filepath.Join(AppDataPath, key)
-		}
-	}
-
-	SSH.KeygenPath = sec.Key("SSH_KEYGEN_PATH").MustString("ssh-keygen")
-	SSH.Port = sec.Key("SSH_PORT").MustInt(22)
-	SSH.ListenPort = sec.Key("SSH_LISTEN_PORT").MustInt(SSH.Port)
-
-	// When disable SSH, start builtin server value is ignored.
-	if SSH.Disabled {
-		SSH.StartBuiltinServer = false
-	}
-
-	trustedUserCaKeys := sec.Key("SSH_TRUSTED_USER_CA_KEYS").Strings(",")
-	for _, caKey := range trustedUserCaKeys {
-		pubKey, _, _, _, err := gossh.ParseAuthorizedKey([]byte(caKey))
-		if err != nil {
-			log.Fatal("Failed to parse TrustedUserCaKeys: %s %v", caKey, err)
-		}
-
-		SSH.TrustedUserCAKeysParsed = append(SSH.TrustedUserCAKeysParsed, pubKey)
-	}
-	if len(trustedUserCaKeys) > 0 {
-		// Set the default as email,username otherwise we can leave it empty
-		sec.Key("SSH_AUTHORIZED_PRINCIPALS_ALLOW").MustString("username,email")
-	} else {
-		sec.Key("SSH_AUTHORIZED_PRINCIPALS_ALLOW").MustString("off")
-	}
-
-	SSH.AuthorizedPrincipalsAllow, SSH.AuthorizedPrincipalsEnabled = parseAuthorizedPrincipalsAllow(sec.Key("SSH_AUTHORIZED_PRINCIPALS_ALLOW").Strings(","))
-
-	if !SSH.Disabled && !SSH.StartBuiltinServer {
-		if err := os.MkdirAll(SSH.RootPath, 0700); err != nil {
-			log.Fatal("Failed to create '%s': %v", SSH.RootPath, err)
-		} else if err = os.MkdirAll(SSH.KeyTestPath, 0644); err != nil {
-			log.Fatal("Failed to create '%s': %v", SSH.KeyTestPath, err)
-		}
-
-		if len(trustedUserCaKeys) > 0 && SSH.AuthorizedPrincipalsEnabled {
-			fname := sec.Key("SSH_TRUSTED_USER_CA_KEYS_FILENAME").MustString(filepath.Join(SSH.RootPath, "gitea-trusted-user-ca-keys.pem"))
-			if err := ioutil.WriteFile(fname,
-				[]byte(strings.Join(trustedUserCaKeys, "\n")), 0600); err != nil {
-				log.Fatal("Failed to create '%s': %v", fname, err)
-			}
-		}
-	}
-
-	SSH.MinimumKeySizeCheck = sec.Key("MINIMUM_KEY_SIZE_CHECK").MustBool(SSH.MinimumKeySizeCheck)
-	minimumKeySizes := Cfg.Section("ssh.minimum_key_sizes").Keys()
-	for _, key := range minimumKeySizes {
-		if key.MustInt() != -1 {
-			SSH.MinimumKeySizes[strings.ToLower(key.Name())] = key.MustInt()
-		} else {
-			delete(SSH.MinimumKeySizes, strings.ToLower(key.Name()))
-		}
-	}
-
-	SSH.AuthorizedKeysBackup = sec.Key("SSH_AUTHORIZED_KEYS_BACKUP").MustBool(true)
-	SSH.CreateAuthorizedKeysFile = sec.Key("SSH_CREATE_AUTHORIZED_KEYS_FILE").MustBool(true)
-
-	SSH.AuthorizedPrincipalsBackup = false
-	SSH.CreateAuthorizedPrincipalsFile = false
-	if SSH.AuthorizedPrincipalsEnabled {
-		SSH.AuthorizedPrincipalsBackup = sec.Key("SSH_AUTHORIZED_PRINCIPALS_BACKUP").MustBool(true)
-		SSH.CreateAuthorizedPrincipalsFile = sec.Key("SSH_CREATE_AUTHORIZED_PRINCIPALS_FILE").MustBool(true)
-	}
-
-	SSH.ExposeAnonymous = sec.Key("SSH_EXPOSE_ANONYMOUS").MustBool(false)
-
 	if err = Cfg.Section("oauth2").MapTo(&OAuth2); err != nil {
 		log.Fatal("Failed to OAuth2 settings: %v", err)
 		return
@@ -842,9 +689,6 @@ func NewContext() {
 		}
 	}
 
-	newAttachmentService()
-	newLFSService()
-
 	timeFormatKey := Cfg.Section("time").Key("FORMAT").MustString("")
 	if timeFormatKey != "" {
 		TimeFormat = map[string]string{
@@ -889,20 +733,6 @@ func NewContext() {
 		DefaultUILocation = time.Local
 	}
 
-	RunUser = Cfg.Section("").Key("RUN_USER").MustString(user.CurrentUsername())
-	RunMode = Cfg.Section("").Key("RUN_MODE").MustString("prod")
-	// Does not check run user when the install lock is off.
-	if InstallLock {
-		currentUser, match := IsRunUserMatchCurrentUser(RunUser)
-		if !match {
-			log.Fatal("Expect user '%s' but current user is: %s", RunUser, currentUser)
-		}
-	}
-
-	SSH.BuiltinServerUser = Cfg.Section("server").Key("BUILTIN_SSH_SERVER_USER").MustString(RunUser)
-
-	newRepository()
-
 	newPictureService()
 
 	if err = Cfg.Section("ui").MapTo(&UI); err != nil {
@@ -920,8 +750,6 @@ func NewContext() {
 	u := *appURL
 	u.Path = path.Join(u.Path, "api", "swagger")
 	API.SwaggerURL = u.String()
-
-	newGit()
 
 	sec = Cfg.Section("mirror")
 	Mirror.MinInterval = sec.Key("MIN_INTERVAL").MustDuration(10 * time.Minute)
@@ -1164,11 +992,7 @@ func NewServices() {
 	newMailService()
 	newRegisterMailService()
 	newNotifyMailService()
-	newWebhookService()
 	newMigrationsService()
-	newIndexerService()
-	newTaskService()
 	NewQueueService()
-	newProject()
 	newMimeTypeMap()
 }

@@ -266,7 +266,7 @@ Gitea 是從 [Gogs](http://gogs.io) Fork 出來的，請閱讀部落格文章 [G
 
 ## 元件
 
-- Web 框架： [Chi](http://github.com/go-chi/chi)
+- Web 框架： [Chi](http://github.com/go-chi/chi/v5)
 - ORM： [XORM](https://xorm.io)
 - UI 元件：
   - [Semantic UI](http://semantic-ui.com/)

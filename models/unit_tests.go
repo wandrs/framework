@@ -49,13 +49,7 @@ func MainTest(m *testing.M, pathToGiteaRoot string) {
 
 	setting.AppURL = "https://try.gitea.io/"
 	setting.RunUser = "runuser"
-	setting.SSH.Port = 3000
-	setting.SSH.Domain = "try.gitea.io"
 	setting.Database.UseSQLite3 = true
-	setting.RepoRootPath, err = ioutil.TempDir(os.TempDir(), "repos")
-	if err != nil {
-		fatalTestError("TempDir: %v\n", err)
-	}
 	setting.AppDataPath, err = ioutil.TempDir(os.TempDir(), "appdata")
 	if err != nil {
 		fatalTestError("TempDir: %v\n", err)
@@ -66,29 +60,13 @@ func MainTest(m *testing.M, pathToGiteaRoot string) {
 	if err != nil {
 		fatalTestError("url.Parse: %v\n", err)
 	}
-	setting.Attachment.Storage.Path = filepath.Join(setting.AppDataPath, "attachments")
-
-	setting.LFS.Storage.Path = filepath.Join(setting.AppDataPath, "lfs")
-
 	setting.Avatar.Storage.Path = filepath.Join(setting.AppDataPath, "avatars")
-
-	setting.RepoAvatar.Storage.Path = filepath.Join(setting.AppDataPath, "repo-avatars")
 
 	if err = storage.Init(); err != nil {
 		fatalTestError("storage.Init: %v\n", err)
 	}
 
-	if err = util.RemoveAll(setting.RepoRootPath); err != nil {
-		fatalTestError("util.RemoveAll: %v\n", err)
-	}
-	if err = util.CopyDir(filepath.Join(pathToGiteaRoot, "integrations", "gitea-repositories-meta"), setting.RepoRootPath); err != nil {
-		fatalTestError("util.CopyDir: %v\n", err)
-	}
-
 	exitStatus := m.Run()
-	if err = util.RemoveAll(setting.RepoRootPath); err != nil {
-		fatalTestError("util.RemoveAll: %v\n", err)
-	}
 	if err = util.RemoveAll(setting.AppDataPath); err != nil {
 		fatalTestError("util.RemoveAll: %v\n", err)
 	}
@@ -123,9 +101,6 @@ func PrepareTestDatabase() error {
 // by tests that use the above MainTest(..) function.
 func PrepareTestEnv(t testing.TB) {
 	assert.NoError(t, PrepareTestDatabase())
-	assert.NoError(t, util.RemoveAll(setting.RepoRootPath))
-	metaPath := filepath.Join(giteaRoot, "integrations", "gitea-repositories-meta")
-	assert.NoError(t, util.CopyDir(metaPath, setting.RepoRootPath))
 	base.SetupGiteaRoot() // Makes sure GITEA_ROOT is set
 }
 

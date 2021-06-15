@@ -13,19 +13,18 @@ import (
 	"reflect"
 	"strings"
 
+	// Needed for the MySQL driver
+	// Needed for the Postgresql driver
+	// Needed for the MSSQL driver
+
 	"code.gitea.io/gitea/modules/setting"
 
-	// Needed for the MySQL driver
+	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"xorm.io/xorm"
 	"xorm.io/xorm/names"
 	"xorm.io/xorm/schemas"
-
-	// Needed for the Postgresql driver
-	_ "github.com/lib/pq"
-
-	// Needed for the MSSQL driver
-	_ "github.com/denisenkom/go-mssqldb"
 )
 
 // Engine represents a xorm engine or session.
@@ -69,71 +68,24 @@ var (
 func init() {
 	tables = append(tables,
 		new(User),
-		new(PublicKey),
 		new(AccessToken),
-		new(Repository),
-		new(DeployKey),
-		new(Collaboration),
-		new(Access),
-		new(Upload),
-		new(Watch),
-		new(Star),
 		new(Follow),
-		new(Action),
-		new(Issue),
-		new(PullRequest),
-		new(Comment),
-		new(Attachment),
-		new(Label),
-		new(IssueLabel),
-		new(Milestone),
-		new(Mirror),
-		new(Release),
 		new(LoginSource),
-		new(Webhook),
-		new(HookTask),
 		new(Team),
 		new(OrgUser),
 		new(TeamUser),
-		new(TeamRepo),
 		new(Notice),
 		new(EmailAddress),
-		new(Notification),
-		new(IssueUser),
-		new(LFSMetaObject),
 		new(TwoFactor),
-		new(GPGKey),
-		new(GPGKeyImport),
-		new(RepoUnit),
-		new(RepoRedirect),
 		new(ExternalLoginUser),
-		new(ProtectedBranch),
 		new(UserOpenID),
-		new(IssueWatch),
-		new(CommitStatus),
-		new(Stopwatch),
-		new(TrackedTime),
-		new(DeletedBranch),
-		new(RepoIndexerStatus),
-		new(IssueDependency),
-		new(LFSLock),
-		new(Reaction),
-		new(IssueAssignees),
 		new(U2FRegistration),
-		new(TeamUnit),
-		new(Review),
 		new(OAuth2Application),
 		new(OAuth2AuthorizationCode),
 		new(OAuth2Grant),
-		new(Task),
-		new(LanguageStat),
 		new(EmailHash),
 		new(UserRedirect),
-		new(Project),
-		new(ProjectBoard),
-		new(ProjectIssue),
 		new(Session),
-		new(RepoTransfer),
 	)
 
 	gonicNames := []string{"SSL", "UID"}
@@ -262,12 +214,10 @@ func NamesToBean(names ...string) ([]interface{}, error) {
 // Statistic contains the database statistics
 type Statistic struct {
 	Counter struct {
-		User, Org, PublicKey,
-		Repo, Watch, Star, Action, Access,
-		Issue, Comment, Oauth, Follow,
-		Mirror, Release, LoginSource, Webhook,
-		Milestone, Label, HookTask,
-		Team, UpdateTask, Attachment int64
+		User, Org,
+		Oauth, Follow,
+		LoginSource,
+		Team, UpdateTask int64
 	}
 }
 
@@ -275,25 +225,10 @@ type Statistic struct {
 func GetStatistic() (stats Statistic) {
 	stats.Counter.User = CountUsers()
 	stats.Counter.Org = CountOrganizations()
-	stats.Counter.PublicKey, _ = x.Count(new(PublicKey))
-	stats.Counter.Repo = CountRepositories(true)
-	stats.Counter.Watch, _ = x.Count(new(Watch))
-	stats.Counter.Star, _ = x.Count(new(Star))
-	stats.Counter.Action, _ = x.Count(new(Action))
-	stats.Counter.Access, _ = x.Count(new(Access))
-	stats.Counter.Issue, _ = x.Count(new(Issue))
-	stats.Counter.Comment, _ = x.Count(new(Comment))
 	stats.Counter.Oauth = 0
 	stats.Counter.Follow, _ = x.Count(new(Follow))
-	stats.Counter.Mirror, _ = x.Count(new(Mirror))
-	stats.Counter.Release, _ = x.Count(new(Release))
 	stats.Counter.LoginSource = CountLoginSources()
-	stats.Counter.Webhook, _ = x.Count(new(Webhook))
-	stats.Counter.Milestone, _ = x.Count(new(Milestone))
-	stats.Counter.Label, _ = x.Count(new(Label))
-	stats.Counter.HookTask, _ = x.Count(new(HookTask))
 	stats.Counter.Team, _ = x.Count(new(Team))
-	stats.Counter.Attachment, _ = x.Count(new(Attachment))
 	return
 }
 

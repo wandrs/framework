@@ -122,15 +122,6 @@ func TestMain(m *testing.M) {
 
 	writerCloser.t = nil
 
-	if err = util.RemoveAll(setting.Indexer.IssuePath); err != nil {
-		fmt.Printf("util.RemoveAll: %v\n", err)
-		os.Exit(1)
-	}
-	if err = util.RemoveAll(setting.Indexer.RepoPath); err != nil {
-		fmt.Printf("Unable to remove repo indexer: %v\n", err)
-		os.Exit(1)
-	}
-
 	os.Exit(exitCode)
 }
 
@@ -163,7 +154,6 @@ func initIntegrationTest() {
 	setting.SetCustomPathAndConf("", "", "")
 	setting.NewContext()
 	util.RemoveAll(models.LocalCopyPath())
-	setting.CheckLFSVersion()
 	setting.InitDBConfig()
 	if err := storage.Init(); err != nil {
 		fmt.Printf("Init storage failed: %v", err)
@@ -248,9 +238,6 @@ func prepareTestEnv(t testing.TB, skip ...int) func() {
 	}
 	deferFn := PrintCurrentTest(t, ourSkip)
 	assert.NoError(t, models.LoadFixtures())
-	assert.NoError(t, util.RemoveAll(setting.RepoRootPath))
-
-	assert.NoError(t, util.CopyDir(path.Join(filepath.Dir(setting.AppPath), "integrations/gitea-repositories-meta"), setting.RepoRootPath))
 	return deferFn
 }
 
@@ -527,6 +514,4 @@ func GetCSRF(t testing.TB, session *TestSession, urlStr string) string {
 func resetFixtures(t *testing.T) {
 	assert.NoError(t, queue.GetManager().FlushAll(context.Background(), -1))
 	assert.NoError(t, models.LoadFixtures())
-	assert.NoError(t, util.RemoveAll(setting.RepoRootPath))
-	assert.NoError(t, util.CopyDir(path.Join(filepath.Dir(setting.AppPath), "integrations/gitea-repositories-meta"), setting.RepoRootPath))
 }

@@ -10,11 +10,10 @@ import (
 	"net/http"
 	"strings"
 
+	"go.wandrs.dev/binding"
 	"code.gitea.io/gitea/modules/context"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/binding"
 )
 
 // InstallForm form for installation page
@@ -29,15 +28,13 @@ type InstallForm struct {
 	DbPath   string
 	DbSchema string
 
-	AppName      string `binding:"Required" locale:"install.app_name"`
-	RepoRootPath string `binding:"Required"`
-	LFSRootPath  string
-	RunUser      string `binding:"Required"`
-	Domain       string `binding:"Required"`
-	SSHPort      int
-	HTTPPort     string `binding:"Required"`
-	AppURL       string `binding:"Required"`
-	LogRootPath  string `binding:"Required"`
+	AppName     string `binding:"Required" locale:"install.app_name"`
+	RunUser     string `binding:"Required"`
+	Domain      string `binding:"Required"`
+	SSHPort     int
+	HTTPPort    string `binding:"Required"`
+	AppURL      string `binding:"Required"`
+	LogRootPath string `binding:"Required"`
 
 	SMTPHost        string
 	SMTPFrom        string

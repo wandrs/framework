@@ -17,8 +17,7 @@ import (
 	"code.gitea.io/gitea/modules/web/middleware"
 	"code.gitea.io/gitea/routers"
 	"code.gitea.io/gitea/services/forms"
-
-	"gitea.com/go-chi/session"
+	"go.wandrs.dev/session"
 )
 
 func installRecovery() func(next http.Handler) http.Handler {

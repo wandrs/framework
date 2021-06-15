@@ -234,10 +234,32 @@ clean:
 		integrations/gitea-integration-mssql/ integrations/indexers-mysql/ integrations/indexers-mysql8/ integrations/indexers-pgsql integrations/indexers-sqlite \
 		integrations/indexers-mssql integrations/mysql.ini integrations/mysql8.ini integrations/pgsql.ini integrations/mssql.ini man/
 
+# fmt:
+# 	@echo "Running go fmt..."
+# 	@$(GOFMT) -w $(GO_SOURCES_OWN)
+
+GO_PKG   := go.wandrs.dev
+GO_VERSION       ?= 1.16
+BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)
+
 .PHONY: fmt
-fmt:
-	@echo "Running go fmt..."
-	@$(GOFMT) -w $(GO_SOURCES_OWN)
+fmt: $(BUILD_DIRS)
+	@docker run                                                 \
+	    -i                                                      \
+	    --rm                                                    \
+	    -u $$(id -u):$$(id -g)                                  \
+	    -v $$(pwd):/src                                         \
+	    -w /src                                                 \
+	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
+	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
+	    -v $$(pwd)/.go/cache:/.cache                            \
+	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
+	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
+	    $(BUILD_IMAGE)                                          \
+	    /bin/bash -c "                                          \
+	        REPO_PKG=$(GO_PKG)                                  \
+	        ./hack/fmt.sh $(GO_SOURCES_OWN)                     \
+	    "
 
 .PHONY: vet
 vet:

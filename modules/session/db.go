@@ -10,8 +10,7 @@ import (
 
 	"code.gitea.io/gitea/models"
 	"code.gitea.io/gitea/modules/timeutil"
-
-	"gitea.com/go-chi/session"
+	"go.wandrs.dev/session"
 )
 
 // DBStore represents a session store implementation based on the DB.

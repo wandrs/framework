@@ -10,13 +10,12 @@ import (
 	"reflect"
 	"strings"
 
+	"go.wandrs.dev/binding"
 	"code.gitea.io/gitea/modules/context"
 	"code.gitea.io/gitea/modules/log"
 	"code.gitea.io/gitea/modules/private"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/web"
-
-	"gitea.com/go-chi/binding"
 )
 
 // CheckInternalToken check internal token is set
@@ -53,14 +52,6 @@ func Routes() *web.Route {
 	r.Use(context.PrivateContexter())
 	r.Use(CheckInternalToken)
 
-	r.Post("/ssh/authorized_keys", AuthorizedPublicKeyByContent)
-	r.Post("/ssh/{id}/update/{repoid}", UpdatePublicKeyInRepo)
-	r.Post("/ssh/log", bind(private.SSHLogOption{}), SSHLog)
-	r.Post("/hook/pre-receive/{owner}/{repo}", bind(private.HookOptions{}), HookPreReceive)
-	r.Post("/hook/post-receive/{owner}/{repo}", bind(private.HookOptions{}), HookPostReceive)
-	r.Post("/hook/set-default-branch/{owner}/{repo}/{branch}", SetDefaultBranch)
-	r.Get("/serv/none/{keyid}", ServNoCommand)
-	r.Get("/serv/command/{keyid}/{owner}/{repo}", ServCommand)
 	r.Post("/manager/shutdown", Shutdown)
 	r.Post("/manager/restart", Restart)
 	r.Post("/manager/flush-queues", bind(private.FlushOptions{}), FlushQueues)
@@ -70,7 +61,6 @@ func Routes() *web.Route {
 	r.Post("/manager/add-logger", bind(private.LoggerOptions{}), AddLogger)
 	r.Post("/manager/remove-logger/{group}/{name}", RemoveLogger)
 	r.Post("/mail/send", SendEmail)
-	r.Post("/restore_repo", RestoreRepo)
 
 	return r
 }

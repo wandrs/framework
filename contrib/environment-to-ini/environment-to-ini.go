@@ -14,7 +14,7 @@ import (
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/util"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	ini "gopkg.in/ini.v1"
 )
 

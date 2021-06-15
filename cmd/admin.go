@@ -15,35 +15,29 @@ import (
 
 	"code.gitea.io/gitea/models"
 	"code.gitea.io/gitea/modules/auth/oauth2"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/graceful"
-	"code.gitea.io/gitea/modules/log"
 	pwd "code.gitea.io/gitea/modules/password"
-	repo_module "code.gitea.io/gitea/modules/repository"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/storage"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var (
 	// CmdAdmin represents the available admin sub-command.
-	CmdAdmin = cli.Command{
+	CmdAdmin = &cli.Command{
 		Name:  "admin",
 		Usage: "Command line interface to perform common administrative operations",
-		Subcommands: []cli.Command{
+		Subcommands: []*cli.Command{
 			subcmdUser,
-			subcmdRepoSyncReleases,
-			subcmdRegenerate,
 			subcmdAuth,
 			subcmdSendMail,
 		},
 	}
 
-	subcmdUser = cli.Command{
+	subcmdUser = &cli.Command{
 		Name:  "user",
 		Usage: "Modify users",
-		Subcommands: []cli.Command{
+		Subcommands: []*cli.Command{
 			microcmdUserCreate,
 			microcmdUserList,
 			microcmdUserChangePassword,
@@ -51,132 +45,109 @@ var (
 		},
 	}
 
-	microcmdUserList = cli.Command{
+	microcmdUserList = &cli.Command{
 		Name:   "list",
 		Usage:  "List users",
 		Action: runListUsers,
 		Flags: []cli.Flag{
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:  "admin",
 				Usage: "List only admin users",
 			},
 		},
 	}
 
-	microcmdUserCreate = cli.Command{
+	microcmdUserCreate = &cli.Command{
 		Name:   "create",
 		Usage:  "Create a new user in database",
 		Action: runCreateUser,
 		Flags: []cli.Flag{
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "name",
 				Usage: "Username. DEPRECATED: use username instead",
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "username",
 				Usage: "Username",
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "password",
 				Usage: "User password",
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "email",
 				Usage: "User email address",
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:  "admin",
 				Usage: "User is an admin",
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:  "random-password",
 				Usage: "Generate a random password for the user",
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:  "must-change-password",
 				Usage: "Set this option to false to prevent forcing the user to change their password after initial login, (Default: true)",
 			},
-			cli.IntFlag{
+			&cli.IntFlag{
 				Name:  "random-password-length",
 				Usage: "Length of the random password to be generated",
 				Value: 12,
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:  "access-token",
 				Usage: "Generate access token for the user",
 			},
 		},
 	}
 
-	microcmdUserChangePassword = cli.Command{
+	microcmdUserChangePassword = &cli.Command{
 		Name:   "change-password",
 		Usage:  "Change a user's password",
 		Action: runChangePassword,
 		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "username,u",
-				Value: "",
-				Usage: "The user to change password for",
+			&cli.StringFlag{
+				Name:    "username",
+				Aliases: []string{"u"},
+				Value:   "",
+				Usage:   "The user to change password for",
 			},
-			cli.StringFlag{
-				Name:  "password,p",
-				Value: "",
-				Usage: "New password to set for user",
+			&cli.StringFlag{
+				Name:    "password",
+				Aliases: []string{"p"},
+				Value:   "",
+				Usage:   "New password to set for user",
 			},
 		},
 	}
 
-	microcmdUserDelete = cli.Command{
+	microcmdUserDelete = &cli.Command{
 		Name:  "delete",
 		Usage: "Delete specific user by id, name or email",
 		Flags: []cli.Flag{
-			cli.Int64Flag{
+			&cli.Int64Flag{
 				Name:  "id",
 				Usage: "ID of user of the user to delete",
 			},
-			cli.StringFlag{
-				Name:  "username,u",
-				Usage: "Username of the user to delete",
+			&cli.StringFlag{
+				Name:    "username",
+				Aliases: []string{"u"},
+				Usage:   "Username of the user to delete",
 			},
-			cli.StringFlag{
-				Name:  "email,e",
-				Usage: "Email of the user to delete",
+			&cli.StringFlag{
+				Name:    "email",
+				Aliases: []string{"e"},
+				Usage:   "Email of the user to delete",
 			},
 		},
 		Action: runDeleteUser,
 	}
 
-	subcmdRepoSyncReleases = cli.Command{
-		Name:   "repo-sync-releases",
-		Usage:  "Synchronize repository releases with tags",
-		Action: runRepoSyncReleases,
-	}
-
-	subcmdRegenerate = cli.Command{
-		Name:  "regenerate",
-		Usage: "Regenerate specific files",
-		Subcommands: []cli.Command{
-			microcmdRegenHooks,
-			microcmdRegenKeys,
-		},
-	}
-
-	microcmdRegenHooks = cli.Command{
-		Name:   "hooks",
-		Usage:  "Regenerate git-hooks",
-		Action: runRegenerateHooks,
-	}
-
-	microcmdRegenKeys = cli.Command{
-		Name:   "keys",
-		Usage:  "Regenerate authorized_keys file",
-		Action: runRegenerateKeys,
-	}
-
-	subcmdAuth = cli.Command{
+	subcmdAuth = &cli.Command{
 		Name:  "auth",
 		Usage: "Modify external auth providers",
-		Subcommands: []cli.Command{
+		Subcommands: []*cli.Command{
 			microcmdAuthAddOauth,
 			microcmdAuthUpdateOauth,
 			cmdAuthAddLdapBindDn,
@@ -188,44 +159,44 @@ var (
 		},
 	}
 
-	microcmdAuthList = cli.Command{
+	microcmdAuthList = &cli.Command{
 		Name:   "list",
 		Usage:  "List auth sources",
 		Action: runListAuth,
 		Flags: []cli.Flag{
-			cli.IntFlag{
+			&cli.IntFlag{
 				Name:  "min-width",
 				Usage: "Minimal cell width including any padding for the formatted table",
 				Value: 0,
 			},
-			cli.IntFlag{
+			&cli.IntFlag{
 				Name:  "tab-width",
 				Usage: "width of tab characters in formatted table (equivalent number of spaces)",
 				Value: 8,
 			},
-			cli.IntFlag{
+			&cli.IntFlag{
 				Name:  "padding",
 				Usage: "padding added to a cell before computing its width",
 				Value: 1,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "pad-char",
 				Usage: `ASCII char used for padding if padchar == '\\t', the Writer will assume that the width of a '\\t' in the formatted output is tabwidth, and cells are left-aligned independent of align_left (for correct-looking results, tabwidth must correspond to the tab width in the viewer displaying the result)`,
 				Value: "\t",
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:  "vertical-bars",
 				Usage: "Set to true to print vertical bars between columns",
 			},
 		},
 	}
 
-	idFlag = cli.Int64Flag{
+	idFlag = &cli.Int64Flag{
 		Name:  "id",
 		Usage: "ID of authentication source",
 	}
 
-	microcmdAuthDelete = cli.Command{
+	microcmdAuthDelete = &cli.Command{
 		Name:   "delete",
 		Usage:  "Delete specific auth source",
 		Flags:  []cli.Flag{idFlag},
@@ -233,95 +204,96 @@ var (
 	}
 
 	oauthCLIFlags = []cli.Flag{
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "name",
 			Value: "",
 			Usage: "Application Name",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "provider",
 			Value: "",
 			Usage: "OAuth2 Provider",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "key",
 			Value: "",
 			Usage: "Client ID (Key)",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "secret",
 			Value: "",
 			Usage: "Client Secret",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "auto-discover-url",
 			Value: "",
 			Usage: "OpenID Connect Auto Discovery URL (only required when using OpenID Connect as provider)",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "use-custom-urls",
 			Value: "false",
 			Usage: "Use custom URLs for GitLab/GitHub OAuth endpoints",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "custom-auth-url",
 			Value: "",
 			Usage: "Use a custom Authorization URL (option for GitLab/GitHub)",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "custom-token-url",
 			Value: "",
 			Usage: "Use a custom Token URL (option for GitLab/GitHub)",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "custom-profile-url",
 			Value: "",
 			Usage: "Use a custom Profile URL (option for GitLab/GitHub)",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "custom-email-url",
 			Value: "",
 			Usage: "Use a custom Email URL (option for GitHub)",
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "icon-url",
 			Value: "",
 			Usage: "Custom icon URL for OAuth2 login source",
 		},
 	}
 
-	microcmdAuthUpdateOauth = cli.Command{
+	microcmdAuthUpdateOauth = &cli.Command{
 		Name:   "update-oauth",
 		Usage:  "Update existing Oauth authentication source",
 		Action: runUpdateOauth,
 		Flags:  append(oauthCLIFlags[:1], append([]cli.Flag{idFlag}, oauthCLIFlags[1:]...)...),
 	}
 
-	microcmdAuthAddOauth = cli.Command{
+	microcmdAuthAddOauth = &cli.Command{
 		Name:   "add-oauth",
 		Usage:  "Add new Oauth authentication source",
 		Action: runAddOauth,
 		Flags:  oauthCLIFlags,
 	}
 
-	subcmdSendMail = cli.Command{
+	subcmdSendMail = &cli.Command{
 		Name:   "sendmail",
 		Usage:  "Send a message to all users",
 		Action: runSendMail,
 		Flags: []cli.Flag{
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "title",
 				Usage: `a title of a message`,
 				Value: "",
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "content",
 				Usage: "a content of a message",
 				Value: "",
 			},
-			cli.BoolFlag{
-				Name:  "force,f",
-				Usage: "A flag to bypass a confirmation step",
+			&cli.BoolFlag{
+				Name:    "force",
+				Aliases: []string{"f"},
+				Usage:   "A flag to bypass a confirmation step",
 			},
 		},
 	}
@@ -515,86 +487,6 @@ func runDeleteUser(c *cli.Context) error {
 	}
 
 	return models.DeleteUser(user)
-}
-
-func runRepoSyncReleases(_ *cli.Context) error {
-	if err := initDB(); err != nil {
-		return err
-	}
-
-	log.Trace("Synchronizing repository releases (this may take a while)")
-	for page := 1; ; page++ {
-		repos, count, err := models.SearchRepositoryByName(&models.SearchRepoOptions{
-			ListOptions: models.ListOptions{
-				PageSize: models.RepositoryListDefaultPageSize,
-				Page:     page,
-			},
-			Private: true,
-		})
-		if err != nil {
-			return fmt.Errorf("SearchRepositoryByName: %v", err)
-		}
-		if len(repos) == 0 {
-			break
-		}
-		log.Trace("Processing next %d repos of %d", len(repos), count)
-		for _, repo := range repos {
-			log.Trace("Synchronizing repo %s with path %s", repo.FullName(), repo.RepoPath())
-			gitRepo, err := git.OpenRepository(repo.RepoPath())
-			if err != nil {
-				log.Warn("OpenRepository: %v", err)
-				continue
-			}
-
-			oldnum, err := getReleaseCount(repo.ID)
-			if err != nil {
-				log.Warn(" GetReleaseCountByRepoID: %v", err)
-			}
-			log.Trace(" currentNumReleases is %d, running SyncReleasesWithTags", oldnum)
-
-			if err = repo_module.SyncReleasesWithTags(repo, gitRepo); err != nil {
-				log.Warn(" SyncReleasesWithTags: %v", err)
-				gitRepo.Close()
-				continue
-			}
-
-			count, err = getReleaseCount(repo.ID)
-			if err != nil {
-				log.Warn(" GetReleaseCountByRepoID: %v", err)
-				gitRepo.Close()
-				continue
-			}
-
-			log.Trace(" repo %s releases synchronized to tags: from %d to %d",
-				repo.FullName(), oldnum, count)
-			gitRepo.Close()
-		}
-	}
-
-	return nil
-}
-
-func getReleaseCount(id int64) (int64, error) {
-	return models.GetReleaseCountByRepoID(
-		id,
-		models.FindReleasesOptions{
-			IncludeTags: true,
-		},
-	)
-}
-
-func runRegenerateHooks(_ *cli.Context) error {
-	if err := initDB(); err != nil {
-		return err
-	}
-	return repo_module.SyncRepositoryHooks(graceful.GetManager().ShutdownContext())
-}
-
-func runRegenerateKeys(_ *cli.Context) error {
-	if err := initDB(); err != nil {
-		return err
-	}
-	return models.RewriteAllPublicKeys()
 }
 
 func parseOAuth2Config(c *cli.Context) *models.OAuth2Config {

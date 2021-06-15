@@ -35,21 +35,6 @@ func TestTeam_IsMember(t *testing.T) {
 	assert.False(t, team.IsMember(NonexistentID))
 }
 
-func TestTeam_GetRepositories(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-
-	test := func(teamID int64) {
-		team := AssertExistsAndLoadBean(t, &Team{ID: teamID}).(*Team)
-		assert.NoError(t, team.GetRepositories(&SearchTeamOptions{}))
-		assert.Len(t, team.Repos, team.NumRepos)
-		for _, repo := range team.Repos {
-			AssertExistsAndLoadBean(t, &TeamRepo{TeamID: teamID, RepoID: repo.ID})
-		}
-	}
-	test(1)
-	test(3)
-}
-
 func TestTeam_GetMembers(t *testing.T) {
 	assert.NoError(t, PrepareTestDatabase())
 
@@ -96,55 +81,6 @@ func TestTeam_RemoveMember(t *testing.T) {
 	team := AssertExistsAndLoadBean(t, &Team{ID: 1}).(*Team)
 	err := team.RemoveMember(2)
 	assert.True(t, IsErrLastOrgOwner(err))
-}
-
-func TestTeam_HasRepository(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-
-	test := func(teamID, repoID int64, expected bool) {
-		team := AssertExistsAndLoadBean(t, &Team{ID: teamID}).(*Team)
-		assert.Equal(t, expected, team.HasRepository(repoID))
-	}
-	test(1, 1, false)
-	test(1, 3, true)
-	test(1, 5, true)
-	test(1, NonexistentID, false)
-
-	test(2, 3, true)
-	test(2, 5, false)
-}
-
-func TestTeam_AddRepository(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-
-	testSuccess := func(teamID, repoID int64) {
-		team := AssertExistsAndLoadBean(t, &Team{ID: teamID}).(*Team)
-		repo := AssertExistsAndLoadBean(t, &Repository{ID: repoID}).(*Repository)
-		assert.NoError(t, team.AddRepository(repo))
-		AssertExistsAndLoadBean(t, &TeamRepo{TeamID: teamID, RepoID: repoID})
-		CheckConsistencyFor(t, &Team{ID: teamID}, &Repository{ID: repoID})
-	}
-	testSuccess(2, 3)
-	testSuccess(2, 5)
-
-	team := AssertExistsAndLoadBean(t, &Team{ID: 1}).(*Team)
-	repo := AssertExistsAndLoadBean(t, &Repository{ID: 1}).(*Repository)
-	assert.Error(t, team.AddRepository(repo))
-	CheckConsistencyFor(t, &Team{ID: 1}, &Repository{ID: 1})
-}
-
-func TestTeam_RemoveRepository(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-
-	testSuccess := func(teamID, repoID int64) {
-		team := AssertExistsAndLoadBean(t, &Team{ID: teamID}).(*Team)
-		assert.NoError(t, team.RemoveRepository(repoID))
-		AssertNotExistsBean(t, &TeamRepo{TeamID: teamID, RepoID: repoID})
-		CheckConsistencyFor(t, &Team{ID: teamID}, &Repository{ID: repoID})
-	}
-	testSuccess(2, 3)
-	testSuccess(2, 5)
-	testSuccess(1, NonexistentID)
 }
 
 func TestIsUsableTeamName(t *testing.T) {
@@ -211,9 +147,6 @@ func TestUpdateTeam(t *testing.T) {
 	team = AssertExistsAndLoadBean(t, &Team{Name: "newName"}).(*Team)
 	assert.True(t, strings.HasPrefix(team.Description, "A long description!"))
 
-	access := AssertExistsAndLoadBean(t, &Access{UserID: 4, RepoID: 3}).(*Access)
-	assert.EqualValues(t, AccessModeAdmin, access.Mode)
-
 	CheckConsistencyFor(t, &Team{ID: team.ID})
 }
 
@@ -237,15 +170,7 @@ func TestDeleteTeam(t *testing.T) {
 	team := AssertExistsAndLoadBean(t, &Team{ID: 2}).(*Team)
 	assert.NoError(t, DeleteTeam(team))
 	AssertNotExistsBean(t, &Team{ID: team.ID})
-	AssertNotExistsBean(t, &TeamRepo{TeamID: team.ID})
 	AssertNotExistsBean(t, &TeamUser{TeamID: team.ID})
-
-	// check that team members don't have "leftover" access to repos
-	user := AssertExistsAndLoadBean(t, &User{ID: 4}).(*User)
-	repo := AssertExistsAndLoadBean(t, &Repository{ID: 3}).(*Repository)
-	accessMode, err := AccessLevel(user, repo)
-	assert.NoError(t, err)
-	assert.True(t, accessMode < AccessModeWrite)
 }
 
 func TestIsTeamMember(t *testing.T) {
@@ -343,22 +268,6 @@ func TestRemoveTeamMember(t *testing.T) {
 	team := AssertExistsAndLoadBean(t, &Team{ID: 1}).(*Team)
 	err := RemoveTeamMember(team, 2)
 	assert.True(t, IsErrLastOrgOwner(err))
-}
-
-func TestHasTeamRepo(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-
-	test := func(teamID, repoID int64, expected bool) {
-		team := AssertExistsAndLoadBean(t, &Team{ID: teamID}).(*Team)
-		assert.Equal(t, expected, HasTeamRepo(team.OrgID, teamID, repoID))
-	}
-	test(1, 1, false)
-	test(1, 3, true)
-	test(1, 5, true)
-	test(1, NonexistentID, false)
-
-	test(2, 3, true)
-	test(2, 5, false)
 }
 
 func TestUsersInTeamsCount(t *testing.T) {

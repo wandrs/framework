@@ -7,10 +7,9 @@ package forms
 import (
 	"net/http"
 
+	"go.wandrs.dev/binding"
 	"code.gitea.io/gitea/modules/context"
 	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/binding"
 )
 
 // AdminCreateUserForm form for admin to create user
@@ -40,7 +39,6 @@ type AdminEditUserForm struct {
 	Password                string `binding:"MaxSize(255)"`
 	Website                 string `binding:"ValidUrl;MaxSize(255)"`
 	Location                string `binding:"MaxSize(50)"`
-	MaxRepoCreation         int
 	Active                  bool
 	Admin                   bool
 	Restricted              bool

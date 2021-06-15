@@ -11,35 +11,9 @@ import (
 
 	"code.gitea.io/gitea/models"
 	"code.gitea.io/gitea/modules/setting"
+
 	jsoniter "github.com/json-iterator/go"
 )
-
-// KeyAndOwner is the response from ServNoCommand
-type KeyAndOwner struct {
-	Key   *models.PublicKey `json:"key"`
-	Owner *models.User      `json:"user"`
-}
-
-// ServNoCommand returns information about the provided key
-func ServNoCommand(keyID int64) (*models.PublicKey, *models.User, error) {
-	reqURL := setting.LocalURL + fmt.Sprintf("api/internal/serv/none/%d",
-		keyID)
-	resp, err := newInternalRequest(reqURL, "GET").Response()
-	if err != nil {
-		return nil, nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, nil, fmt.Errorf("%s", decodeJSONError(resp).Err)
-	}
-
-	var keyAndOwner KeyAndOwner
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
-	if err := json.NewDecoder(resp.Body).Decode(&keyAndOwner); err != nil {
-		return nil, nil, err
-	}
-	return keyAndOwner.Key, keyAndOwner.Owner, nil
-}
 
 // ServCommandResults are the results of a call to the private route serv
 type ServCommandResults struct {
@@ -52,7 +26,6 @@ type ServCommandResults struct {
 	UserID      int64
 	OwnerName   string
 	RepoName    string
-	RepoID      int64
 }
 
 // ErrServCommand is an error returned from ServCommmand.

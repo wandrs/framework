@@ -65,14 +65,6 @@ func Markdown(ctx *context.APIContext) {
 				urlPrefix = util.URLJoin(setting.AppURL, form.Context)
 			}
 		}
-		if ctx.Repo != nil && ctx.Repo.Repository != nil {
-			// "gfm" = Github Flavored Markdown - set this to render as a document
-			if form.Mode == "gfm" {
-				meta = ctx.Repo.Repository.ComposeDocumentMetas()
-			} else {
-				meta = ctx.Repo.Repository.ComposeMetas()
-			}
-		}
 		if form.Mode == "gfm" {
 			meta["mode"] = "document"
 		}

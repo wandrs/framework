@@ -24,8 +24,7 @@ import (
 	"code.gitea.io/gitea/modules/storage"
 	"code.gitea.io/gitea/modules/templates"
 	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/session"
+	"go.wandrs.dev/session"
 )
 
 // LoggerHandler is a handler that will log the routing to the default gitea log

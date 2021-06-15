@@ -31,34 +31,8 @@ func TestAPIExposedSettings(t *testing.T) {
 
 	DecodeJSON(t, resp, &apiSettings)
 	assert.EqualValues(t, &api.GeneralAPISettings{
-		MaxResponseItems:       setting.API.MaxResponseItems,
-		DefaultPagingNum:       setting.API.DefaultPagingNum,
-		DefaultGitTreesPerPage: setting.API.DefaultGitTreesPerPage,
-		DefaultMaxBlobSize:     setting.API.DefaultMaxBlobSize,
+		MaxResponseItems:   setting.API.MaxResponseItems,
+		DefaultPagingNum:   setting.API.DefaultPagingNum,
+		DefaultMaxBlobSize: setting.API.DefaultMaxBlobSize,
 	}, apiSettings)
-
-	repo := new(api.GeneralRepoSettings)
-	req = NewRequest(t, "GET", "/api/v1/settings/repository")
-	resp = MakeRequest(t, req, http.StatusOK)
-
-	DecodeJSON(t, resp, &repo)
-	assert.EqualValues(t, &api.GeneralRepoSettings{
-		MirrorsDisabled:      setting.Repository.DisableMirrors,
-		HTTPGitDisabled:      setting.Repository.DisableHTTPGit,
-		MigrationsDisabled:   setting.Repository.DisableMigrations,
-		TimeTrackingDisabled: false,
-		LFSDisabled:          !setting.LFS.StartServer,
-	}, repo)
-
-	attachment := new(api.GeneralAttachmentSettings)
-	req = NewRequest(t, "GET", "/api/v1/settings/attachment")
-	resp = MakeRequest(t, req, http.StatusOK)
-
-	DecodeJSON(t, resp, &attachment)
-	assert.EqualValues(t, &api.GeneralAttachmentSettings{
-		Enabled:      setting.Attachment.Enabled,
-		AllowedTypes: setting.Attachment.AllowedTypes,
-		MaxFiles:     setting.Attachment.MaxFiles,
-		MaxSize:      setting.Attachment.MaxSize,
-	}, attachment)
 }

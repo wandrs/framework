@@ -22,9 +22,9 @@ import (
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/timeutil"
 	"code.gitea.io/gitea/modules/util"
+
 	gouuid "github.com/google/uuid"
 	jsoniter "github.com/json-iterator/go"
-
 	"xorm.io/xorm"
 	"xorm.io/xorm/convert"
 )
@@ -494,8 +494,6 @@ func LoginViaLDAP(user *User, login, password string, source *LoginSource) (*Use
 		return nil, ErrUserNotExist{0, login, 0}
 	}
 
-	isAttributeSSHPublicKeySet := len(strings.TrimSpace(source.LDAP().AttributeSSHPublicKey)) > 0
-
 	// Update User admin flag if exist
 	if isExist, err := IsUserExist(0, sr.Username); err != nil {
 		return nil, err
@@ -528,10 +526,6 @@ func LoginViaLDAP(user *User, login, password string, source *LoginSource) (*Use
 	}
 
 	if user != nil {
-		if isAttributeSSHPublicKeySet && synchronizeLdapSSHPublicKeys(user, source, sr.SSHPublicKey) {
-			return user, RewriteAllPublicKeys()
-		}
-
 		return user, nil
 	}
 
@@ -558,10 +552,6 @@ func LoginViaLDAP(user *User, login, password string, source *LoginSource) (*Use
 	}
 
 	err := CreateUser(user)
-
-	if err == nil && isAttributeSSHPublicKeySet && addLdapSSHPublicKeys(user, source, sr.SSHPublicKey) {
-		err = RewriteAllPublicKeys()
-	}
 
 	return user, err
 }

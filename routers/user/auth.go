@@ -17,7 +17,6 @@ import (
 	"code.gitea.io/gitea/modules/auth/oauth2"
 	"code.gitea.io/gitea/modules/base"
 	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/eventsource"
 	"code.gitea.io/gitea/modules/hcaptcha"
 	"code.gitea.io/gitea/modules/log"
 	"code.gitea.io/gitea/modules/password"
@@ -1090,12 +1089,13 @@ func HandleSignOut(ctx *context.Context) {
 
 // SignOut sign out from login status
 func SignOut(ctx *context.Context) {
-	if ctx.User != nil {
-		eventsource.GetManager().SendMessageBlocking(ctx.User.ID, &eventsource.Event{
-			Name: "logout",
-			Data: ctx.Session.ID(),
-		})
-	}
+	// TODO(tamal): removed evetnsource, should be replaced by nats
+	// if ctx.User != nil {
+	// 	eventsource.GetManager().SendMessageBlocking(ctx.User.ID, &eventsource.Event{
+	// 		Name: "logout",
+	// 		Data: ctx.Session.ID(),
+	// 	})
+	// }
 	HandleSignOut(ctx)
 	ctx.Redirect(setting.AppSubURL + "/")
 }

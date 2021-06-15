@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"strings"
 
+	"go.wandrs.dev/binding"
 	"code.gitea.io/gitea/models"
 	"code.gitea.io/gitea/modules/auth/sso"
 	"code.gitea.io/gitea/modules/base"
@@ -22,7 +23,6 @@ import (
 	"code.gitea.io/gitea/modules/web"
 	"code.gitea.io/gitea/services/forms"
 
-	"gitea.com/go-chi/binding"
 	"github.com/dgrijalva/jwt-go"
 )
 

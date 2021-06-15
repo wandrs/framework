@@ -19,11 +19,11 @@ import (
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/storage"
 	"code.gitea.io/gitea/modules/util"
+	"go.wandrs.dev/session"
 
-	"gitea.com/go-chi/session"
 	jsoniter "github.com/json-iterator/go"
 	archiver "github.com/mholt/archiver/v3"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func addFile(w archiver.Writer, filePath string, absPath string, verbose bool) error {
@@ -92,52 +92,58 @@ var outputTypeEnum = &outputType{
 }
 
 // CmdDump represents the available dump sub-command.
-var CmdDump = cli.Command{
+var CmdDump = &cli.Command{
 	Name:  "dump",
 	Usage: "Dump Gitea files and database",
 	Description: `Dump compresses all related files and database into zip file.
 It can be used for backup and capture Gitea server image to send to maintainer`,
 	Action: runDump,
 	Flags: []cli.Flag{
-		cli.StringFlag{
-			Name:  "file, f",
-			Value: fmt.Sprintf("gitea-dump-%d.zip", time.Now().Unix()),
-			Usage: "Name of the dump file which will be created. Supply '-' for stdout. See type for available types.",
+		&cli.StringFlag{
+			Name:    "file",
+			Aliases: []string{"f"},
+			Value:   fmt.Sprintf("gitea-dump-%d.zip", time.Now().Unix()),
+			Usage:   "Name of the dump file which will be created. Supply '-' for stdout. See type for available types.",
 		},
-		cli.BoolFlag{
-			Name:  "verbose, V",
-			Usage: "Show process details",
+		&cli.BoolFlag{
+			Name:    "verbose",
+			Aliases: []string{"V"},
+			Usage:   "Show process details",
 		},
-		cli.StringFlag{
-			Name:  "tempdir, t",
-			Value: os.TempDir(),
-			Usage: "Temporary dir path",
+		&cli.StringFlag{
+			Name:    "tempdir",
+			Aliases: []string{"t"},
+			Value:   os.TempDir(),
+			Usage:   "Temporary dir path",
 		},
-		cli.StringFlag{
-			Name:  "database, d",
-			Usage: "Specify the database SQL syntax",
+		&cli.StringFlag{
+			Name:    "database",
+			Aliases: []string{"d"},
+			Usage:   "Specify the database SQL syntax",
 		},
-		cli.BoolFlag{
-			Name:  "skip-repository, R",
-			Usage: "Skip the repository dumping",
+		&cli.BoolFlag{
+			Name:    "skip-repository",
+			Aliases: []string{"R"},
+			Usage:   "Skip the repository dumping",
 		},
-		cli.BoolFlag{
-			Name:  "skip-log, L",
-			Usage: "Skip the log dumping",
+		&cli.BoolFlag{
+			Name:    "skip-log",
+			Aliases: []string{"L"},
+			Usage:   "Skip the log dumping",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "skip-custom-dir",
 			Usage: "Skip custom directory",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "skip-lfs-data",
 			Usage: "Skip LFS data",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "skip-attachment-data",
 			Usage: "Skip attachment data",
 		},
-		cli.GenericFlag{
+		&cli.GenericFlag{
 			Name:  "type",
 			Value: outputTypeEnum,
 			Usage: fmt.Sprintf("Dump output format: %s", outputTypeEnum.Join()),
@@ -214,34 +220,6 @@ func runDump(ctx *cli.Context) error {
 	}
 	defer w.Close()
 
-	if ctx.IsSet("skip-repository") && ctx.Bool("skip-repository") {
-		log.Info("Skip dumping local repositories")
-	} else {
-		log.Info("Dumping local repositories... %s", setting.RepoRootPath)
-		if err := addRecursiveExclude(w, "repos", setting.RepoRootPath, []string{absFileName}, verbose); err != nil {
-			fatal("Failed to include repositories: %v", err)
-		}
-
-		if ctx.IsSet("skip-lfs-data") && ctx.Bool("skip-lfs-data") {
-			log.Info("Skip dumping LFS data")
-		} else if err := storage.LFS.IterateObjects(func(objPath string, object storage.Object) error {
-			info, err := object.Stat()
-			if err != nil {
-				return err
-			}
-
-			return w.Write(archiver.File{
-				FileInfo: archiver.FileInfo{
-					FileInfo:   info,
-					CustomName: path.Join("data", "lfs", objPath),
-				},
-				ReadCloser: object,
-			})
-		}); err != nil {
-			fatal("Failed to dump LFS objects: %v", err)
-		}
-	}
-
 	tmpDir := ctx.String("tempdir")
 	if _, err := os.Stat(tmpDir); os.IsNotExist(err) {
 		fatal("Path does not exist: %s", tmpDir)
@@ -313,33 +291,11 @@ func runDump(ctx *cli.Context) error {
 			excludes = append(excludes, opts.ProviderConfig)
 		}
 
-		excludes = append(excludes, setting.RepoRootPath)
-		excludes = append(excludes, setting.LFS.Path)
-		excludes = append(excludes, setting.Attachment.Path)
 		excludes = append(excludes, setting.LogRootPath)
 		excludes = append(excludes, absFileName)
 		if err := addRecursiveExclude(w, "data", setting.AppDataPath, excludes, verbose); err != nil {
 			fatal("Failed to include data directory: %v", err)
 		}
-	}
-
-	if ctx.IsSet("skip-attachment-data") && ctx.Bool("skip-attachment-data") {
-		log.Info("Skip dumping attachment data")
-	} else if err := storage.Attachments.IterateObjects(func(objPath string, object storage.Object) error {
-		info, err := object.Stat()
-		if err != nil {
-			return err
-		}
-
-		return w.Write(archiver.File{
-			FileInfo: archiver.FileInfo{
-				FileInfo:   info,
-				CustomName: path.Join("data", "attachments", objPath),
-			},
-			ReadCloser: object,
-		})
-	}); err != nil {
-		fatal("Failed to dump attachments: %v", err)
 	}
 
 	// Doesn't check if LogRootPath exists before processing --skip-log intentionally,

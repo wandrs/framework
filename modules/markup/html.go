@@ -17,14 +17,11 @@ import (
 
 	"code.gitea.io/gitea/modules/base"
 	"code.gitea.io/gitea/modules/emoji"
-	"code.gitea.io/gitea/modules/git"
-	"code.gitea.io/gitea/modules/log"
 	"code.gitea.io/gitea/modules/markup/common"
 	"code.gitea.io/gitea/modules/references"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/util"
 
-	"github.com/unknwon/com"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"mvdan.cc/xurls/v2"
@@ -364,19 +361,24 @@ func visitNode(ctx *RenderContext, procs []processor, node *html.Node, visitText
 		}
 	case html.ElementNode:
 		if node.Data == "img" {
-			for _, attr := range node.Attr {
+			attrs := node.Attr
+			for idx, attr := range attrs {
 				if attr.Key != "src" {
 					continue
 				}
-				if len(attr.Val) > 0 && !isLinkStr(attr.Val) && !strings.HasPrefix(attr.Val, "data:image/") {
+				link := []byte(attr.Val)
+				if len(link) > 0 && !IsLink(link) {
 					prefix := ctx.URLPrefix
 					if ctx.IsWiki {
 						prefix = util.URLJoin(prefix, "wiki", "raw")
 					}
 					prefix = strings.Replace(prefix, "/src/", "/media/", 1)
 
-					attr.Val = util.URLJoin(prefix, attr.Val)
+					lnk := string(link)
+					lnk = util.URLJoin(prefix, lnk)
+					link = []byte(lnk)
 				}
+				node.Attr[idx].Val = string(link)
 			}
 		} else if node.Data == "a" {
 			visitText = false
@@ -779,73 +781,7 @@ func fullIssuePatternProcessor(ctx *RenderContext, node *html.Node) {
 }
 
 func issueIndexPatternProcessor(ctx *RenderContext, node *html.Node) {
-	if ctx.Metas == nil {
-		return
-	}
-
-	var (
-		found bool
-		ref   *references.RenderizableReference
-	)
-
-	_, exttrack := ctx.Metas["format"]
-	alphanum := ctx.Metas["style"] == IssueNameStyleAlphanumeric
-
-	// Repos with external issue trackers might still need to reference local PRs
-	// We need to concern with the first one that shows up in the text, whichever it is
-	found, ref = references.FindRenderizableReferenceNumeric(node.Data, exttrack && alphanum)
-	if exttrack && alphanum {
-		if found2, ref2 := references.FindRenderizableReferenceAlphanumeric(node.Data); found2 {
-			if !found || ref2.RefLocation.Start < ref.RefLocation.Start {
-				found = true
-				ref = ref2
-			}
-		}
-	}
-	if !found {
-		return
-	}
-
-	var link *html.Node
-	reftext := node.Data[ref.RefLocation.Start:ref.RefLocation.End]
-	if exttrack && !ref.IsPull {
-		ctx.Metas["index"] = ref.Issue
-		link = createLink(com.Expand(ctx.Metas["format"], ctx.Metas), reftext, "ref-issue")
-	} else {
-		// Path determines the type of link that will be rendered. It's unknown at this point whether
-		// the linked item is actually a PR or an issue. Luckily it's of no real consequence because
-		// Gitea will redirect on click as appropriate.
-		path := "issues"
-		if ref.IsPull {
-			path = "pulls"
-		}
-		if ref.Owner == "" {
-			link = createLink(util.URLJoin(setting.AppURL, ctx.Metas["user"], ctx.Metas["repo"], path, ref.Issue), reftext, "ref-issue")
-		} else {
-			link = createLink(util.URLJoin(setting.AppURL, ref.Owner, ref.Name, path, ref.Issue), reftext, "ref-issue")
-		}
-	}
-
-	if ref.Action == references.XRefActionNone {
-		replaceContent(node, ref.RefLocation.Start, ref.RefLocation.End, link)
-		return
-	}
-
-	// Decorate action keywords if actionable
-	var keyword *html.Node
-	if references.IsXrefActionable(ref, exttrack, alphanum) {
-		keyword = createKeyword(node.Data[ref.ActionLocation.Start:ref.ActionLocation.End])
-	} else {
-		keyword = &html.Node{
-			Type: html.TextNode,
-			Data: node.Data[ref.ActionLocation.Start:ref.ActionLocation.End],
-		}
-	}
-	spaces := &html.Node{
-		Type: html.TextNode,
-		Data: node.Data[ref.ActionLocation.End:ref.RefLocation.Start],
-	}
-	replaceContentList(node, ref.ActionLocation.Start, ref.RefLocation.End, []*html.Node{keyword, spaces, link})
+	return
 }
 
 // fullSha1PatternProcessor renders SHA containing URLs
@@ -939,31 +875,8 @@ func emojiProcessor(ctx *RenderContext, node *html.Node) {
 // sha1CurrentPatternProcessor renders SHA1 strings to corresponding links that
 // are assumed to be in the same repository.
 func sha1CurrentPatternProcessor(ctx *RenderContext, node *html.Node) {
-	if ctx.Metas == nil || ctx.Metas["user"] == "" || ctx.Metas["repo"] == "" || ctx.Metas["repoPath"] == "" {
-		return
-	}
-	m := sha1CurrentPattern.FindStringSubmatchIndex(node.Data)
-	if m == nil {
-		return
-	}
-	hash := node.Data[m[2]:m[3]]
-	// The regex does not lie, it matches the hash pattern.
-	// However, a regex cannot know if a hash actually exists or not.
-	// We could assume that a SHA1 hash should probably contain alphas AND numerics
-	// but that is not always the case.
-	// Although unlikely, deadbeef and 1234567 are valid short forms of SHA1 hash
-	// as used by git and github for linking and thus we have to do similar.
-	// Because of this, we check to make sure that a matched hash is actually
-	// a commit in the repository before making it a link.
-	if _, err := git.NewCommand("rev-parse", "--verify", hash).RunInDirBytes(ctx.Metas["repoPath"]); err != nil {
-		if !strings.Contains(err.Error(), "fatal: Needed a single revision") {
-			log.Debug("sha1CurrentPatternProcessor git rev-parse: %v", err)
-		}
-		return
-	}
-
-	replaceContent(node, m[2], m[3],
-		createCodeLink(util.URLJoin(setting.AppURL, ctx.Metas["user"], ctx.Metas["repo"], "commit", hash), base.ShortSha(hash), "commit"))
+	// TODO(tamal): do no special processing for git sha
+	return
 }
 
 // emailAddressProcessor replaces raw email addresses with a mailto: link.

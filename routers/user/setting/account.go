@@ -240,9 +240,6 @@ func DeleteAccount(ctx *context.Context) {
 
 	if err := models.DeleteUser(ctx.User); err != nil {
 		switch {
-		case models.IsErrUserOwnRepos(err):
-			ctx.Flash.Error(ctx.Tr("form.still_own_repo"))
-			ctx.Redirect(setting.AppSubURL + "/user/settings/account")
 		case models.IsErrUserHasOrgs(err):
 			ctx.Flash.Error(ctx.Tr("form.still_has_org"))
 			ctx.Redirect(setting.AppSubURL + "/user/settings/account")

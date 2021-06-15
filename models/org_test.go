@@ -152,29 +152,6 @@ func TestUser_RemoveMember(t *testing.T) {
 	CheckConsistencyFor(t, &User{}, &Team{})
 }
 
-func TestUser_RemoveOrgRepo(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-	org := AssertExistsAndLoadBean(t, &User{ID: 3}).(*User)
-	repo := AssertExistsAndLoadBean(t, &Repository{OwnerID: org.ID}).(*Repository)
-
-	// remove a repo that does belong to org
-	AssertExistsAndLoadBean(t, &TeamRepo{RepoID: repo.ID, OrgID: org.ID})
-	assert.NoError(t, org.RemoveOrgRepo(repo.ID))
-	AssertNotExistsBean(t, &TeamRepo{RepoID: repo.ID, OrgID: org.ID})
-	AssertExistsAndLoadBean(t, &Repository{ID: repo.ID}) // repo should still exist
-
-	// remove a repo that does not belong to org
-	assert.NoError(t, org.RemoveOrgRepo(repo.ID))
-	AssertNotExistsBean(t, &TeamRepo{RepoID: repo.ID, OrgID: org.ID})
-
-	assert.NoError(t, org.RemoveOrgRepo(NonexistentID))
-
-	CheckConsistencyFor(t,
-		&User{ID: org.ID},
-		&Team{OrgID: org.ID},
-		&Repository{ID: repo.ID})
-}
-
 func TestCreateOrganization(t *testing.T) {
 	// successful creation of org
 	assert.NoError(t, PrepareTestDatabase())
@@ -270,7 +247,6 @@ func TestDeleteOrganization(t *testing.T) {
 	org = AssertExistsAndLoadBean(t, &User{ID: 3}).(*User)
 	err := DeleteOrganization(org)
 	assert.Error(t, err)
-	assert.True(t, IsErrUserOwnRepos(err))
 
 	user := AssertExistsAndLoadBean(t, &User{ID: 5}).(*User)
 	assert.Error(t, DeleteOrganization(user))
@@ -505,72 +481,6 @@ func TestUser_GetUserTeamIDs(t *testing.T) {
 	testSuccess(NonexistentID, []int64{})
 }
 
-func TestAccessibleReposEnv_CountRepos(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-	org := AssertExistsAndLoadBean(t, &User{ID: 3}).(*User)
-	testSuccess := func(userID, expectedCount int64) {
-		env, err := org.AccessibleReposEnv(userID)
-		assert.NoError(t, err)
-		count, err := env.CountRepos()
-		assert.NoError(t, err)
-		assert.EqualValues(t, expectedCount, count)
-	}
-	testSuccess(2, 3)
-	testSuccess(4, 2)
-}
-
-func TestAccessibleReposEnv_RepoIDs(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-	org := AssertExistsAndLoadBean(t, &User{ID: 3}).(*User)
-	testSuccess := func(userID, _, pageSize int64, expectedRepoIDs []int64) {
-		env, err := org.AccessibleReposEnv(userID)
-		assert.NoError(t, err)
-		repoIDs, err := env.RepoIDs(1, 100)
-		assert.NoError(t, err)
-		assert.Equal(t, expectedRepoIDs, repoIDs)
-	}
-	testSuccess(2, 1, 100, []int64{3, 5, 32})
-	testSuccess(4, 0, 100, []int64{3, 32})
-}
-
-func TestAccessibleReposEnv_Repos(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-	org := AssertExistsAndLoadBean(t, &User{ID: 3}).(*User)
-	testSuccess := func(userID int64, expectedRepoIDs []int64) {
-		env, err := org.AccessibleReposEnv(userID)
-		assert.NoError(t, err)
-		repos, err := env.Repos(1, 100)
-		assert.NoError(t, err)
-		expectedRepos := make([]*Repository, len(expectedRepoIDs))
-		for i, repoID := range expectedRepoIDs {
-			expectedRepos[i] = AssertExistsAndLoadBean(t,
-				&Repository{ID: repoID}).(*Repository)
-		}
-		assert.Equal(t, expectedRepos, repos)
-	}
-	testSuccess(2, []int64{3, 5, 32})
-	testSuccess(4, []int64{3, 32})
-}
-
-func TestAccessibleReposEnv_MirrorRepos(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-	org := AssertExistsAndLoadBean(t, &User{ID: 3}).(*User)
-	testSuccess := func(userID int64, expectedRepoIDs []int64) {
-		env, err := org.AccessibleReposEnv(userID)
-		assert.NoError(t, err)
-		repos, err := env.MirrorRepos()
-		assert.NoError(t, err)
-		expectedRepos := make([]*Repository, len(expectedRepoIDs))
-		for i, repoID := range expectedRepoIDs {
-			expectedRepos[i] = AssertExistsAndLoadBean(t,
-				&Repository{ID: repoID}).(*Repository)
-		}
-		assert.Equal(t, expectedRepos, repos)
-	}
-	testSuccess(2, []int64{5})
-	testSuccess(4, []int64{})
-}
-
 func TestHasOrgVisibleTypePublic(t *testing.T) {
 	assert.NoError(t, PrepareTestDatabase())
 	owner := AssertExistsAndLoadBean(t, &User{ID: 2}).(*User)
@@ -638,22 +548,4 @@ func TestHasOrgVisibleTypePrivate(t *testing.T) {
 	assert.True(t, test1)  // owner of org
 	assert.False(t, test2) // user not a part of org
 	assert.False(t, test3) // logged out user
-}
-
-func TestGetUsersWhoCanCreateOrgRepo(t *testing.T) {
-	assert.NoError(t, PrepareTestDatabase())
-
-	users, err := GetUsersWhoCanCreateOrgRepo(3)
-	assert.NoError(t, err)
-	assert.Len(t, users, 2)
-	var ids []int64
-	for i := range users {
-		ids = append(ids, users[i].ID)
-	}
-	assert.ElementsMatch(t, ids, []int64{2, 28})
-
-	users, err = GetUsersWhoCanCreateOrgRepo(7)
-	assert.NoError(t, err)
-	assert.Len(t, users, 1)
-	assert.EqualValues(t, 5, users[0].ID)
 }

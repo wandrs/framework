@@ -9,12 +9,10 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
-	"regexp"
 	"strings"
 
 	"code.gitea.io/gitea/models"
 	"code.gitea.io/gitea/modules/log"
-	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/web/middleware"
 )
 
@@ -104,16 +102,8 @@ func isAttachmentDownload(req *http.Request) bool {
 	return strings.HasPrefix(req.URL.Path, "/attachments/") && req.Method == "GET"
 }
 
-var gitRawPathRe = regexp.MustCompile(`^/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+/(?:(?:git-(?:(?:upload)|(?:receive))-pack$)|(?:info/refs$)|(?:HEAD$)|(?:objects/)|raw/)`)
-var lfsPathRe = regexp.MustCompile(`^/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+/info/lfs/`)
-
 func isGitRawOrLFSPath(req *http.Request) bool {
-	if gitRawPathRe.MatchString(req.URL.Path) {
-		return true
-	}
-	if setting.LFS.StartServer {
-		return lfsPathRe.MatchString(req.URL.Path)
-	}
+	// TODO(tamal): remove reference to git paths
 	return false
 }
 

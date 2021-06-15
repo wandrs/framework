@@ -93,5 +93,6 @@ func HTMLRenderer() *render.Render {
 		AssetNames:                GetAssetNames,
 		IsDevelopment:             !setting.IsProd(),
 		DisableHTTPErrorRendering: true,
+		RequirePartials:           false,
 	})
 }

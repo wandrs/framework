@@ -12,7 +12,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -57,11 +56,6 @@ func initMigrationTest(t *testing.T) func() {
 
 	setting.NewContext()
 
-	assert.True(t, len(setting.RepoRootPath) != 0)
-	assert.NoError(t, util.RemoveAll(setting.RepoRootPath))
-	assert.NoError(t, util.CopyDir(path.Join(filepath.Dir(setting.AppPath), "integrations/gitea-repositories-meta"), setting.RepoRootPath))
-
-	setting.CheckLFSVersion()
 	setting.InitDBConfig()
 	setting.NewLogServices(true)
 	return deferFn

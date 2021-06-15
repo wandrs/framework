@@ -22,10 +22,9 @@ type GeneralUISettings struct {
 
 // GeneralAPISettings contains global api settings exposed by it
 type GeneralAPISettings struct {
-	MaxResponseItems       int   `json:"max_response_items"`
-	DefaultPagingNum       int   `json:"default_paging_num"`
-	DefaultGitTreesPerPage int   `json:"default_git_trees_per_page"`
-	DefaultMaxBlobSize     int64 `json:"default_max_blob_size"`
+	MaxResponseItems   int   `json:"max_response_items"`
+	DefaultPagingNum   int   `json:"default_paging_num"`
+	DefaultMaxBlobSize int64 `json:"default_max_blob_size"`
 }
 
 // GeneralAttachmentSettings contains global Attachment settings exposed by API

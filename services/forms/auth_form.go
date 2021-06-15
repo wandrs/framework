@@ -7,10 +7,9 @@ package forms
 import (
 	"net/http"
 
+	"go.wandrs.dev/binding"
 	"code.gitea.io/gitea/modules/context"
 	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/binding"
 )
 
 // AuthenticationForm form for authentication

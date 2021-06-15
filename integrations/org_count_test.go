@@ -11,6 +11,7 @@ import (
 
 	"code.gitea.io/gitea/models"
 	api "code.gitea.io/gitea/modules/structs"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -67,10 +68,9 @@ func testOrgCounts(t *testing.T, u *url.URL) {
 	var testTeam api.Team
 
 	t.Run("CreateTeamForPublicTestOrganization", doAPICreateOrganizationTeam(ctx, orgName, &api.CreateTeamOption{
-		Name:             "test",
-		Permission:       "read",
-		Units:            []string{"repo.code", "repo.issues", "repo.wiki", "repo.pulls", "repo.releases"},
-		CanCreateOrgRepo: true,
+		Name:       "test",
+		Permission: "read",
+		Units:      []string{"repo.code", "repo.issues", "repo.wiki", "repo.pulls", "repo.releases"},
 	}, func(_ *testing.T, team api.Team) {
 		testTeam = team
 	}))

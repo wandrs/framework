@@ -15,6 +15,7 @@ import (
 	"code.gitea.io/gitea/modules/private"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/services/mailer"
+
 	jsoniter "github.com/json-iterator/go"
 )
 

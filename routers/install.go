@@ -27,8 +27,8 @@ import (
 	"code.gitea.io/gitea/modules/web"
 	"code.gitea.io/gitea/modules/web/middleware"
 	"code.gitea.io/gitea/services/forms"
+	"go.wandrs.dev/session"
 
-	"gitea.com/go-chi/session"
 	"gopkg.in/ini.v1"
 )
 
@@ -112,8 +112,6 @@ func Install(ctx *context.Context) {
 
 	// Application general settings
 	form.AppName = setting.AppName
-	form.RepoRootPath = setting.RepoRootPath
-	form.LFSRootPath = setting.LFS.Path
 
 	// Note(unknown): it's hard for Windows users change a running user,
 	// 	so just use current one if config says default.
@@ -124,7 +122,6 @@ func Install(ctx *context.Context) {
 	}
 
 	form.Domain = setting.Domain
-	form.SSHPort = setting.SSH.Port
 	form.HTTPPort = setting.HTTPPort
 	form.AppURL = setting.AppURL
 	form.LogRootPath = setting.LogRootPath
@@ -150,7 +147,6 @@ func Install(ctx *context.Context) {
 	form.RequireSignInView = setting.Service.RequireSignInView
 	form.DefaultKeepEmailPrivate = setting.Service.DefaultKeepEmailPrivate
 	form.DefaultAllowCreateOrganization = setting.Service.DefaultAllowCreateOrganization
-	form.DefaultEnableTimetracking = setting.Service.DefaultEnableTimetracking
 	form.NoReplyAddress = setting.Service.NoReplyAddress
 	form.PasswordAlgorithm = setting.PasswordHashAlgo
 
@@ -215,24 +211,6 @@ func InstallPost(ctx *context.Context) {
 			ctx.RenderWithErr(ctx.Tr("install.invalid_db_setting", err), tplInstall, &form)
 		}
 		return
-	}
-
-	// Test repository root path.
-	form.RepoRootPath = strings.ReplaceAll(form.RepoRootPath, "\\", "/")
-	if err = os.MkdirAll(form.RepoRootPath, os.ModePerm); err != nil {
-		ctx.Data["Err_RepoRootPath"] = true
-		ctx.RenderWithErr(ctx.Tr("install.invalid_repo_path", err), tplInstall, &form)
-		return
-	}
-
-	// Test LFS root path if not empty, empty meaning disable LFS
-	if form.LFSRootPath != "" {
-		form.LFSRootPath = strings.ReplaceAll(form.LFSRootPath, "\\", "/")
-		if err := os.MkdirAll(form.LFSRootPath, os.ModePerm); err != nil {
-			ctx.Data["Err_LFSRootPath"] = true
-			ctx.RenderWithErr(ctx.Tr("install.invalid_lfs_path", err), tplInstall, &form)
-			return
-		}
 	}
 
 	// Test log root path.
@@ -324,32 +302,11 @@ func InstallPost(ctx *context.Context) {
 	cfg.Section("database").Key("LOG_SQL").SetValue("false") // LOG_SQL is rarely helpful
 
 	cfg.Section("").Key("APP_NAME").SetValue(form.AppName)
-	cfg.Section("repository").Key("ROOT").SetValue(form.RepoRootPath)
 	cfg.Section("").Key("RUN_USER").SetValue(form.RunUser)
 	cfg.Section("server").Key("SSH_DOMAIN").SetValue(form.Domain)
 	cfg.Section("server").Key("DOMAIN").SetValue(form.Domain)
 	cfg.Section("server").Key("HTTP_PORT").SetValue(form.HTTPPort)
 	cfg.Section("server").Key("ROOT_URL").SetValue(form.AppURL)
-
-	if form.SSHPort == 0 {
-		cfg.Section("server").Key("DISABLE_SSH").SetValue("true")
-	} else {
-		cfg.Section("server").Key("DISABLE_SSH").SetValue("false")
-		cfg.Section("server").Key("SSH_PORT").SetValue(fmt.Sprint(form.SSHPort))
-	}
-
-	if form.LFSRootPath != "" {
-		cfg.Section("server").Key("LFS_START_SERVER").SetValue("true")
-		cfg.Section("server").Key("LFS_CONTENT_PATH").SetValue(form.LFSRootPath)
-		var secretKey string
-		if secretKey, err = generate.NewJwtSecret(); err != nil {
-			ctx.RenderWithErr(ctx.Tr("install.lfs_jwt_secret_failed", err), tplInstall, &form)
-			return
-		}
-		cfg.Section("server").Key("LFS_JWT_SECRET").SetValue(secretKey)
-	} else {
-		cfg.Section("server").Key("LFS_START_SERVER").SetValue("false")
-	}
 
 	if len(strings.TrimSpace(form.SMTPHost)) > 0 {
 		cfg.Section("mailer").Key("ENABLED").SetValue("true")

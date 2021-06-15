@@ -7,7 +7,6 @@ package org
 
 import (
 	"net/http"
-	"path"
 	"strings"
 
 	"code.gitea.io/gitea/models"
@@ -129,60 +128,12 @@ func TeamsAction(ctx *context.Context) {
 	}
 }
 
-// TeamsRepoAction operate team's repository
-func TeamsRepoAction(ctx *context.Context) {
-	if !ctx.Org.IsOwner {
-		ctx.Error(http.StatusNotFound)
-		return
-	}
-
-	var err error
-	action := ctx.Params(":action")
-	switch action {
-	case "add":
-		repoName := path.Base(ctx.Query("repo_name"))
-		var repo *models.Repository
-		repo, err = models.GetRepositoryByName(ctx.Org.Organization.ID, repoName)
-		if err != nil {
-			if models.IsErrRepoNotExist(err) {
-				ctx.Flash.Error(ctx.Tr("org.teams.add_nonexistent_repo"))
-				ctx.Redirect(ctx.Org.OrgLink + "/teams/" + ctx.Org.Team.LowerName + "/repositories")
-				return
-			}
-			ctx.ServerError("GetRepositoryByName", err)
-			return
-		}
-		err = ctx.Org.Team.AddRepository(repo)
-	case "remove":
-		err = ctx.Org.Team.RemoveRepository(ctx.QueryInt64("repoid"))
-	case "addall":
-		err = ctx.Org.Team.AddAllRepositories()
-	case "removeall":
-		err = ctx.Org.Team.RemoveAllRepositories()
-	}
-
-	if err != nil {
-		log.Error("Action(%s): '%s' %v", ctx.Params(":action"), ctx.Org.Team.Name, err)
-		ctx.ServerError("TeamsRepoAction", err)
-		return
-	}
-
-	if action == "addall" || action == "removeall" {
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"redirect": ctx.Org.OrgLink + "/teams/" + ctx.Org.Team.LowerName + "/repositories",
-		})
-		return
-	}
-	ctx.Redirect(ctx.Org.OrgLink + "/teams/" + ctx.Org.Team.LowerName + "/repositories")
-}
-
 // NewTeam render create new team page
 func NewTeam(ctx *context.Context) {
 	ctx.Data["Title"] = ctx.Org.Organization.FullName
 	ctx.Data["PageIsOrgTeams"] = true
 	ctx.Data["PageIsOrgTeamsNew"] = true
 	ctx.Data["Team"] = &models.Team{}
-	ctx.Data["Units"] = models.Units
 	ctx.HTML(http.StatusOK, tplTeamNew)
 }
 
@@ -192,38 +143,18 @@ func NewTeamPost(ctx *context.Context) {
 	ctx.Data["Title"] = ctx.Org.Organization.FullName
 	ctx.Data["PageIsOrgTeams"] = true
 	ctx.Data["PageIsOrgTeamsNew"] = true
-	ctx.Data["Units"] = models.Units
-	var includesAllRepositories = form.RepoAccess == "all"
 
 	t := &models.Team{
-		OrgID:                   ctx.Org.Organization.ID,
-		Name:                    form.TeamName,
-		Description:             form.Description,
-		Authorize:               models.ParseAccessMode(form.Permission),
-		IncludesAllRepositories: includesAllRepositories,
-		CanCreateOrgRepo:        form.CanCreateOrgRepo,
-	}
-
-	if t.Authorize < models.AccessModeOwner {
-		var units = make([]*models.TeamUnit, 0, len(form.Units))
-		for _, tp := range form.Units {
-			units = append(units, &models.TeamUnit{
-				OrgID: ctx.Org.Organization.ID,
-				Type:  tp,
-			})
-		}
-		t.Units = units
+		OrgID:       ctx.Org.Organization.ID,
+		Name:        form.TeamName,
+		Description: form.Description,
+		Authorize:   models.ParseAccessMode(form.Permission),
 	}
 
 	ctx.Data["Team"] = t
 
 	if ctx.HasError() {
 		ctx.HTML(http.StatusOK, tplTeamNew)
-		return
-	}
-
-	if t.Authorize < models.AccessModeAdmin && len(form.Units) == 0 {
-		ctx.RenderWithErr(ctx.Tr("form.team_no_units_error"), tplTeamNew, &form)
 		return
 	}
 
@@ -253,25 +184,12 @@ func TeamMembers(ctx *context.Context) {
 	ctx.HTML(http.StatusOK, tplTeamMembers)
 }
 
-// TeamRepositories show the repositories of team
-func TeamRepositories(ctx *context.Context) {
-	ctx.Data["Title"] = ctx.Org.Team.Name
-	ctx.Data["PageIsOrgTeams"] = true
-	ctx.Data["PageIsOrgTeamRepos"] = true
-	if err := ctx.Org.Team.GetRepositories(&models.SearchTeamOptions{}); err != nil {
-		ctx.ServerError("GetRepositories", err)
-		return
-	}
-	ctx.HTML(http.StatusOK, tplTeamRepositories)
-}
-
 // EditTeam render team edit page
 func EditTeam(ctx *context.Context) {
 	ctx.Data["Title"] = ctx.Org.Organization.FullName
 	ctx.Data["PageIsOrgTeams"] = true
 	ctx.Data["team_name"] = ctx.Org.Team.Name
 	ctx.Data["desc"] = ctx.Org.Team.Description
-	ctx.Data["Units"] = models.Units
 	ctx.HTML(http.StatusOK, tplTeamNew)
 }
 
@@ -282,11 +200,9 @@ func EditTeamPost(ctx *context.Context) {
 	ctx.Data["Title"] = ctx.Org.Organization.FullName
 	ctx.Data["PageIsOrgTeams"] = true
 	ctx.Data["Team"] = t
-	ctx.Data["Units"] = models.Units
 
 	isAuthChanged := false
 	isIncludeAllChanged := false
-	var includesAllRepositories = form.RepoAccess == "all"
 	if !t.IsOwnerTeam() {
 		// Validate permission level.
 		auth := models.ParseAccessMode(form.Permission)
@@ -296,37 +212,11 @@ func EditTeamPost(ctx *context.Context) {
 			isAuthChanged = true
 			t.Authorize = auth
 		}
-
-		if t.IncludesAllRepositories != includesAllRepositories {
-			isIncludeAllChanged = true
-			t.IncludesAllRepositories = includesAllRepositories
-		}
 	}
 	t.Description = form.Description
-	if t.Authorize < models.AccessModeOwner {
-		var units = make([]models.TeamUnit, 0, len(form.Units))
-		for _, tp := range form.Units {
-			units = append(units, models.TeamUnit{
-				OrgID:  t.OrgID,
-				TeamID: t.ID,
-				Type:   tp,
-			})
-		}
-		err := models.UpdateTeamUnits(t, units)
-		if err != nil {
-			ctx.Error(http.StatusInternalServerError, "LoadIssue", err.Error())
-			return
-		}
-	}
-	t.CanCreateOrgRepo = form.CanCreateOrgRepo
 
 	if ctx.HasError() {
 		ctx.HTML(http.StatusOK, tplTeamNew)
-		return
-	}
-
-	if t.Authorize < models.AccessModeAdmin && len(form.Units) == 0 {
-		ctx.RenderWithErr(ctx.Tr("form.team_no_units_error"), tplTeamNew, &form)
 		return
 	}
 

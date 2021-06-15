@@ -5,13 +5,11 @@
 package integrations
 
 import (
-	"fmt"
 	"net/http"
 	"path"
 	"testing"
 
 	"code.gitea.io/gitea/modules/setting"
-	api "code.gitea.io/gitea/modules/structs"
 	"code.gitea.io/gitea/modules/test"
 
 	"github.com/stretchr/testify/assert"
@@ -79,8 +77,6 @@ func TestNoLoginNotExist(t *testing.T) {
 
 func testLinksAsUser(userName string, t *testing.T) {
 	var links = []string{
-		"/explore/repos",
-		"/explore/repos?q=test&tab=",
 		"/explore/users",
 		"/explore/users?q=test&tab=",
 		"/explore/organizations",
@@ -88,30 +84,6 @@ func testLinksAsUser(userName string, t *testing.T) {
 		"/",
 		"/user/forgot_password",
 		"/api/swagger",
-		"/issues",
-		"/issues?type=your_repositories&repos=[0]&sort=&state=open",
-		"/issues?type=assigned&repos=[0]&sort=&state=open",
-		"/issues?type=your_repositories&repos=[0]&sort=&state=closed",
-		"/issues?type=assigned&repos=[]&sort=&state=closed",
-		"/issues?type=assigned&sort=&state=open",
-		"/issues?type=created_by&repos=[1,2]&sort=&state=closed",
-		"/issues?type=created_by&repos=[1,2]&sort=&state=open",
-		"/pulls",
-		"/pulls?type=your_repositories&repos=[2]&sort=&state=open",
-		"/pulls?type=assigned&repos=[]&sort=&state=open",
-		"/pulls?type=created_by&repos=[0]&sort=&state=open",
-		"/pulls?type=your_repositories&repos=[0]&sort=&state=closed",
-		"/pulls?type=assigned&repos=[0]&sort=&state=closed",
-		"/pulls?type=created_by&repos=[0]&sort=&state=closed",
-		"/milestones",
-		"/milestones?sort=mostcomplete&state=closed",
-		"/milestones?type=your_repositories&sort=mostcomplete&state=closed",
-		"/milestones?sort=&repos=[1]&state=closed",
-		"/milestones?sort=&repos=[1]&state=open",
-		"/milestones?repos=[0]&sort=mostissues&state=open",
-		"/notifications",
-		"/repo/create",
-		"/repo/migrate",
 		"/org/create",
 		"/user2",
 		"/user2?tab=stars",
@@ -122,7 +94,6 @@ func testLinksAsUser(userName string, t *testing.T) {
 		"/user/settings/security/two_factor/enroll",
 		"/user/settings/keys",
 		"/user/settings/organization",
-		"/user/settings/repos",
 	}
 
 	session := loginUser(t, userName)
@@ -133,38 +104,6 @@ func testLinksAsUser(userName string, t *testing.T) {
 
 	reqAPI := NewRequestf(t, "GET", "/api/v1/users/%s/repos", userName)
 	respAPI := MakeRequest(t, reqAPI, http.StatusOK)
-
-	var apiRepos []*api.Repository
-	DecodeJSON(t, respAPI, &apiRepos)
-
-	var repoLinks = []string{
-		"",
-		"/issues",
-		"/pulls",
-		"/commits/branch/master",
-		"/graph",
-		"/settings",
-		"/settings/collaboration",
-		"/settings/branches",
-		"/settings/hooks",
-		// FIXME: below links should return 200 but 404 ??
-		//"/settings/hooks/git",
-		//"/settings/hooks/git/pre-receive",
-		//"/settings/hooks/git/update",
-		//"/settings/hooks/git/post-receive",
-		"/settings/keys",
-		"/releases",
-		"/releases/new",
-		//"/wiki/_pages",
-		"/wiki/_new",
-	}
-
-	for _, repo := range apiRepos {
-		for _, link := range repoLinks {
-			req := NewRequest(t, "GET", fmt.Sprintf("/%s/%s%s", userName, repo.Name, link))
-			session.MakeRequest(t, req, http.StatusOK)
-		}
-	}
 }
 
 func TestLinksLogin(t *testing.T) {

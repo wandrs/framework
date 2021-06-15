@@ -8,12 +8,10 @@ package forms
 import (
 	"net/http"
 
-	"code.gitea.io/gitea/models"
+	"go.wandrs.dev/binding"
 	"code.gitea.io/gitea/modules/context"
 	"code.gitea.io/gitea/modules/structs"
 	"code.gitea.io/gitea/modules/web/middleware"
-
-	"gitea.com/go-chi/binding"
 )
 
 // ________                            .__                __  .__
@@ -44,7 +42,6 @@ type UpdateOrgSettingForm struct {
 	Website                   string `binding:"ValidUrl;MaxSize(255)"`
 	Location                  string `binding:"MaxSize(50)"`
 	Visibility                structs.VisibleType
-	MaxRepoCreation           int
 	RepoAdminChangeTeamAccess bool
 }
 
@@ -63,12 +60,10 @@ func (f *UpdateOrgSettingForm) Validate(req *http.Request, errs binding.Errors) 
 
 // CreateTeamForm form for creating team
 type CreateTeamForm struct {
-	TeamName         string `binding:"Required;AlphaDashDot;MaxSize(30)"`
-	Description      string `binding:"MaxSize(255)"`
-	Permission       string
-	Units            []models.UnitType
-	RepoAccess       string
-	CanCreateOrgRepo bool
+	TeamName    string `binding:"Required;AlphaDashDot;MaxSize(30)"`
+	Description string `binding:"MaxSize(255)"`
+	Permission  string
+	RepoAccess  string
 }
 
 // Validate validates the fields

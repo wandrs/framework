@@ -13,10 +13,7 @@ import (
 
 	"code.gitea.io/gitea/models"
 	"code.gitea.io/gitea/modules/context"
-	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/markup/markdown"
 	"code.gitea.io/gitea/modules/setting"
-	"code.gitea.io/gitea/modules/util"
 	"code.gitea.io/gitea/routers/org"
 )
 
@@ -58,32 +55,8 @@ func Profile(ctx *context.Context) {
 		return
 	}
 
-	isShowKeys := false
-	if strings.HasSuffix(uname, ".keys") {
-		isShowKeys = true
-		uname = strings.TrimSuffix(uname, ".keys")
-	}
-
-	isShowGPG := false
-	if strings.HasSuffix(uname, ".gpg") {
-		isShowGPG = true
-		uname = strings.TrimSuffix(uname, ".gpg")
-	}
-
 	ctxUser := GetUserByName(ctx, uname)
 	if ctx.Written() {
-		return
-	}
-
-	// Show SSH keys.
-	if isShowKeys {
-		ShowSSHKeys(ctx, ctxUser.ID)
-		return
-	}
-
-	// Show GPG keys.
-	if isShowGPG {
-		ShowGPGKeys(ctx, ctxUser.ID)
 		return
 	}
 
@@ -104,25 +77,8 @@ func Profile(ctx *context.Context) {
 	ctx.Data["Owner"] = ctxUser
 	ctx.Data["OpenIDs"] = openIDs
 
-	if setting.Service.EnableUserHeatmap {
-		data, err := models.GetUserHeatmapDataByUser(ctxUser, ctx.User)
-		if err != nil {
-			ctx.ServerError("GetUserHeatmapDataByUser", err)
-			return
-		}
-		ctx.Data["HeatmapData"] = data
-	}
-
 	if len(ctxUser.Description) != 0 {
-		content, err := markdown.RenderString(&markup.RenderContext{
-			URLPrefix: ctx.Repo.RepoLink,
-			Metas:     map[string]string{"mode": "document"},
-		}, ctxUser.Description)
-		if err != nil {
-			ctx.ServerError("RenderString", err)
-			return
-		}
-		ctx.Data["RenderedDescription"] = content
+		ctx.Data["RenderedDescription"] = ctxUser.Description
 	}
 
 	showPrivate := ctx.IsSigned && (ctx.User.IsAdmin || ctx.User.ID == ctxUser.ID)
@@ -144,41 +100,11 @@ func Profile(ctx *context.Context) {
 		page = 1
 	}
 
-	topicOnly := ctx.QueryBool("topic")
-
 	var (
-		repos   []*models.Repository
-		count   int64
-		total   int
-		orderBy models.SearchOrderBy
+		total int
 	)
 
 	ctx.Data["SortType"] = ctx.Query("sort")
-	switch ctx.Query("sort") {
-	case "newest":
-		orderBy = models.SearchOrderByNewest
-	case "oldest":
-		orderBy = models.SearchOrderByOldest
-	case "recentupdate":
-		orderBy = models.SearchOrderByRecentUpdated
-	case "leastupdate":
-		orderBy = models.SearchOrderByLeastUpdated
-	case "reversealphabetically":
-		orderBy = models.SearchOrderByAlphabeticallyReverse
-	case "alphabetically":
-		orderBy = models.SearchOrderByAlphabetically
-	case "moststars":
-		orderBy = models.SearchOrderByStarsReverse
-	case "feweststars":
-		orderBy = models.SearchOrderByStars
-	case "mostforks":
-		orderBy = models.SearchOrderByForksReverse
-	case "fewestforks":
-		orderBy = models.SearchOrderByForks
-	default:
-		ctx.Data["SortType"] = "recentupdate"
-		orderBy = models.SearchOrderByRecentUpdated
-	}
 
 	keyword := strings.Trim(ctx.Query("q"), " ")
 	ctx.Data["Keyword"] = keyword
@@ -207,93 +133,7 @@ func Profile(ctx *context.Context) {
 		ctx.Data["Cards"] = items
 
 		total = ctxUser.NumFollowing
-	case "activity":
-		retrieveFeeds(ctx, models.GetFeedsOptions{RequestedUser: ctxUser,
-			Actor:           ctx.User,
-			IncludePrivate:  showPrivate,
-			OnlyPerformedBy: true,
-			IncludeDeleted:  false,
-			Date:            ctx.Query("date"),
-		})
-		if ctx.Written() {
-			return
-		}
-	case "stars":
-		ctx.Data["PageIsProfileStarList"] = true
-		repos, count, err = models.SearchRepository(&models.SearchRepoOptions{
-			ListOptions: models.ListOptions{
-				PageSize: setting.UI.User.RepoPagingNum,
-				Page:     page,
-			},
-			Actor:              ctx.User,
-			Keyword:            keyword,
-			OrderBy:            orderBy,
-			Private:            ctx.IsSigned,
-			StarredByID:        ctxUser.ID,
-			Collaborate:        util.OptionalBoolFalse,
-			TopicOnly:          topicOnly,
-			IncludeDescription: setting.UI.SearchRepoDescription,
-		})
-		if err != nil {
-			ctx.ServerError("SearchRepository", err)
-			return
-		}
-
-		total = int(count)
-	case "projects":
-		ctx.Data["OpenProjects"], _, err = models.GetProjects(models.ProjectSearchOptions{
-			Page:     -1,
-			IsClosed: util.OptionalBoolFalse,
-			Type:     models.ProjectTypeIndividual,
-		})
-		if err != nil {
-			ctx.ServerError("GetProjects", err)
-			return
-		}
-	case "watching":
-		repos, count, err = models.SearchRepository(&models.SearchRepoOptions{
-			ListOptions: models.ListOptions{
-				PageSize: setting.UI.User.RepoPagingNum,
-				Page:     page,
-			},
-			Actor:              ctx.User,
-			Keyword:            keyword,
-			OrderBy:            orderBy,
-			Private:            ctx.IsSigned,
-			WatchedByID:        ctxUser.ID,
-			Collaborate:        util.OptionalBoolFalse,
-			TopicOnly:          topicOnly,
-			IncludeDescription: setting.UI.SearchRepoDescription,
-		})
-		if err != nil {
-			ctx.ServerError("SearchRepository", err)
-			return
-		}
-
-		total = int(count)
-	default:
-		repos, count, err = models.SearchRepository(&models.SearchRepoOptions{
-			ListOptions: models.ListOptions{
-				PageSize: setting.UI.User.RepoPagingNum,
-				Page:     page,
-			},
-			Actor:              ctx.User,
-			Keyword:            keyword,
-			OwnerID:            ctxUser.ID,
-			OrderBy:            orderBy,
-			Private:            ctx.IsSigned,
-			Collaborate:        util.OptionalBoolFalse,
-			TopicOnly:          topicOnly,
-			IncludeDescription: setting.UI.SearchRepoDescription,
-		})
-		if err != nil {
-			ctx.ServerError("SearchRepository", err)
-			return
-		}
-
-		total = int(count)
 	}
-	ctx.Data["Repos"] = repos
 	ctx.Data["Total"] = total
 
 	pager := context.NewPagination(total, setting.UI.User.RepoPagingNum, page, 5)

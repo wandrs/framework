@@ -29,13 +29,10 @@ import (
 	"code.gitea.io/gitea/modules/emoji"
 	"code.gitea.io/gitea/modules/log"
 	"code.gitea.io/gitea/modules/markup"
-	"code.gitea.io/gitea/modules/repository"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/svg"
 	"code.gitea.io/gitea/modules/timeutil"
 	"code.gitea.io/gitea/modules/util"
-	"code.gitea.io/gitea/services/gitdiff"
-	mirror_service "code.gitea.io/gitea/services/mirror"
 
 	"github.com/editorconfig/editorconfig-core-go/v2"
 	jsoniter "github.com/json-iterator/go"
@@ -100,7 +97,6 @@ func NewFuncMap() []template.FuncMap {
 		"FileSize":      base.FileSize,
 		"PrettyNumber":  base.PrettyNumber,
 		"Subtract":      base.Subtract,
-		"EntryIcon":     base.EntryIcon,
 		"MigrationIcon": MigrationIcon,
 		"Add": func(a ...int) int {
 			sum := 0
@@ -116,7 +112,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return sum
 		},
-		"ActionIcon": ActionIcon,
 		"DateFmtLong": func(t time.Time) string {
 			return t.Format(time.RFC1123Z)
 		},
@@ -139,29 +134,22 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return str[start:end]
 		},
-		"EllipsisString":        base.EllipsisString,
-		"DiffTypeToStr":         DiffTypeToStr,
-		"DiffLineTypeToStr":     DiffLineTypeToStr,
-		"Sha1":                  Sha1,
-		"ShortSha":              base.ShortSha,
-		"MD5":                   base.EncodeMD5,
-		"ActionContent2Commits": ActionContent2Commits,
-		"PathEscape":            url.PathEscape,
+		"EllipsisString":    base.EllipsisString,
+		"DiffTypeToStr":     DiffTypeToStr,
+		"DiffLineTypeToStr": DiffLineTypeToStr,
+		"Sha1":              Sha1,
+		"ShortSha":          base.ShortSha,
+		"MD5":               base.EncodeMD5,
+		"PathEscape":        url.PathEscape,
 		"EscapePound": func(str string) string {
 			return strings.NewReplacer("%", "%25", "#", "%23", " ", "%20", "?", "%3F").Replace(str)
 		},
-		"PathEscapeSegments":             util.PathEscapeSegments,
-		"URLJoin":                        util.URLJoin,
-		"RenderCommitMessage":            RenderCommitMessage,
-		"RenderCommitMessageLink":        RenderCommitMessageLink,
-		"RenderCommitMessageLinkSubject": RenderCommitMessageLinkSubject,
-		"RenderCommitBody":               RenderCommitBody,
-		"RenderIssueTitle":               RenderIssueTitle,
-		"RenderEmoji":                    RenderEmoji,
-		"RenderEmojiPlain":               emoji.ReplaceAliases,
-		"ReactionToEmoji":                ReactionToEmoji,
-		"RenderNote":                     RenderNote,
-		"IsMultilineCommitMessage":       IsMultilineCommitMessage,
+		"PathEscapeSegments": util.PathEscapeSegments,
+		"URLJoin":            util.URLJoin,
+		"RenderEmoji":        RenderEmoji,
+		"RenderEmojiPlain":   emoji.ReplaceAliases,
+		"ReactionToEmoji":    ReactionToEmoji,
+		"RenderNote":         RenderNote,
 		"ThemeColorMetaTag": func() string {
 			return setting.UI.ThemeColorMetaTag
 		},
@@ -176,9 +164,6 @@ func NewFuncMap() []template.FuncMap {
 		},
 		"UseServiceWorker": func() bool {
 			return setting.UI.UseServiceWorker
-		},
-		"EnableTimetracking": func() bool {
-			return setting.Service.EnableTimetracking
 		},
 		"FilenameIsImage": func(filename string) bool {
 			mimeType := mime.TypeByExtension(filepath.Ext(filename))
@@ -256,9 +241,8 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return dict, nil
 		},
-		"Printf":   fmt.Sprintf,
-		"Escape":   Escape,
-		"Sec2Time": models.SecToTime,
+		"Printf": fmt.Sprintf,
+		"Escape": Escape,
 		"ParseDeadline": func(deadline string) []string {
 			return strings.Split(deadline, "|")
 		},
@@ -294,31 +278,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return float32(n) * 100 / float32(sum)
 		},
-		"CommentMustAsDiff": gitdiff.CommentMustAsDiff,
-		"MirrorAddress":     mirror_service.Address,
-		"MirrorFullAddress": mirror_service.AddressNoCredentials,
-		"MirrorUserName":    mirror_service.Username,
-		"MirrorPassword":    mirror_service.Password,
-		"CommitType": func(commit interface{}) string {
-			switch commit.(type) {
-			case models.SignCommitWithStatuses:
-				return "SignCommitWithStatuses"
-			case models.SignCommit:
-				return "SignCommit"
-			case models.UserCommit:
-				return "UserCommit"
-			default:
-				return ""
-			}
-		},
-		"NotificationSettings": func() map[string]interface{} {
-			return map[string]interface{}{
-				"MinTimeout":            int(setting.UI.Notification.MinTimeout / time.Millisecond),
-				"TimeoutStep":           int(setting.UI.Notification.TimeoutStep / time.Millisecond),
-				"MaxTimeout":            int(setting.UI.Notification.MaxTimeout / time.Millisecond),
-				"EventSourceUpdateTime": int(setting.UI.Notification.EventSourceUpdateTime / time.Millisecond),
-			}
-		},
 		"containGeneric": func(arr interface{}, v interface{}) bool {
 			arrV := reflect.ValueOf(arr)
 			if arrV.Kind() == reflect.String && reflect.ValueOf(v).Kind() == reflect.String {
@@ -347,12 +306,10 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return false
 		},
-		"svg":            SVG,
-		"avatar":         Avatar,
-		"avatarHTML":     AvatarHTML,
-		"avatarByAction": AvatarByAction,
-		"avatarByEmail":  AvatarByEmail,
-		"repoAvatar":     RepoAvatar,
+		"svg":           SVG,
+		"avatar":        Avatar,
+		"avatarHTML":    AvatarHTML,
+		"avatarByEmail": AvatarByEmail,
 		"SortArrow": func(normSort, revSort, urlSort string, isDefault bool) template.HTML {
 			// if needed
 			if len(normSort) == 0 || len(urlSort) == 0 {
@@ -376,19 +333,6 @@ func NewFuncMap() []template.FuncMap {
 			}
 			// the table is NOT sorted with this header
 			return ""
-		},
-		"RenderLabels": func(labels []*models.Label) template.HTML {
-			html := `<span class="labels-list">`
-			for _, label := range labels {
-				// Protect against nil value in labels - shouldn't happen but would cause a panic if so
-				if label == nil {
-					continue
-				}
-				html += fmt.Sprintf("<div class='ui label' style='color: %s; background-color: %s'>%s</div> ",
-					label.ForegroundColor(), label.Color, RenderEmoji(label.Name))
-			}
-			html += "</span>"
-			return template.HTML(html)
 		},
 	}}
 }
@@ -457,9 +401,8 @@ func NewTextFuncMap() []texttmpl.FuncMap {
 			}
 			return dict, nil
 		},
-		"Printf":   fmt.Sprintf,
-		"Escape":   Escape,
-		"Sec2Time": models.SecToTime,
+		"Printf": fmt.Sprintf,
+		"Escape": Escape,
 		"ParseDeadline": func(deadline string) []string {
 			return strings.Split(deadline, "|")
 		},
@@ -571,29 +514,6 @@ func Avatar(item interface{}, others ...interface{}) template.HTML {
 		if src != "" {
 			return AvatarHTML(src, size, class, user.DisplayName())
 		}
-	}
-	if user, ok := item.(*models.Collaborator); ok {
-		src := user.RealSizedAvatarLink(size * models.AvatarRenderedSizeFactor)
-		if src != "" {
-			return AvatarHTML(src, size, class, user.DisplayName())
-		}
-	}
-	return template.HTML("")
-}
-
-// AvatarByAction renders user avatars from action. args: action, size (int), class (string)
-func AvatarByAction(action *models.Action, others ...interface{}) template.HTML {
-	action.LoadActUser()
-	return Avatar(action.ActUser, others...)
-}
-
-// RepoAvatar renders repo avatars. args: repo, size(int), class (string)
-func RepoAvatar(repo *models.Repository, others ...interface{}) template.HTML {
-	size, class := parseOthers(models.DefaultAvatarPixelSize, "ui avatar image", others...)
-
-	src := repo.RelAvatarLink()
-	if src != "" {
-		return AvatarHTML(src, size, class, repo.FullName())
 	}
 	return template.HTML("")
 }
@@ -781,74 +701,6 @@ func RenderNote(msg, urlPrefix string, metas map[string]string) template.HTML {
 		return ""
 	}
 	return template.HTML(string(fullMessage))
-}
-
-// IsMultilineCommitMessage checks to see if a commit message contains multiple lines.
-func IsMultilineCommitMessage(msg string) bool {
-	return strings.Count(strings.TrimSpace(msg), "\n") >= 1
-}
-
-// Actioner describes an action
-type Actioner interface {
-	GetOpType() models.ActionType
-	GetActUserName() string
-	GetRepoUserName() string
-	GetRepoName() string
-	GetRepoPath() string
-	GetRepoLink() string
-	GetBranch() string
-	GetContent() string
-	GetCreate() time.Time
-	GetIssueInfos() []string
-}
-
-// ActionIcon accepts an action operation type and returns an icon class name.
-func ActionIcon(opType models.ActionType) string {
-	switch opType {
-	case models.ActionCreateRepo, models.ActionTransferRepo:
-		return "repo"
-	case models.ActionCommitRepo, models.ActionPushTag, models.ActionDeleteTag, models.ActionDeleteBranch:
-		return "git-commit"
-	case models.ActionCreateIssue:
-		return "issue-opened"
-	case models.ActionCreatePullRequest:
-		return "git-pull-request"
-	case models.ActionCommentIssue, models.ActionCommentPull:
-		return "comment-discussion"
-	case models.ActionMergePullRequest:
-		return "git-merge"
-	case models.ActionCloseIssue, models.ActionClosePullRequest:
-		return "issue-closed"
-	case models.ActionReopenIssue, models.ActionReopenPullRequest:
-		return "issue-reopened"
-	case models.ActionMirrorSyncPush, models.ActionMirrorSyncCreate, models.ActionMirrorSyncDelete:
-		return "mirror"
-	case models.ActionApprovePullRequest:
-		return "check"
-	case models.ActionRejectPullRequest:
-		return "diff"
-	case models.ActionPublishRelease:
-		return "tag"
-	case models.ActionPullReviewDismissed:
-		return "x"
-	default:
-		return "question"
-	}
-}
-
-// ActionContent2Commits converts action content to push commits
-func ActionContent2Commits(act Actioner) *repository.PushCommits {
-	push := repository.NewPushCommits()
-
-	if act == nil || act.GetContent() == "" {
-		return push
-	}
-
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
-	if err := json.Unmarshal([]byte(act.GetContent()), push); err != nil {
-		log.Error("json.Unmarshal:\n%s\nERROR: %v", act.GetContent(), err)
-	}
-	return push
 }
 
 // DiffTypeToStr returns diff type name

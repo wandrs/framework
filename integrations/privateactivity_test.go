@@ -5,12 +5,8 @@
 package integrations
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
-
-	"code.gitea.io/gitea/models"
-	api "code.gitea.io/gitea/modules/structs"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -20,22 +16,6 @@ const privateActivityTestUser = "user2"
 
 // user3 is an organization so it is not usable here
 const privateActivityTestOtherUser = "user4"
-
-// activity helpers
-
-func testPrivateActivityDoSomethingForActionEntries(t *testing.T) {
-	repoBefore := models.AssertExistsAndLoadBean(t, &models.Repository{ID: 1}).(*models.Repository)
-	owner := models.AssertExistsAndLoadBean(t, &models.User{ID: repoBefore.OwnerID}).(*models.User)
-
-	session := loginUser(t, privateActivityTestUser)
-	token := getTokenForLoggedInUser(t, session)
-	urlStr := fmt.Sprintf("/api/v1/repos/%s/%s/issues?state=all&token=%s", owner.Name, repoBefore.Name, token)
-	req := NewRequestWithJSON(t, "POST", urlStr, &api.CreateIssueOption{
-		Body:  "test",
-		Title: "test",
-	})
-	session.MakeRequest(t, req, http.StatusCreated)
-}
 
 // private activity helpers
 
@@ -106,35 +86,10 @@ func testPrivateActivityHelperHasVisibleHeatmapFromPublic(t *testing.T) bool {
 	return testPrivateActivityHelperHasVisibleHeatmapInHTMLDoc(htmlDoc)
 }
 
-// heatmap API helpers
-
-func testPrivateActivityHelperHasHeatmapContentFromPublic(t *testing.T) bool {
-	req := NewRequestf(t, "GET", "/api/v1/users/%s/heatmap", privateActivityTestUser)
-	resp := MakeRequest(t, req, http.StatusOK)
-
-	var items []*models.UserHeatmapData
-	DecodeJSON(t, resp, &items)
-
-	return len(items) != 0
-}
-
-func testPrivateActivityHelperHasHeatmapContentFromSession(t *testing.T, session *TestSession) bool {
-	token := getTokenForLoggedInUser(t, session)
-
-	req := NewRequestf(t, "GET", "/api/v1/users/%s/heatmap?token=%s", privateActivityTestUser, token)
-	resp := session.MakeRequest(t, req, http.StatusOK)
-
-	var items []*models.UserHeatmapData
-	DecodeJSON(t, resp, &items)
-
-	return len(items) != 0
-}
-
 // check activity visibility if the visibility is enabled
 
 func TestPrivateActivityNoVisibleForPublic(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	visible := testPrivateActivityHelperHasVisibleActivitiesFromPublic(t)
 
@@ -143,7 +98,6 @@ func TestPrivateActivityNoVisibleForPublic(t *testing.T) {
 
 func TestPrivateActivityNoVisibleForUserItself(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestUser)
 	visible := testPrivateActivityHelperHasVisibleActivitiesFromSession(t, session)
@@ -153,7 +107,6 @@ func TestPrivateActivityNoVisibleForUserItself(t *testing.T) {
 
 func TestPrivateActivityNoVisibleForOtherUser(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestOtherUser)
 	visible := testPrivateActivityHelperHasVisibleActivitiesFromSession(t, session)
@@ -163,7 +116,6 @@ func TestPrivateActivityNoVisibleForOtherUser(t *testing.T) {
 
 func TestPrivateActivityNoVisibleForAdmin(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestAdmin)
 	visible := testPrivateActivityHelperHasVisibleActivitiesFromSession(t, session)
@@ -175,7 +127,6 @@ func TestPrivateActivityNoVisibleForAdmin(t *testing.T) {
 
 func TestPrivateActivityYesInvisibleForPublic(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	visible := testPrivateActivityHelperHasVisibleActivitiesFromPublic(t)
@@ -185,7 +136,6 @@ func TestPrivateActivityYesInvisibleForPublic(t *testing.T) {
 
 func TestPrivateActivityYesVisibleForUserItself(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestUser)
@@ -196,7 +146,6 @@ func TestPrivateActivityYesVisibleForUserItself(t *testing.T) {
 
 func TestPrivateActivityYesInvisibleForOtherUser(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestOtherUser)
@@ -207,7 +156,6 @@ func TestPrivateActivityYesInvisibleForOtherUser(t *testing.T) {
 
 func TestPrivateActivityYesVisibleForAdmin(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestAdmin)
@@ -220,7 +168,6 @@ func TestPrivateActivityYesVisibleForAdmin(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapVisibleForPublic(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	visible := testPrivateActivityHelperHasVisibleHeatmapFromPublic(t)
 
@@ -229,7 +176,6 @@ func TestPrivateActivityNoHeatmapVisibleForPublic(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapVisibleForUserItselfAtProfile(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestUser)
 	visible := testPrivateActivityHelperHasVisibleProfileHeatmapFromSession(t, session)
@@ -239,7 +185,6 @@ func TestPrivateActivityNoHeatmapVisibleForUserItselfAtProfile(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapVisibleForUserItselfAtDashboard(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestUser)
 	visible := testPrivateActivityHelperHasVisibleDashboardHeatmapFromSession(t, session)
@@ -249,7 +194,6 @@ func TestPrivateActivityNoHeatmapVisibleForUserItselfAtDashboard(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapVisibleForOtherUser(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestOtherUser)
 	visible := testPrivateActivityHelperHasVisibleProfileHeatmapFromSession(t, session)
@@ -259,7 +203,6 @@ func TestPrivateActivityNoHeatmapVisibleForOtherUser(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapVisibleForAdmin(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestAdmin)
 	visible := testPrivateActivityHelperHasVisibleProfileHeatmapFromSession(t, session)
@@ -271,7 +214,6 @@ func TestPrivateActivityNoHeatmapVisibleForAdmin(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapInvisibleForPublic(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	visible := testPrivateActivityHelperHasVisibleHeatmapFromPublic(t)
@@ -281,7 +223,6 @@ func TestPrivateActivityYesHeatmapInvisibleForPublic(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapVisibleForUserItselfAtProfile(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestUser)
@@ -292,7 +233,6 @@ func TestPrivateActivityYesHeatmapVisibleForUserItselfAtProfile(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapVisibleForUserItselfAtDashboard(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestUser)
@@ -303,7 +243,6 @@ func TestPrivateActivityYesHeatmapVisibleForUserItselfAtDashboard(t *testing.T) 
 
 func TestPrivateActivityYesHeatmapInvisibleForOtherUser(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestOtherUser)
@@ -314,7 +253,6 @@ func TestPrivateActivityYesHeatmapInvisibleForOtherUser(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapVisibleForAdmin(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestAdmin)
@@ -327,7 +265,6 @@ func TestPrivateActivityYesHeatmapVisibleForAdmin(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapHasContentForPublic(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	hasContent := testPrivateActivityHelperHasHeatmapContentFromPublic(t)
 
@@ -336,7 +273,6 @@ func TestPrivateActivityNoHeatmapHasContentForPublic(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapHasContentForUserItself(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestUser)
 	hasContent := testPrivateActivityHelperHasHeatmapContentFromSession(t, session)
@@ -346,7 +282,6 @@ func TestPrivateActivityNoHeatmapHasContentForUserItself(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapHasContentForOtherUser(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestOtherUser)
 	hasContent := testPrivateActivityHelperHasHeatmapContentFromSession(t, session)
@@ -356,7 +291,6 @@ func TestPrivateActivityNoHeatmapHasContentForOtherUser(t *testing.T) {
 
 func TestPrivateActivityNoHeatmapHasContentForAdmin(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 
 	session := loginUser(t, privateActivityTestAdmin)
 	hasContent := testPrivateActivityHelperHasHeatmapContentFromSession(t, session)
@@ -369,7 +303,6 @@ func TestPrivateActivityNoHeatmapHasContentForAdmin(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapHasNoContentForPublic(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	hasContent := testPrivateActivityHelperHasHeatmapContentFromPublic(t)
@@ -379,7 +312,6 @@ func TestPrivateActivityYesHeatmapHasNoContentForPublic(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapHasNoContentForUserItself(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestUser)
@@ -390,7 +322,6 @@ func TestPrivateActivityYesHeatmapHasNoContentForUserItself(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapHasNoContentForOtherUser(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestOtherUser)
@@ -401,7 +332,6 @@ func TestPrivateActivityYesHeatmapHasNoContentForOtherUser(t *testing.T) {
 
 func TestPrivateActivityYesHeatmapHasNoContentForAdmin(t *testing.T) {
 	defer prepareTestEnv(t)()
-	testPrivateActivityDoSomethingForActionEntries(t)
 	testPrivateActivityHelperEnablePrivateActivity(t)
 
 	session := loginUser(t, privateActivityTestAdmin)

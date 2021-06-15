@@ -12,99 +12,107 @@ import (
 
 	"code.gitea.io/gitea/modules/log"
 	"code.gitea.io/gitea/modules/private"
+	"code.gitea.io/gitea/modules/setting"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var (
 	// CmdManager represents the manager command
-	CmdManager = cli.Command{
+	CmdManager = &cli.Command{
 		Name:        "manager",
 		Usage:       "Manage the running gitea process",
 		Description: "This is a command for managing the running gitea process",
-		Subcommands: []cli.Command{
+		Subcommands: []*cli.Command{
 			subcmdShutdown,
 			subcmdRestart,
 			subcmdFlushQueues,
 			subcmdLogging,
 		},
 	}
-	subcmdShutdown = cli.Command{
+	subcmdShutdown = &cli.Command{
 		Name:  "shutdown",
 		Usage: "Gracefully shutdown the running process",
 		Flags: []cli.Flag{
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name: "debug",
 			},
 		},
 		Action: runShutdown,
 	}
-	subcmdRestart = cli.Command{
+	subcmdRestart = &cli.Command{
 		Name:  "restart",
 		Usage: "Gracefully restart the running process - (not implemented for windows servers)",
 		Flags: []cli.Flag{
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name: "debug",
 			},
 		},
 		Action: runRestart,
 	}
-	subcmdFlushQueues = cli.Command{
+	subcmdFlushQueues = &cli.Command{
 		Name:   "flush-queues",
 		Usage:  "Flush queues in the running process",
 		Action: runFlushQueues,
 		Flags: []cli.Flag{
-			cli.DurationFlag{
+			&cli.DurationFlag{
 				Name:  "timeout",
 				Value: 60 * time.Second,
 				Usage: "Timeout for the flushing process",
-			}, cli.BoolFlag{
+			}, &cli.BoolFlag{
 				Name:  "non-blocking",
 				Usage: "Set to true to not wait for flush to complete before returning",
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name: "debug",
 			},
 		},
 	}
 	defaultLoggingFlags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "group, g",
-			Usage: "Group to add logger to - will default to \"default\"",
-		}, cli.StringFlag{
-			Name:  "name, n",
-			Usage: "Name of the new logger - will default to mode",
-		}, cli.StringFlag{
-			Name:  "level, l",
-			Usage: "Logging level for the new logger",
-		}, cli.StringFlag{
-			Name:  "stacktrace-level, L",
-			Usage: "Stacktrace logging level",
-		}, cli.StringFlag{
-			Name:  "flags, F",
-			Usage: "Flags for the logger",
-		}, cli.StringFlag{
-			Name:  "expression, e",
-			Usage: "Matching expression for the logger",
-		}, cli.StringFlag{
-			Name:  "prefix, p",
-			Usage: "Prefix for the logger",
-		}, cli.BoolFlag{
+		&cli.StringFlag{
+			Name:    "group",
+			Aliases: []string{"g"},
+			Usage:   "Group to add logger to - will default to \"default\"",
+		}, &cli.StringFlag{
+			Name:    "name",
+			Aliases: []string{"n"},
+			Usage:   "Name of the new logger - will default to mode",
+		}, &cli.StringFlag{
+			Name:    "level",
+			Aliases: []string{"l"},
+			Usage:   "Logging level for the new logger",
+		}, &cli.StringFlag{
+			Name:    "stacktrace-level",
+			Aliases: []string{"L"},
+			Usage:   "Stacktrace logging level",
+		}, &cli.StringFlag{
+			Name:    "flags",
+			Aliases: []string{"F"},
+			Usage:   "Flags for the logger",
+		}, &cli.StringFlag{
+			Name:    "expression",
+			Aliases: []string{"e"},
+			Usage:   "Matching expression for the logger",
+		}, &cli.StringFlag{
+			Name:    "prefix",
+			Aliases: []string{"p"},
+			Usage:   "Prefix for the logger",
+		}, &cli.BoolFlag{
 			Name:  "color",
 			Usage: "Use color in the logs",
-		}, cli.BoolFlag{
+		}, &cli.BoolFlag{
 			Name: "debug",
 		},
 	}
-	subcmdLogging = cli.Command{
+	subcmdLogging = &cli.Command{
 		Name:  "logging",
 		Usage: "Adjust logging commands",
-		Subcommands: []cli.Command{
+		Subcommands: []*cli.Command{
 			{
 				Name:  "pause",
 				Usage: "Pause logging (Gitea will buffer logs up to a certain point and will drop them after that point)",
 				Flags: []cli.Flag{
-					cli.BoolFlag{
+					&cli.BoolFlag{
 						Name: "debug",
 					},
 				},
@@ -113,7 +121,7 @@ var (
 				Name:  "resume",
 				Usage: "Resume logging",
 				Flags: []cli.Flag{
-					cli.BoolFlag{
+					&cli.BoolFlag{
 						Name: "debug",
 					},
 				},
@@ -122,7 +130,7 @@ var (
 				Name:  "release-and-reopen",
 				Usage: "Cause Gitea to release and re-open files used for logging",
 				Flags: []cli.Flag{
-					cli.BoolFlag{
+					&cli.BoolFlag{
 						Name: "debug",
 					},
 				},
@@ -132,9 +140,9 @@ var (
 				Usage:     "Remove a logger",
 				ArgsUsage: "[name] Name of logger to remove",
 				Flags: []cli.Flag{
-					cli.BoolFlag{
+					&cli.BoolFlag{
 						Name: "debug",
-					}, cli.StringFlag{
+					}, &cli.StringFlag{
 						Name:  "group, g",
 						Usage: "Group to add logger to - will default to \"default\"",
 					},
@@ -143,12 +151,12 @@ var (
 			}, {
 				Name:  "add",
 				Usage: "Add a logger",
-				Subcommands: []cli.Command{
+				Subcommands: []*cli.Command{
 					{
 						Name:  "console",
 						Usage: "Add a console logger",
 						Flags: append(defaultLoggingFlags,
-							cli.BoolFlag{
+							&cli.BoolFlag{
 								Name:  "stderr",
 								Usage: "Output console logs to stderr - only relevant for console",
 							}),
@@ -157,27 +165,37 @@ var (
 						Name:  "file",
 						Usage: "Add a file logger",
 						Flags: append(defaultLoggingFlags, []cli.Flag{
-							cli.StringFlag{
-								Name:  "filename, f",
-								Usage: "Filename for the logger - this must be set.",
-							}, cli.BoolTFlag{
-								Name:  "rotate, r",
-								Usage: "Rotate logs",
-							}, cli.Int64Flag{
-								Name:  "max-size, s",
-								Usage: "Maximum size in bytes before rotation",
-							}, cli.BoolTFlag{
-								Name:  "daily, d",
-								Usage: "Rotate logs daily",
-							}, cli.IntFlag{
-								Name:  "max-days, D",
-								Usage: "Maximum number of daily logs to keep",
-							}, cli.BoolTFlag{
-								Name:  "compress, z",
-								Usage: "Compress rotated logs",
-							}, cli.IntFlag{
-								Name:  "compression-level, Z",
-								Usage: "Compression level to use",
+							&cli.StringFlag{
+								Name:    "filename",
+								Aliases: []string{"f"},
+								Usage:   "Filename for the logger - this must be set.",
+							}, &cli.BoolFlag{
+								Name:    "rotate",
+								Aliases: []string{"r"},
+								Usage:   "Rotate logs",
+								Value:   true,
+							}, &cli.Int64Flag{
+								Name:    "max-size",
+								Aliases: []string{"s"},
+								Usage:   "Maximum size in bytes before rotation",
+							}, &cli.BoolFlag{
+								Name:    "daily",
+								Aliases: []string{"d"},
+								Usage:   "Rotate logs daily",
+								Value:   true,
+							}, &cli.IntFlag{
+								Name:    "max-days",
+								Aliases: []string{"D"},
+								Usage:   "Maximum number of daily logs to keep",
+							}, &cli.BoolFlag{
+								Name:    "compress",
+								Aliases: []string{"z"},
+								Usage:   "Compress rotated logs",
+								Value:   true,
+							}, &cli.IntFlag{
+								Name:    "compression-level",
+								Aliases: []string{"Z"},
+								Usage:   "Compression level to use",
 							},
 						}...),
 						Action: runAddFileLogger,
@@ -185,18 +203,22 @@ var (
 						Name:  "conn",
 						Usage: "Add a net conn logger",
 						Flags: append(defaultLoggingFlags, []cli.Flag{
-							cli.BoolFlag{
-								Name:  "reconnect-on-message, R",
-								Usage: "Reconnect to host for every message",
-							}, cli.BoolFlag{
-								Name:  "reconnect, r",
-								Usage: "Reconnect to host when connection is dropped",
-							}, cli.StringFlag{
-								Name:  "protocol, P",
-								Usage: "Set protocol to use: tcp, unix, or udp (defaults to tcp)",
-							}, cli.StringFlag{
-								Name:  "address, a",
-								Usage: "Host address and port to connect to (defaults to :7020)",
+							&cli.BoolFlag{
+								Name:    "reconnect-on-message",
+								Aliases: []string{"R"},
+								Usage:   "Reconnect to host for every message",
+							}, &cli.BoolFlag{
+								Name:    "reconnect",
+								Aliases: []string{"r"},
+								Usage:   "Reconnect to host when connection is dropped",
+							}, &cli.StringFlag{
+								Name:    "protocol",
+								Aliases: []string{"P"},
+								Usage:   "Set protocol to use: tcp, unix, or udp (defaults to tcp)",
+							}, &cli.StringFlag{
+								Name:    "address",
+								Aliases: []string{"a"},
+								Usage:   "Host address and port to connect to (defaults to :7020)",
 							},
 						}...),
 						Action: runAddConnLogger,
@@ -204,21 +226,26 @@ var (
 						Name:  "smtp",
 						Usage: "Add an SMTP logger",
 						Flags: append(defaultLoggingFlags, []cli.Flag{
-							cli.StringFlag{
-								Name:  "username, u",
-								Usage: "Mail server username",
-							}, cli.StringFlag{
-								Name:  "password, P",
-								Usage: "Mail server password",
-							}, cli.StringFlag{
-								Name:  "host, H",
-								Usage: "Mail server host (defaults to: 127.0.0.1:25)",
-							}, cli.StringSliceFlag{
-								Name:  "send-to, s",
-								Usage: "Email address(es) to send to",
-							}, cli.StringFlag{
-								Name:  "subject, S",
-								Usage: "Subject header of sent emails",
+							&cli.StringFlag{
+								Name:    "username",
+								Aliases: []string{"u"},
+								Usage:   "Mail server username",
+							}, &cli.StringFlag{
+								Name:    "password",
+								Aliases: []string{"P"},
+								Usage:   "Mail server password",
+							}, &cli.StringFlag{
+								Name:    "host",
+								Aliases: []string{"H"},
+								Usage:   "Mail server host (defaults to: 127.0.0.1:25)",
+							}, &cli.StringSliceFlag{
+								Name:    "send-to",
+								Aliases: []string{"s"},
+								Usage:   "Email address(es) to send to",
+							}, &cli.StringFlag{
+								Name:    "subject",
+								Aliases: []string{"S"},
+								Usage:   "Subject header of sent emails",
 							},
 						}...),
 						Action: runAddSMTPLogger,
@@ -228,6 +255,31 @@ var (
 		},
 	}
 )
+
+func setup(logPath string, debug bool) {
+	_ = log.DelLogger("console")
+	if debug {
+		_ = log.NewLogger(1000, "console", "console", `{"level":"trace","stacktracelevel":"NONE","stderr":true}`)
+	} else {
+		_ = log.NewLogger(1000, "console", "console", `{"level":"fatal","stacktracelevel":"NONE","stderr":true}`)
+	}
+	setting.NewContext()
+	if debug {
+		setting.RunMode = "dev"
+	}
+}
+
+func fail(userMessage, logMessage string, args ...interface{}) {
+	fmt.Fprintln(os.Stderr, "Gitea:", userMessage)
+
+	if len(logMessage) > 0 {
+		if !setting.IsProd() {
+			fmt.Fprintf(os.Stderr, logMessage+"\n", args...)
+		}
+	}
+
+	os.Exit(1)
+}
 
 func runRemoveLogger(c *cli.Context) error {
 	setup("manager", c.Bool("debug"))

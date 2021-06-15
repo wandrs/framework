@@ -79,13 +79,6 @@
 			</a>
 			<div class="ui popup very wide">
 				<div class="df ac">
-					<a class="stopwatch-link df ac" href="{{$issueURL}}">
-						{{svg "octicon-issue-opened"}}
-						<span class="stopwatch-issue">{{.ActiveStopwatch.RepoSlug}}#{{.ActiveStopwatch.IssueIndex}}</span>
-						<span class="ui label blue stopwatch-time my-0 mx-4" data-seconds="{{.ActiveStopwatch.Seconds}}">
-							{{if .ActiveStopwatch}}{{Sec2Time .ActiveStopwatch.Seconds}}{{end}}
-						</span>
-					</a>
 					<form class="stopwatch-commit" method="POST" action="{{$issueURL}}/times/stopwatch/toggle">
 						{{.CsrfTokenHtml}}
 						<button

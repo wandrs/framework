@@ -16,10 +16,12 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
 
+	"go.wandrs.dev/cache"
 	"code.gitea.io/gitea/models"
 	"code.gitea.io/gitea/modules/auth/sso"
 	"code.gitea.io/gitea/modules/base"
@@ -29,10 +31,9 @@ import (
 	"code.gitea.io/gitea/modules/templates"
 	"code.gitea.io/gitea/modules/translation"
 	"code.gitea.io/gitea/modules/web/middleware"
+	"go.wandrs.dev/session"
 
-	"gitea.com/go-chi/cache"
-	"gitea.com/go-chi/session"
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/unknwon/com"
 	"github.com/unknwon/i18n"
@@ -64,8 +65,36 @@ type Context struct {
 	IsSigned    bool
 	IsBasicAuth bool
 
-	Repo *Repository
-	Org  *Organization
+	Org *Organization
+}
+
+func (ctx *Context) Map(val interface{}) middleware.TypeMapper {
+	ctx.Req = ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), reflect.TypeOf(val), reflect.ValueOf(val)))
+	return ctx
+}
+
+func (ctx *Context) MapTo(val interface{}, ifacePtr interface{}) middleware.TypeMapper {
+	typ := reflect.TypeOf(ifacePtr)
+
+	for typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+
+	if typ.Kind() != reflect.Interface {
+		panic("ifacePtr must be pointer")
+	}
+
+	ctx.Req = ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), typ, reflect.ValueOf(val)))
+	return ctx
+}
+
+func (ctx *Context) Set(typ reflect.Type, value reflect.Value) middleware.TypeMapper {
+	ctx.Req = ctx.Req.WithContext(context.WithValue(ctx.Req.Context(), typ, value))
+	return ctx
+}
+
+func (ctx *Context) GetVal(typ reflect.Type) reflect.Value {
+	return ctx.Req.Context().Value(typ).(reflect.Value)
 }
 
 // GetData returns the data
@@ -76,37 +105,6 @@ func (ctx *Context) GetData() map[string]interface{} {
 // IsUserSiteAdmin returns true if current user is a site admin
 func (ctx *Context) IsUserSiteAdmin() bool {
 	return ctx.IsSigned && ctx.User.IsAdmin
-}
-
-// IsUserRepoOwner returns true if current user owns current repo
-func (ctx *Context) IsUserRepoOwner() bool {
-	return ctx.Repo.IsOwner()
-}
-
-// IsUserRepoAdmin returns true if current user is admin in current repo
-func (ctx *Context) IsUserRepoAdmin() bool {
-	return ctx.Repo.IsAdmin()
-}
-
-// IsUserRepoWriter returns true if current user has write privilege in current repo
-func (ctx *Context) IsUserRepoWriter(unitTypes []models.UnitType) bool {
-	for _, unitType := range unitTypes {
-		if ctx.Repo.CanWrite(unitType) {
-			return true
-		}
-	}
-
-	return false
-}
-
-// IsUserRepoReaderSpecific returns true if current user can read current repo's specific part
-func (ctx *Context) IsUserRepoReaderSpecific(unitType models.UnitType) bool {
-	return ctx.Repo.CanRead(unitType)
-}
-
-// IsUserRepoReaderAny returns true if current user can read any part of current repo
-func (ctx *Context) IsUserRepoReaderAny() bool {
-	return ctx.Repo.HasAccess()
 }
 
 // RedirectToUser redirect to a differently-named user
@@ -246,7 +244,6 @@ func (ctx *Context) notFoundInternal(title string, err error) {
 		}
 	}
 
-	ctx.Data["IsRepo"] = ctx.Repo.Repository != nil
 	ctx.Data["Title"] = "Page Not Found"
 	ctx.HTML(http.StatusNotFound, base.TplName("status/404"))
 }
@@ -501,9 +498,21 @@ func (ctx *Context) Params(p string) string {
 	return s
 }
 
+// ParamsInt returns the param on route as int
+func (ctx *Context) ParamsInt(p string) int {
+	v, _ := strconv.ParseInt(ctx.Params(p), 10, 0)
+	return int(v)
+}
+
 // ParamsInt64 returns the param on route as int64
 func (ctx *Context) ParamsInt64(p string) int64 {
 	v, _ := strconv.ParseInt(ctx.Params(p), 10, 64)
+	return v
+}
+
+// ParamsFloat64 returns the param on route as float64
+func (ctx *Context) ParamsFloat64(name string) float64 {
+	v, _ := strconv.ParseFloat(ctx.Params(name), 64)
 	return v
 }
 
@@ -622,10 +631,7 @@ func Contexter() func(next http.Handler) http.Handler {
 				Link:    link,
 				Render:  rnd,
 				Session: session.GetSession(req),
-				Repo: &Repository{
-					PullRequest: &PullRequest{},
-				},
-				Org: &Organization{},
+				Org:     &Organization{},
 				Data: map[string]interface{}{
 					"CurrentURL":    setting.AppSubURL + req.URL.RequestURI(),
 					"PageStartTime": startTime,
@@ -684,7 +690,7 @@ func Contexter() func(next http.Handler) http.Handler {
 
 			// If request sends files, parse them here otherwise the Query() can't be parsed and the CsrfToken will be invalid.
 			if ctx.Req.Method == "POST" && strings.Contains(ctx.Req.Header.Get("Content-Type"), "multipart/form-data") {
-				if err := ctx.Req.ParseMultipartForm(setting.Attachment.MaxSize << 20); err != nil && !strings.Contains(err.Error(), "EOF") { // 32MB max size
+				if err := ctx.Req.ParseMultipartForm(32 << 20); err != nil && !strings.Contains(err.Error(), "EOF") { // 32MB max size
 					ctx.ServerError("ParseMultipartForm", err)
 					return
 				}
@@ -727,15 +733,8 @@ func Contexter() func(next http.Handler) http.Handler {
 
 			ctx.Data["EnableSwagger"] = setting.API.EnableSwagger
 			ctx.Data["EnableOpenIDSignIn"] = setting.Service.EnableOpenIDSignIn
-			ctx.Data["DisableMigrations"] = setting.Repository.DisableMigrations
-			ctx.Data["DisableStars"] = setting.Repository.DisableStars
 
 			ctx.Data["ManifestData"] = setting.ManifestData
-
-			ctx.Data["UnitWikiGlobalDisabled"] = models.UnitTypeWiki.UnitGlobalDisabled()
-			ctx.Data["UnitIssuesGlobalDisabled"] = models.UnitTypeIssues.UnitGlobalDisabled()
-			ctx.Data["UnitPullsGlobalDisabled"] = models.UnitTypePullRequests.UnitGlobalDisabled()
-			ctx.Data["UnitProjectsGlobalDisabled"] = models.UnitTypeProjects.UnitGlobalDisabled()
 
 			ctx.Data["i18n"] = locale
 			ctx.Data["Tr"] = i18n.Tr

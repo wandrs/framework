@@ -13,11 +13,11 @@ sed -i -r -e '/^[a-zA-Z0-9_.-]+[ ]*=[ ]*".*"$/ {
 baselines=$(wc -l "./options/locale_en-US.ini" | cut -d" " -f1)
 baselines=$((baselines / 4))
 for filename in ./options/locale/*.ini; do
-  lines=$(wc -l "$filename" | cut -d" " -f1)
-  if [ $lines -lt $baselines ]; then
-    echo "Removing $filename: $lines/$baselines"
-    rm "$filename"
-  fi
+    lines=$(wc -l "$filename" | cut -d" " -f1)
+    if [ $lines -lt $baselines ]; then
+        echo "Removing $filename: $lines/$baselines"
+        rm "$filename"
+    fi
 done
 
 mv ./options/locale_en-US.ini ./options/locale/

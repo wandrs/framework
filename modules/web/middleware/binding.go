@@ -9,10 +9,10 @@ import (
 	"reflect"
 	"strings"
 
+	"go.wandrs.dev/binding"
 	"code.gitea.io/gitea/modules/translation"
 	"code.gitea.io/gitea/modules/validation"
 
-	"gitea.com/go-chi/binding"
 	"github.com/unknwon/com"
 )
 

@@ -104,33 +104,13 @@ func SaveFrom(objStorage ObjectStorage, p string, callback func(w io.Writer) err
 }
 
 var (
-	// Attachments represents attachments storage
-	Attachments ObjectStorage
-
-	// LFS represents lfs storage
-	LFS ObjectStorage
-
 	// Avatars represents user avatars storage
 	Avatars ObjectStorage
-	// RepoAvatars represents repository avatars storage
-	RepoAvatars ObjectStorage
 )
 
 // Init init the stoarge
 func Init() error {
-	if err := initAttachments(); err != nil {
-		return err
-	}
-
-	if err := initAvatars(); err != nil {
-		return err
-	}
-
-	if err := initRepoAvatars(); err != nil {
-		return err
-	}
-
-	return initLFS()
+	return initAvatars()
 }
 
 // NewStorage takes a storage type and some config and returns an ObjectStorage or an error
@@ -149,23 +129,5 @@ func NewStorage(typStr string, cfg interface{}) (ObjectStorage, error) {
 func initAvatars() (err error) {
 	log.Info("Initialising Avatar storage with type: %s", setting.Avatar.Storage.Type)
 	Avatars, err = NewStorage(setting.Avatar.Storage.Type, &setting.Avatar.Storage)
-	return
-}
-
-func initAttachments() (err error) {
-	log.Info("Initialising Attachment storage with type: %s", setting.Attachment.Storage.Type)
-	Attachments, err = NewStorage(setting.Attachment.Storage.Type, &setting.Attachment.Storage)
-	return
-}
-
-func initLFS() (err error) {
-	log.Info("Initialising LFS storage with type: %s", setting.LFS.Storage.Type)
-	LFS, err = NewStorage(setting.LFS.Storage.Type, &setting.LFS.Storage)
-	return
-}
-
-func initRepoAvatars() (err error) {
-	log.Info("Initialising Repository Avatar storage with type: %s", setting.RepoAvatar.Storage.Type)
-	RepoAvatars, err = NewStorage(setting.RepoAvatar.Storage.Type, &setting.RepoAvatar.Storage)
 	return
 }

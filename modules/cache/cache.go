@@ -8,11 +8,8 @@ import (
 	"fmt"
 	"strconv"
 
+	mc "go.wandrs.dev/cache"
 	"code.gitea.io/gitea/modules/setting"
-
-	mc "gitea.com/go-chi/cache"
-
-	_ "gitea.com/go-chi/cache/memcache" // memcache plugin for cache
 )
 
 var (

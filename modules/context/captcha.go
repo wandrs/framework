@@ -7,10 +7,9 @@ package context
 import (
 	"sync"
 
+	"go.wandrs.dev/captcha"
 	"code.gitea.io/gitea/modules/cache"
 	"code.gitea.io/gitea/modules/setting"
-
-	"gitea.com/go-chi/captcha"
 )
 
 var imageCaptchaOnce sync.Once
