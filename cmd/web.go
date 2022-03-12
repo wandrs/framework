@@ -66,7 +66,6 @@ func runHTTPRedirector() {
 	})
 
 	err := runHTTP("tcp", source, "HTTP Redirector", context2.ClearHandler(handler))
-
 	if err != nil {
 		log.Fatal("Failed to start port redirection: %v", err)
 	}
