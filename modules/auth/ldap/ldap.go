@@ -305,7 +305,7 @@ func (ls *Source) SearchEntry(name, passwd string, directBind bool) *SearchResul
 		return nil
 	}
 
-	var isAttributeSSHPublicKeySet = len(strings.TrimSpace(ls.AttributeSSHPublicKey)) > 0
+	isAttributeSSHPublicKeySet := len(strings.TrimSpace(ls.AttributeSSHPublicKey)) > 0
 
 	attribs := []string{ls.AttributeUsername, ls.AttributeName, ls.AttributeSurname, ls.AttributeMail}
 	if len(strings.TrimSpace(ls.UserUID)) > 0 {
@@ -441,7 +441,7 @@ func (ls *Source) SearchEntries() ([]*SearchResult, error) {
 
 	userFilter := fmt.Sprintf(ls.Filter, "*")
 
-	var isAttributeSSHPublicKeySet = len(strings.TrimSpace(ls.AttributeSSHPublicKey)) > 0
+	isAttributeSSHPublicKeySet := len(strings.TrimSpace(ls.AttributeSSHPublicKey)) > 0
 
 	attribs := []string{ls.AttributeUsername, ls.AttributeName, ls.AttributeSurname, ls.AttributeMail}
 	if isAttributeSSHPublicKeySet {

@@ -26,9 +26,11 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
-var defaultSetting = Settings{false, "GiteaServer", 60 * time.Second, 60 * time.Second, nil, nil, nil, false}
-var defaultCookieJar http.CookieJar
-var settingMutex sync.Mutex
+var (
+	defaultSetting   = Settings{false, "GiteaServer", 60 * time.Second, 60 * time.Second, nil, nil, nil, false}
+	defaultCookieJar http.CookieJar
+	settingMutex     sync.Mutex
+)
 
 // createDefaultCookie creates a global cookiejar to store cookies.
 func createDefaultCookie() {
@@ -283,7 +285,7 @@ func (r *Request) getResponse() (*http.Response, error) {
 					if err != nil {
 						log.Fatal(err)
 					}
-					//iocopy
+					// iocopy
 					_, err = io.Copy(fileWriter, fh)
 					fh.Close()
 					if err != nil {

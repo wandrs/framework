@@ -523,7 +523,7 @@ func NewContext() {
 		Protocol = FCGIUnix
 		UnixSocketPermissionRaw := sec.Key("UNIX_SOCKET_PERMISSION").MustString("666")
 		UnixSocketPermissionParsed, err := strconv.ParseUint(UnixSocketPermissionRaw, 8, 32)
-		if err != nil || UnixSocketPermissionParsed > 0777 {
+		if err != nil || UnixSocketPermissionParsed > 0o777 {
 			log.Fatal("Failed to parse unixSocketPermission: %s", UnixSocketPermissionRaw)
 		}
 		UnixSocketPermission = uint32(UnixSocketPermissionParsed)
@@ -531,7 +531,7 @@ func NewContext() {
 		Protocol = UnixSocket
 		UnixSocketPermissionRaw := sec.Key("UNIX_SOCKET_PERMISSION").MustString("666")
 		UnixSocketPermissionParsed, err := strconv.ParseUint(UnixSocketPermissionRaw, 8, 32)
-		if err != nil || UnixSocketPermissionParsed > 0777 {
+		if err != nil || UnixSocketPermissionParsed > 0o777 {
 			log.Fatal("Failed to parse unixSocketPermission: %s", UnixSocketPermissionRaw)
 		}
 		UnixSocketPermission = uint32(UnixSocketPermissionParsed)
@@ -768,14 +768,17 @@ func NewContext() {
 		Langs = []string{
 			"en-US", "zh-CN", "zh-HK", "zh-TW", "de-DE", "fr-FR", "nl-NL", "lv-LV",
 			"ru-RU", "uk-UA", "ja-JP", "es-ES", "pt-BR", "pt-PT", "pl-PL", "bg-BG",
-			"it-IT", "fi-FI", "tr-TR", "cs-CZ", "sr-SP", "sv-SE", "ko-KR"}
+			"it-IT", "fi-FI", "tr-TR", "cs-CZ", "sr-SP", "sv-SE", "ko-KR",
+		}
 	}
 	Names = Cfg.Section("i18n").Key("NAMES").Strings(",")
 	if len(Names) == 0 {
-		Names = []string{"English", "简体中文", "繁體中文（香港）", "繁體中文（台灣）", "Deutsch",
+		Names = []string{
+			"English", "简体中文", "繁體中文（香港）", "繁體中文（台灣）", "Deutsch",
 			"français", "Nederlands", "latviešu", "русский", "Українська", "日本語",
 			"español", "português do Brasil", "Português de Portugal", "polski", "български",
-			"italiano", "suomi", "Türkçe", "čeština", "српски", "svenska", "한국어"}
+			"italiano", "suomi", "Türkçe", "čeština", "српски", "svenska", "한국어",
+		}
 	}
 
 	ShowFooterBranding = Cfg.Section("other").Key("SHOW_FOOTER_BRANDING").MustBool(false)
@@ -847,7 +850,7 @@ func loadInternalToken(sec *ini.Section) string {
 	}
 	switch tempURI.Scheme {
 	case "file":
-		fp, err := os.OpenFile(tempURI.RequestURI(), os.O_RDWR, 0600)
+		fp, err := os.OpenFile(tempURI.RequestURI(), os.O_RDWR, 0o600)
 		if err != nil {
 			log.Fatal("Failed to open InternalTokenURI (%s): %v", uri, err)
 		}
@@ -945,7 +948,6 @@ func MakeManifestData(appName string, appURL string, absoluteAssetURL string) []
 			},
 		},
 	})
-
 	if err != nil {
 		log.Error("unable to marshal manifest JSON. Error: %v", err)
 		return make([]byte, 0)

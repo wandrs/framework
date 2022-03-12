@@ -1,3 +1,4 @@
+//go:build pam
 // +build pam
 
 // Copyright 2014 The Gogs Authors. All rights reserved.
@@ -26,7 +27,6 @@ func Auth(serviceName, userName, passwd string) (string, error) {
 		}
 		return "", errors.New("Unrecognized PAM message style")
 	})
-
 	if err != nil {
 		return "", err
 	}

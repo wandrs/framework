@@ -1,3 +1,4 @@
+//go:build bindata
 // +build bindata
 
 // Copyright 2016 The Gitea Authors. All rights reserved.
@@ -35,7 +36,7 @@ func Asset(name string) ([]byte, error) {
 
 func AssetNames() []string {
 	realFS := Assets.(vfsgen۰FS)
-	var results = make([]string, 0, len(realFS))
+	results := make([]string, 0, len(realFS))
 	for k := range realFS {
 		results = append(results, k[1:])
 	}

@@ -21,7 +21,7 @@ import (
 )
 
 func installRecovery() func(next http.Handler) http.Handler {
-	var rnd = templates.HTMLRenderer()
+	rnd := templates.HTMLRenderer()
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			defer func() {
@@ -46,7 +46,7 @@ func installRecovery() func(next http.Handler) http.Handler {
 					log.Error("%v", combinedErr)
 
 					lc := middleware.Locale(w, req)
-					var store = dataStore{
+					store := dataStore{
 						Data: templates.Vars{
 							"Language":       lc.Language(),
 							"CurrentURL":     setting.AppSubURL + req.URL.RequestURI(),

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
+//go:build ignore
 // +build ignore
 
 package main
@@ -50,7 +51,6 @@ func needsUpdate(dir string, filename string) (bool, []byte) {
 	newHash := hasher.Sum([]byte{})
 
 	if bytes.Compare(oldHash, newHash) != 0 {
-
 		return true, newHash
 	}
 
@@ -82,5 +82,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
-	_ = ioutil.WriteFile(filename+".hash", newHash, 0666)
+	_ = ioutil.WriteFile(filename+".hash", newHash, 0o666)
 }

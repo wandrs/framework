@@ -609,7 +609,6 @@ func SignInOAuthCallback(ctx *context.Context) {
 	}
 
 	u, gothUser, err := oAuth2UserLoginCallback(loginSource, ctx.Req, ctx.Resp)
-
 	if err != nil {
 		ctx.ServerError("UserSignIn", err)
 		return
@@ -772,7 +771,6 @@ func handleOAuth2SignIn(ctx *context.Context, u *models.User, gothUser goth.User
 // login the user
 func oAuth2UserLoginCallback(loginSource *models.LoginSource, request *http.Request, response http.ResponseWriter) (*models.User, goth.User, error) {
 	gothUser, err := oauth2.ProviderCallback(loginSource.Name, request, response)
-
 	if err != nil {
 		if err.Error() == "securecookie: the value is too long" {
 			log.Error("OAuth2 Provider %s returned too long a token. Current max: %d. Either increase the [OAuth2] MAX_TOKEN_LENGTH or reduce the information returned from the OAuth2 provider", loginSource.Name, setting.OAuth2.MaxTokenLength)
@@ -812,7 +810,6 @@ func oAuth2UserLoginCallback(loginSource *models.LoginSource, request *http.Requ
 
 	// no user found to login
 	return nil, gothUser, nil
-
 }
 
 // LinkAccount shows the page where the user can decide to login or create a new account
@@ -1114,7 +1111,7 @@ func SignUp(ctx *context.Context) {
 	ctx.Data["HcaptchaSitekey"] = setting.Service.HcaptchaSitekey
 	ctx.Data["PageIsSignUp"] = true
 
-	//Show Disabled Registration message if DisableRegistration or AllowOnlyExternalRegistration options are true
+	// Show Disabled Registration message if DisableRegistration or AllowOnlyExternalRegistration options are true
 	ctx.Data["DisableRegistration"] = setting.Service.DisableRegistration || setting.Service.AllowOnlyExternalRegistration
 
 	ctx.HTML(http.StatusOK, tplSignUp)
@@ -1135,7 +1132,7 @@ func SignUpPost(ctx *context.Context) {
 	ctx.Data["HcaptchaSitekey"] = setting.Service.HcaptchaSitekey
 	ctx.Data["PageIsSignUp"] = true
 
-	//Permission denied if DisableRegistration or AllowOnlyExternalRegistration options are true
+	// Permission denied if DisableRegistration or AllowOnlyExternalRegistration options are true
 	if setting.Service.DisableRegistration || setting.Service.AllowOnlyExternalRegistration {
 		ctx.Error(http.StatusForbidden)
 		return

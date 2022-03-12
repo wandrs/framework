@@ -26,7 +26,7 @@ func TestCreateReaderAndGuessDelimiter(t *testing.T) {
 }
 
 func TestGuessDelimiter(t *testing.T) {
-	var kases = map[string]rune{
+	kases := map[string]rune{
 		"a":                         ',',
 		"1,2":                       ',',
 		"1;2":                       ';',

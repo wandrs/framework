@@ -53,7 +53,7 @@ const (
 )
 
 func commonMiddlewares() []func(http.Handler) http.Handler {
-	var handlers = []func(http.Handler) http.Handler{
+	handlers := []func(http.Handler) http.Handler{
 		func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 				next.ServeHTTP(context.NewResponse(resp), req)
@@ -120,9 +120,9 @@ func NormalRoutes() *web.Route {
 
 	if setting.CORSConfig.Enabled {
 		corsHandler = cors.Handler(cors.Options{
-			//Scheme:           setting.CORSConfig.Scheme, // FIXME: the cors middleware needs scheme option
+			// Scheme:           setting.CORSConfig.Scheme, // FIXME: the cors middleware needs scheme option
 			AllowedOrigins: setting.CORSConfig.AllowDomain,
-			//setting.CORSConfig.AllowSubdomain // FIXME: the cors middleware needs allowSubdomain option
+			// setting.CORSConfig.AllowSubdomain // FIXME: the cors middleware needs allowSubdomain option
 			AllowedMethods:   setting.CORSConfig.Methods,
 			AllowCredentials: setting.CORSConfig.AllowCredentials,
 			MaxAge:           int(setting.CORSConfig.MaxAge.Seconds()),
@@ -243,7 +243,7 @@ func RegisterRoutes(m *web.Route) {
 	ignSignInAndCsrf := context.Toggle(&context.ToggleOptions{DisableCSRF: true})
 	reqSignOut := context.Toggle(&context.ToggleOptions{SignOutRequired: true})
 
-	//bindIgnErr := binding.BindIgnErr
+	// bindIgnErr := binding.BindIgnErr
 	bindIgnErr := web.Bind
 	validation.AddBindingRules()
 
@@ -313,7 +313,6 @@ func RegisterRoutes(m *web.Route) {
 			m.Get("", user.U2F)
 			m.Get("/challenge", user.U2FChallenge)
 			m.Post("/sign", bindIgnErr(u2f.SignResponse{}), user.U2FSign)
-
 		})
 	}, reqSignOut)
 

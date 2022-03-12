@@ -190,7 +190,7 @@ func RenderCommitMessage(
 	ctx *RenderContext,
 	content string,
 ) (string, error) {
-	var procs = commitMessageProcessors
+	procs := commitMessageProcessors
 	if ctx.DefaultLink != "" {
 		// we don't have to fear data races, because being
 		// commitMessageProcessors of fixed len and cap, every time we append
@@ -225,7 +225,7 @@ func RenderCommitMessageSubject(
 	ctx *RenderContext,
 	content string,
 ) (string, error) {
-	var procs = commitMessageSubjectProcessors
+	procs := commitMessageSubjectProcessors
 	if ctx.DefaultLink != "" {
 		// we don't have to fear data races, because being
 		// commitMessageSubjectProcessors of fixed len and cap, every time we
@@ -278,8 +278,10 @@ func RenderEmoji(
 	return renderProcessString(&RenderContext{}, emojiProcessors, content)
 }
 
-var tagCleaner = regexp.MustCompile(`<((?:/?\w+/\w+)|(?:/[\w ]+/)|(/?[hH][tT][mM][lL]\b)|(/?[hH][eE][aA][dD]\b))`)
-var nulCleaner = strings.NewReplacer("\000", "")
+var (
+	tagCleaner = regexp.MustCompile(`<((?:/?\w+/\w+)|(?:/[\w ]+/)|(/?[hH][tT][mM][lL]\b)|(/?[hH][eE][aA][dD]\b))`)
+	nulCleaner = strings.NewReplacer("\000", "")
+)
 
 func postProcess(ctx *RenderContext, procs []processor, input io.Reader, output io.Writer) error {
 	// FIXME: don't read all content to memory
@@ -462,7 +464,6 @@ func createEmoji(content, class, name string) *html.Node {
 }
 
 func createCustomEmoji(alias, class string) *html.Node {
-
 	span := &html.Node{
 		Type: html.ElementNode,
 		Data: atom.Span.String(),
@@ -773,7 +774,6 @@ func fullIssuePatternProcessor(ctx *RenderContext, node *html.Node) {
 		// TODO if m[4]:m[5] is not nil, then link is to a comment,
 		// and we should indicate that in the text somehow
 		replaceContent(node, m[0], m[1], createLink(link, id, "ref-issue"))
-
 	} else {
 		orgRepoID := matchOrg + "/" + matchRepo + id
 		replaceContent(node, m[0], m[1], createLink(link, orgRepoID, "ref-issue"))

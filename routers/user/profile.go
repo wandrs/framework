@@ -100,9 +100,7 @@ func Profile(ctx *context.Context) {
 		page = 1
 	}
 
-	var (
-		total int
-	)
+	var total int
 
 	ctx.Data["SortType"] = ctx.Query("sort")
 

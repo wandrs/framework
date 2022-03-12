@@ -75,9 +75,7 @@ type RepoSearchOptions struct {
 	TplName    base.TplName
 }
 
-var (
-	nullByte = []byte{0x00}
-)
+var nullByte = []byte{0x00}
 
 func isKeywordValid(keyword string) bool {
 	return !bytes.Contains([]byte(keyword), nullByte)

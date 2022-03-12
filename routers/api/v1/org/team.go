@@ -482,5 +482,4 @@ func SearchTeam(ctx *context.APIContext) {
 		"ok":   true,
 		"data": apiTeams,
 	})
-
 }
