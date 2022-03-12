@@ -18,4 +18,3 @@ type TypeMapper interface {
 	// the Type has not been mapped.
 	GetVal(reflect.Type) reflect.Value
 }
-

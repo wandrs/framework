@@ -12,8 +12,10 @@ import (
 	"go.wandrs.dev/framework/modules/setting"
 )
 
-var imageCaptchaOnce sync.Once
-var cpt *captcha.Captcha
+var (
+	imageCaptchaOnce sync.Once
+	cpt              *captcha.Captcha
+)
 
 // GetImageCaptcha returns global image captcha
 func GetImageCaptcha() *captcha.Captcha {

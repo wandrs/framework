@@ -23,7 +23,7 @@ var UTF8BOM = []byte{'\xef', '\xbb', '\xbf'}
 
 // ToUTF8WithFallbackReader detects the encoding of content and coverts to UTF-8 reader if possible
 func ToUTF8WithFallbackReader(rd io.Reader) io.Reader {
-	var buf = make([]byte, 2048)
+	buf := make([]byte, 2048)
 	n, err := rd.Read(buf)
 	if err != nil {
 		return rd

@@ -63,7 +63,6 @@ func NewCollector() Collector {
 			nil, nil,
 		),
 	}
-
 }
 
 // Describe returns all possible prometheus.Desc

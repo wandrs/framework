@@ -76,7 +76,8 @@ func ReplaceSanitizer() {
 	sanitizer.policy.AllowAttrs("class").Matching(regexp.MustCompile(`line-num`)).OnElements("th", "td")
 
 	// Allow generally safe attributes
-	generalSafeAttrs := []string{"abbr", "accept", "accept-charset",
+	generalSafeAttrs := []string{
+		"abbr", "accept", "accept-charset",
 		"accesskey", "action", "align", "alt",
 		"aria-describedby", "aria-hidden", "aria-label", "aria-labelledby",
 		"axis", "border", "cellpadding", "cellspacing", "char",

@@ -25,8 +25,7 @@ var (
 // Basic implements the SingleSignOn interface and authenticates requests (API requests
 // only) by looking for Basic authentication data or "x-oauth-basic" token in the "Authorization"
 // header.
-type Basic struct {
-}
+type Basic struct{}
 
 // Init does nothing as the Basic implementation does not need to allocate any resources
 func (b *Basic) Init() error {
@@ -49,7 +48,6 @@ func (b *Basic) IsEnabled() bool {
 // name/token on successful validation.
 // Returns nil if header is empty or validation fails.
 func (b *Basic) VerifyAuthData(req *http.Request, w http.ResponseWriter, store DataStore, sess SessionStore) *models.User {
-
 	// Basic authentication should only fire on API, Download or on Git or LFSPaths
 	if middleware.IsInternalPath(req) || !middleware.IsAPIPath(req) && !isAttachmentDownload(req) && !isGitRawOrLFSPath(req) {
 		return nil

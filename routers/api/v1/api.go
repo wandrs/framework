@@ -205,7 +205,7 @@ func reqTeamMembership() func(ctx *context.APIContext) {
 			return
 		}
 
-		var orgID = ctx.Org.Team.OrgID
+		orgID := ctx.Org.Team.OrgID
 		isOwner, err := models.IsOrganizationOwner(orgID, ctx.User.ID)
 		if err != nil {
 			ctx.Error(http.StatusInternalServerError, "IsOrganizationOwner", err)
@@ -312,12 +312,12 @@ func orgAssignment(args ...bool) func(ctx *context.APIContext) {
 
 // bind binding an obj to a func(ctx *context.APIContext)
 func bind(obj interface{}) http.HandlerFunc {
-	var tp = reflect.TypeOf(obj)
+	tp := reflect.TypeOf(obj)
 	for tp.Kind() == reflect.Ptr {
 		tp = tp.Elem()
 	}
 	return web.Wrap(func(ctx *context.APIContext) {
-		var theObj = reflect.New(tp).Interface() // create a new form obj for every request but not use obj directly
+		theObj := reflect.New(tp).Interface() // create a new form obj for every request but not use obj directly
 		errs := binding.Bind(ctx.Req, theObj)
 		if len(errs) > 0 {
 			ctx.Error(http.StatusUnprocessableEntity, "validationError", errs[0].Error())
@@ -329,7 +329,7 @@ func bind(obj interface{}) http.HandlerFunc {
 
 // Routes registers all v1 APIs routes to web application.
 func Routes() *web.Route {
-	var m = web.NewRoute()
+	m := web.NewRoute()
 
 	m.Use(session.Sessioner(session.Options{
 		Provider:       setting.SessionConfig.Provider,
@@ -345,9 +345,9 @@ func Routes() *web.Route {
 	m.Use(securityHeaders())
 	if setting.CORSConfig.Enabled {
 		m.Use(cors.Handler(cors.Options{
-			//Scheme:           setting.CORSConfig.Scheme, // FIXME: the cors middleware needs scheme option
+			// Scheme:           setting.CORSConfig.Scheme, // FIXME: the cors middleware needs scheme option
 			AllowedOrigins: setting.CORSConfig.AllowDomain,
-			//setting.CORSConfig.AllowSubdomain // FIXME: the cors middleware needs allowSubdomain option
+			// setting.CORSConfig.AllowSubdomain // FIXME: the cors middleware needs allowSubdomain option
 			AllowedMethods:   setting.CORSConfig.Methods,
 			AllowCredentials: setting.CORSConfig.AllowCredentials,
 			MaxAge:           int(setting.CORSConfig.MaxAge.Seconds()),

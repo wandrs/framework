@@ -1,3 +1,4 @@
+//go:build !bindata
 // +build !bindata
 
 // Copyright 2016 The Gitea Authors. All rights reserved.
@@ -71,7 +72,6 @@ func Mailer() (*texttmpl.Template, *template.Template) {
 				}
 
 				content, err := ioutil.ReadFile(path.Join(staticDir, filePath))
-
 				if err != nil {
 					log.Warn("Failed to read static %s template. %v", filePath, err)
 					continue
@@ -100,7 +100,6 @@ func Mailer() (*texttmpl.Template, *template.Template) {
 				}
 
 				content, err := ioutil.ReadFile(path.Join(customDir, filePath))
-
 				if err != nil {
 					log.Warn("Failed to read custom %s template. %v", filePath, err)
 					continue

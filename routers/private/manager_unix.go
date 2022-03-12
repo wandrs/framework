@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 // Copyright 2020 The Gitea Authors. All rights reserved.
@@ -17,7 +18,6 @@ import (
 func Restart(ctx *context.PrivateContext) {
 	graceful.GetManager().DoGracefulRestart()
 	ctx.PlainText(http.StatusOK, []byte("success"))
-
 }
 
 // Shutdown causes the server to perform a graceful shutdown

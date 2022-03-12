@@ -33,10 +33,8 @@ import (
 	"xorm.io/builder"
 )
 
-var (
-	// ErrNameEmpty name is empty error
-	ErrNameEmpty = errors.New("Name is empty")
-)
+// ErrNameEmpty name is empty error
+var ErrNameEmpty = errors.New("Name is empty")
 
 // UserType defines the user type
 type UserType int
@@ -469,7 +467,7 @@ func (u *User) GetOrganizations(opts *SearchOrganizationsOptions) error {
 		And("`org_user`.uid=?", u.ID).
 		GroupBy(groupByStr)
 
-	//sess.Select("`user`.*, count(repo_id) as org_count").
+	// sess.Select("`user`.*, count(repo_id) as org_count").
 	//	Table("user").
 	//	Join("INNER", "org_user", "`org_user`.org_id=`user`.id").
 	//	And("`org_user`.uid=?", u.ID).

@@ -12,9 +12,7 @@ import (
 	"go.wandrs.dev/framework/modules/setting"
 )
 
-var (
-	conn mc.Cache
-)
+var conn mc.Cache
 
 func newCache(cacheConfig setting.Cache) (mc.Cache, error) {
 	return mc.NewCacher(mc.Options{

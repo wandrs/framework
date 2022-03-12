@@ -16,10 +16,8 @@ import (
 	"go.wandrs.dev/framework/modules/setting"
 )
 
-var (
-	// ErrURLNotSupported represents url is not supported
-	ErrURLNotSupported = errors.New("url method not supported")
-)
+// ErrURLNotSupported represents url is not supported
+var ErrURLNotSupported = errors.New("url method not supported")
 
 // ErrInvalidConfiguration is called when there is invalid configuration for a storage
 type ErrInvalidConfiguration struct {
@@ -103,10 +101,8 @@ func SaveFrom(objStorage ObjectStorage, p string, callback func(w io.Writer) err
 	return err
 }
 
-var (
-	// Avatars represents user avatars storage
-	Avatars ObjectStorage
-)
+// Avatars represents user avatars storage
+var Avatars ObjectStorage
 
 // Init init the stoarge
 func Init() error {

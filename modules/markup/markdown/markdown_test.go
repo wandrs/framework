@@ -16,9 +16,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const AppURL = "http://localhost:3000/"
-const Repo = "gogits/gogs"
-const AppSubURL = AppURL + Repo + "/"
+const (
+	AppURL    = "http://localhost:3000/"
+	Repo      = "gogits/gogs"
+	AppSubURL = AppURL + Repo + "/"
+)
 
 // these values should match the Repo const above
 var localMetas = map[string]string{
@@ -116,7 +118,6 @@ func TestRender_Images(t *testing.T) {
 	test(
 		"[!["+title+"]("+url+")]("+href+")",
 		`<p><a href="`+href+`" rel="nofollow"><img src="`+result+`" alt="`+title+`"/></a></p>`)
-
 }
 
 func testAnswers(baseURLContent, baseURLImages string) []string {
@@ -387,5 +388,4 @@ func TestRenderSiblingImages_Issue12925(t *testing.T) {
 	res, err := RenderRawString(&markup.RenderContext{}, testcase)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, res)
-
 }
