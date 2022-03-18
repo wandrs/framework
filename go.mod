@@ -29,7 +29,7 @@ require (
 	github.com/gorilla/schema v1.2.0
 	github.com/issue9/identicon v1.2.0
 	github.com/jaytaylor/html2text v0.0.0-20200412013138-3577fbdbcff7
-	github.com/json-iterator/go v1.1.11
+	github.com/json-iterator/go v1.1.12
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/lafriks/xormstore v1.4.0
 	github.com/lib/pq v1.10.2
