@@ -50,7 +50,7 @@ func yadisDiscovery(id string, getter httpGetter) (opEndpoint string, opLocalID 
 		return "", "", err
 	} else if strings.Contains(contentType, "application/xrds+xml") {
 		// 4. A document of MIME media type, application/xrds+xml.
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err == nil {
 			return parseXrds(body)
 		}
@@ -72,7 +72,7 @@ func getYadisResourceDescriptor(id string, getter httpGetter) (opEndpoint string
 	}
 	defer resp.Body.Close()
 	// 4. A document of MIME media type, application/xrds+xml.
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err == nil {
 		return parseXrds(body)
 	}

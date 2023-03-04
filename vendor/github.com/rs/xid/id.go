@@ -104,7 +104,7 @@ func init() {
 	// If /proc/self/cpuset exists and is not /, we can assume that we are in a
 	// form of container and use the content of cpuset xor-ed with the PID in
 	// order get a reasonable machine global unique PID.
-	b, err := ioutil.ReadFile("/proc/self/cpuset")
+	b, err := os.ReadFile("/proc/self/cpuset")
 	if err == nil && len(b) > 1 {
 		pid ^= int(crc32.ChecksumIEEE(b))
 	}

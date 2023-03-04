@@ -505,7 +505,7 @@ func hasUTF32LittleEndianBOM4(b []byte) bool {
 
 // LoadReader creates a Tree from any io.Reader.
 func LoadReader(reader io.Reader) (tree *Tree, err error) {
-	inputBytes, err := ioutil.ReadAll(reader)
+	inputBytes, err := io.ReadAll(reader)
 	if err != nil {
 		return
 	}

@@ -39,6 +39,7 @@ require (
 	github.com/mholt/archiver/v3 v3.5.0
 	github.com/microcosm-cc/bluemonday v1.0.9
 	github.com/minio/minio-go/v7 v7.0.10
+	github.com/modern-go/reflect2 v1.0.2
 	github.com/msteinert/pam v0.0.0-20201130170657-e61372126161
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
@@ -61,6 +62,7 @@ require (
 	github.com/yuin/goldmark v1.3.7
 	github.com/yuin/goldmark-highlighting v0.0.0-20210516132338-9216f9c5aa01
 	github.com/yuin/goldmark-meta v1.0.0
+	go.bytebuilders.dev/license-proxyserver v0.0.3
 	go.jolheiser.com/hcaptcha v0.0.4
 	go.jolheiser.com/pwn v0.0.3
 	go.wandrs.dev/binding v0.0.0-20210531104511-aa760cf3a6c4
@@ -71,8 +73,8 @@ require (
 	go.wandrs.dev/session/memcache v0.0.0-20210531080514-72628304c241
 	go.wandrs.dev/session/mysql v0.0.0-20210531080514-72628304c241
 	go.wandrs.dev/session/postgres v0.0.0-20210531080514-72628304c241
-	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
-	golang.org/x/net v0.0.0-20210421230115-4e50805a0758
+	golang.org/x/crypto v0.6.0
+	golang.org/x/net v0.7.0
 	golang.org/x/sys v0.0.0-20210525143221-35b2ab0089ea
 	golang.org/x/text v0.3.6
 	golang.org/x/tools v0.1.0

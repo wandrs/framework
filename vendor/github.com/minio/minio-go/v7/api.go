@@ -590,7 +590,7 @@ func (c Client) executeMethod(ctx context.Context, method string, metadata reque
 		}
 
 		// Read the body to be saved later.
-		errBodyBytes, err := ioutil.ReadAll(res.Body)
+		errBodyBytes, err := io.ReadAll(res.Body)
 		// res.Body should be closed
 		closeResponse(res)
 		if err != nil {

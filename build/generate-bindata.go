@@ -11,7 +11,6 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -28,7 +27,7 @@ func needsUpdate(dir string, filename string) (bool, []byte) {
 		needRegen = true
 	}
 
-	oldHash, err := ioutil.ReadFile(filename + ".hash")
+	oldHash, err := os.ReadFile(filename + ".hash")
 	if err != nil {
 		oldHash = []byte{}
 	}
@@ -82,5 +81,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
-	_ = ioutil.WriteFile(filename+".hash", newHash, 0o666)
+	_ = os.WriteFile(filename+".hash", newHash, 0o666)
 }

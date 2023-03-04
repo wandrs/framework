@@ -286,7 +286,7 @@ func addDefaultLDAPResponseDescriptions(packet *ber.Packet) error {
 
 // DebugBinaryFile reads and prints packets from the given filename
 func DebugBinaryFile(fileName string) error {
-	file, err := ioutil.ReadFile(fileName)
+	file, err := os.ReadFile(fileName)
 	if err != nil {
 		return NewError(ErrorDebugging, err)
 	}

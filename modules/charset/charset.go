@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"unicode/utf8"
 
 	"go.wandrs.dev/framework/modules/log"
@@ -76,7 +75,7 @@ func ToUTF8WithErr(content []byte) (string, error) {
 
 // ToUTF8WithFallback detects the encoding of content and coverts to UTF-8 if possible
 func ToUTF8WithFallback(content []byte) []byte {
-	bs, _ := ioutil.ReadAll(ToUTF8WithFallbackReader(bytes.NewReader(content)))
+	bs, _ := io.ReadAll(ToUTF8WithFallbackReader(bytes.NewReader(content)))
 	return bs
 }
 

@@ -162,7 +162,7 @@ func (req *MCRequest) ParseTapCommands() (TapConnect, error) {
 	}
 
 	var err error
-	rv.RemainingBody, err = ioutil.ReadAll(r)
+	rv.RemainingBody, err = io.ReadAll(r)
 
 	return rv, err
 }

@@ -97,7 +97,7 @@ func (m *IAM) Retrieve() (Value, error) {
 			Client:      m.Client,
 			STSEndpoint: endpoint,
 			GetWebIDTokenExpiry: func() (*WebIdentityToken, error) {
-				token, err := ioutil.ReadFile(os.Getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
+				token, err := os.ReadFile(os.Getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
 				if err != nil {
 					return nil, err
 				}

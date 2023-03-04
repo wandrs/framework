@@ -344,7 +344,7 @@ func (c Client) completeMultipartUpload(ctx context.Context, bucketName, objectN
 
 	// Read resp.Body into a []bytes to parse for Error response inside the body
 	var b []byte
-	b, err = ioutil.ReadAll(resp.Body)
+	b, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return UploadInfo{}, err
 	}

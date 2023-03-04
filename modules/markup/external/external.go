@@ -7,7 +7,6 @@ package external
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"runtime"
@@ -67,7 +66,7 @@ func (p *Renderer) Render(ctx *markup.RenderContext, input io.Reader, output io.
 
 	if p.IsInputFile {
 		// write to temp file
-		f, err := ioutil.TempFile("", "gitea_input")
+		f, err := os.CreateTemp("", "gitea_input")
 		if err != nil {
 			return fmt.Errorf("%s create temp file when rendering %s failed: %v", p.Name(), p.Command, err)
 		}

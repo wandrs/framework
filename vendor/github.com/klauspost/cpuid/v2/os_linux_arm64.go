@@ -58,7 +58,7 @@ func detectOS(c *CPUInfo) bool {
 			uintSize = int(32 << (^uint(0) >> 63))
 		)
 
-		buf, err := ioutil.ReadFile("/proc/self/auxv")
+		buf, err := os.ReadFile("/proc/self/auxv")
 		if err != nil {
 			// e.g. on android /proc/self/auxv is not accessible, so silently
 			// ignore the error and leave Initialized = false. On some

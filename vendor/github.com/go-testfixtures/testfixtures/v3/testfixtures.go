@@ -554,7 +554,7 @@ func (l *Loader) fixturesFromDir(dir string) ([]*fixtureFile, error) {
 				path:     path.Join(dir, fileinfo.Name()),
 				fileName: fileinfo.Name(),
 			}
-			fixture.content, err = ioutil.ReadFile(fixture.path)
+			fixture.content, err = os.ReadFile(fixture.path)
 			if err != nil {
 				return nil, fmt.Errorf(`testfixtures: could not read file "%s": %w`, fixture.path, err)
 			}
@@ -578,7 +578,7 @@ func (l *Loader) fixturesFromFiles(fileNames ...string) ([]*fixtureFile, error) 
 			path:     f,
 			fileName: filepath.Base(f),
 		}
-		fixture.content, err = ioutil.ReadFile(fixture.path)
+		fixture.content, err = os.ReadFile(fixture.path)
 		if err != nil {
 			return nil, fmt.Errorf(`testfixtures: could not read file "%s": %w`, fixture.path, err)
 		}

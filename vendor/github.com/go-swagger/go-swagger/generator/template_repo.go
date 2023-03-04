@@ -335,7 +335,7 @@ func (t *Repository) LoadDir(templatePath string) error {
 
 		if strings.HasSuffix(path, ".gotmpl") {
 			if assetName, e := filepath.Rel(templatePath, path); e == nil {
-				if data, e := ioutil.ReadFile(path); e == nil {
+				if data, e := os.ReadFile(path); e == nil {
 					if ee := t.AddFile(assetName, string(data)); ee != nil {
 						return fmt.Errorf("could not add template: %v", ee)
 					}

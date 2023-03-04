@@ -166,7 +166,7 @@ func Run(configFile string, analyzers []*analysis.Analyzer) {
 }
 
 func readConfig(filename string) (*Config, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +287,7 @@ func run(fset *token.FileSet, cfg *Config, analyzers []*analysis.Analyzer) ([]re
 	// Read facts from imported packages.
 	read := func(path string) ([]byte, error) {
 		if vetx, ok := cfg.PackageVetx[path]; ok {
-			return ioutil.ReadFile(vetx)
+			return os.ReadFile(vetx)
 		}
 		return nil, nil // no .vetx file, no facts
 	}
@@ -380,7 +380,7 @@ func run(fset *token.FileSet, cfg *Config, analyzers []*analysis.Analyzer) ([]re
 	}
 
 	data := facts.Encode()
-	if err := ioutil.WriteFile(cfg.VetxOutput, data, 0666); err != nil {
+	if err := os.WriteFile(cfg.VetxOutput, data, 0666); err != nil {
 		return nil, fmt.Errorf("failed to write analysis facts: %v", err)
 	}
 

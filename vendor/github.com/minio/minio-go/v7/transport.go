@@ -72,7 +72,7 @@ var DefaultTransport = func(secure bool) (*http.Transport, error) {
 		}
 		if f := os.Getenv("SSL_CERT_FILE"); f != "" {
 			rootCAs := mustGetSystemCertPool()
-			data, err := ioutil.ReadFile(f)
+			data, err := os.ReadFile(f)
 			if err == nil {
 				rootCAs.AppendCertsFromPEM(data)
 			}

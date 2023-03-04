@@ -73,5 +73,5 @@ func writeToFile(swspec *spec.Swagger, pretty bool, format string, output string
 		return nil
 	}
 
-	return ioutil.WriteFile(output, b, 0644) // #nosec
+	return os.WriteFile(output, b, 0644) // #nosec
 }

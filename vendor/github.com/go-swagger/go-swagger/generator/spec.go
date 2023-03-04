@@ -214,11 +214,11 @@ func WithAutoXOrder(specPath string) string {
 		panic(err)
 	}
 
-	tmpFile, err := ioutil.TempFile("", filepath.Base(specPath))
+	tmpFile, err := os.CreateTemp("", filepath.Base(specPath))
 	if err != nil {
 		panic(err)
 	}
-	if err := ioutil.WriteFile(tmpFile.Name(), out, 0); err != nil {
+	if err := os.WriteFile(tmpFile.Name(), out, 0); err != nil {
 		panic(err)
 	}
 	return tmpFile.Name()

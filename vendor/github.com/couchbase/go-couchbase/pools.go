@@ -675,7 +675,7 @@ func ClientConfigForX509(certFile, keyFile, rootFile string) (*tls.Config, error
 	caCertPool := x509.NewCertPool()
 	if rootFile != "" {
 		// Read that value in
-		caCert, err1 = ioutil.ReadFile(rootFile)
+		caCert, err1 = os.ReadFile(rootFile)
 		if err1 != nil {
 			return nil, fmt.Errorf(" Error in reading cacert file, err: %v", err1)
 		}
@@ -841,7 +841,7 @@ func doOutputAPI(
 	defer res.Body.Close()
 	// 200 - ok, 202 - accepted (asynchronously)
 	if res.StatusCode != 200 && res.StatusCode != 202 {
-		bod, _ := ioutil.ReadAll(io.LimitReader(res.Body, 512))
+		bod, _ := io.ReadAll(io.LimitReader(res.Body, 512))
 		if terse {
 			var outBuf interface{}
 
@@ -908,7 +908,7 @@ func queryRestAPI(
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		bod, _ := ioutil.ReadAll(io.LimitReader(res.Body, 512))
+		bod, _ := io.ReadAll(io.LimitReader(res.Body, 512))
 		if terse {
 			var outBuf interface{}
 
@@ -965,7 +965,7 @@ func (c *Client) processStream(baseURL *url.URL, path string, authHandler AuthHa
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		bod, _ := ioutil.ReadAll(io.LimitReader(res.Body, 512))
+		bod, _ := io.ReadAll(io.LimitReader(res.Body, 512))
 		return fmt.Errorf("HTTP error %v getting %q: %s",
 			res.Status, requestUrl, bod)
 	}
@@ -1139,7 +1139,7 @@ func ConnectWithAuth(baseU string, ah AuthHandler) (c Client, err error) {
 //
 // This method should be called immediately after a Connect*() method.
 func (c *Client) InitTLS(certFile string) error {
-	serverCert, err := ioutil.ReadFile(certFile)
+	serverCert, err := os.ReadFile(certFile)
 	if err != nil {
 		return err
 	}

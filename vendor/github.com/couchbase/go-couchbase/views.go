@@ -192,7 +192,7 @@ func (b *Bucket) ViewCustom(ddoc, name string, params map[string]interface{},
 			u, res.Status, bod[:l])
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err := json.Unmarshal(body, vres); err != nil {
 		return nil
 	}

@@ -6,6 +6,7 @@ package integrations
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 	"testing"
 
@@ -244,7 +245,7 @@ func TestRefreshTokenInvalidation(t *testing.T) {
 		"refresh_token": parsed.RefreshToken,
 	})
 
-	bs, err := ioutil.ReadAll(refreshReq.Body)
+	bs, err := io.ReadAll(refreshReq.Body)
 	assert.NoError(t, err)
 
 	refreshReq.Body = ioutil.NopCloser(bytes.NewReader(bs))

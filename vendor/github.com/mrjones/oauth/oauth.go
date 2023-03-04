@@ -738,7 +738,7 @@ func (c *Consumer) makeAuthorizedRequestReader(method string, urlString string, 
 
 	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
 		defer resp.Body.Close()
-		bytes, _ := ioutil.ReadAll(resp.Body)
+		bytes, _ := io.ReadAll(resp.Body)
 
 		return resp, HTTPExecuteError{
 			RequestHeaders:    "",
@@ -792,7 +792,7 @@ func getBody(request *http.Request) ([]byte, error) {
 		return nil, nil
 	}
 	defer request.Body.Close()
-	originalBody, err := ioutil.ReadAll(request.Body)
+	originalBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -1243,7 +1243,7 @@ func (c *Consumer) getBody(method, url string, oauthParams *OrderedParams) (*str
 	if err != nil {
 		return nil, errors.New("httpExecute: " + err.Error())
 	}
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
 		return nil, errors.New("ReadAll: " + err.Error())
@@ -1333,7 +1333,7 @@ func (c *Consumer) httpExecute(
 	// StatusMultipleChoices is 300, any 2xx response should be treated as success
 	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
 		defer resp.Body.Close()
-		bytes, _ := ioutil.ReadAll(resp.Body)
+		bytes, _ := io.ReadAll(resp.Body)
 
 		return resp, HTTPExecuteError{
 			RequestHeaders:    debugHeader,

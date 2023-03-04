@@ -133,7 +133,7 @@ func (b *Bucket) UpdateBucket2(streamingFn StreamingFn) error {
 		}
 
 		if res.StatusCode != 200 {
-			bod, _ := ioutil.ReadAll(io.LimitReader(res.Body, 512))
+			bod, _ := io.ReadAll(io.LimitReader(res.Body, 512))
 			logging.Errorf("Failed to connect to host, unexpected status code: %v. Body %s", res.StatusCode, bod)
 			res.Body.Close()
 			returnErr = fmt.Errorf("Failed to connect to host. Status %v Body %s", res.StatusCode, bod)

@@ -6,7 +6,7 @@ package private
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"go.wandrs.dev/framework/modules/setting"
@@ -46,7 +46,7 @@ func SendEmail(subject, message string, to []string) (int, string) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return http.StatusInternalServerError, fmt.Sprintf("Response body error: %v", err.Error())
 	}

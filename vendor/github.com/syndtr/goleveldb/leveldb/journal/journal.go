@@ -36,7 +36,7 @@
 //			if err != nil {
 //				return nil, err
 //			}
-//			s, err := ioutil.ReadAll(j)
+//			s, err := io.ReadAll(j)
 //			if err != nil {
 //				return nil, err
 //			}

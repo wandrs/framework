@@ -124,7 +124,7 @@ func loadAlias(filename, alias string) (hostConfig, error) {
 	cfg := &config{}
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
-	configBytes, err := ioutil.ReadFile(filename)
+	configBytes, err := os.ReadFile(filename)
 	if err != nil {
 		return hostConfig{}, err
 	}

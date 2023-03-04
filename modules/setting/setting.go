@@ -9,7 +9,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math"
 	"net"
 	"net/url"
@@ -856,7 +855,7 @@ func loadInternalToken(sec *ini.Section) string {
 		}
 		defer fp.Close()
 
-		buf, err := ioutil.ReadAll(fp)
+		buf, err := io.ReadAll(fp)
 		if err != nil {
 			log.Fatal("Failed to read InternalTokenURI (%s): %v", uri, err)
 		}
