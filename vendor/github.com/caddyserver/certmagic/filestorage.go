@@ -48,12 +48,12 @@ func (fs *FileStorage) Store(key string, value []byte) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filename, value, 0600)
+	return os.WriteFile(filename, value, 0600)
 }
 
 // Load retrieves the value at key.
 func (fs *FileStorage) Load(key string) ([]byte, error) {
-	contents, err := ioutil.ReadFile(fs.Filename(key))
+	contents, err := os.ReadFile(fs.Filename(key))
 	if os.IsNotExist(err) {
 		return nil, ErrNotExist(err)
 	}
@@ -287,7 +287,7 @@ func updateLockfileFreshness(filename string) (bool, error) {
 	defer f.Close()
 
 	// read contents
-	metaBytes, err := ioutil.ReadAll(io.LimitReader(f, 2048))
+	metaBytes, err := io.ReadAll(io.LimitReader(f, 2048))
 	if err != nil {
 		return true, err
 	}

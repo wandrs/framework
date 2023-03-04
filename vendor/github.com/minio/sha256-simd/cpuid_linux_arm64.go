@@ -41,7 +41,7 @@ const procCPUInfo = "/proc/cpuinfo"
 const sha256Feature = "sha2"
 
 func haveArmSha() bool {
-	cpuInfo, err := ioutil.ReadFile(procCPUInfo)
+	cpuInfo, err := os.ReadFile(procCPUInfo)
 	if err != nil {
 		return false
 	}

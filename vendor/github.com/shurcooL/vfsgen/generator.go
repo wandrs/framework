@@ -47,7 +47,7 @@ func Generate(input http.FileSystem, opt Options) error {
 	}
 
 	// Write output file (all at once).
-	err = ioutil.WriteFile(opt.Filename, buf.Bytes(), 0644)
+	err = os.WriteFile(opt.Filename, buf.Bytes(), 0644)
 	return err
 }
 

@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/url"
 	"path"
 	"path/filepath"
@@ -285,7 +284,7 @@ var (
 
 func postProcess(ctx *RenderContext, procs []processor, input io.Reader, output io.Writer) error {
 	// FIXME: don't read all content to memory
-	rawHTML, err := ioutil.ReadAll(input)
+	rawHTML, err := io.ReadAll(input)
 	if err != nil {
 		return err
 	}

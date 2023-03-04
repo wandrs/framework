@@ -228,7 +228,7 @@ func verifySignature(uri string, vals url.Values, getter httpGetter) error {
 		return err
 	}
 	defer resp.Body.Close()
-	content, err := ioutil.ReadAll(resp.Body)
+	content, err := io.ReadAll(resp.Body)
 	response := string(content)
 	lines := strings.Split(response, "\n")
 

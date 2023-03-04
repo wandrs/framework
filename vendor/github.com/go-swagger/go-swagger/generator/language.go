@@ -395,7 +395,7 @@ func tryResolveModule(baseTargetPath string) (string, string, error) {
 		return "", "", err
 	}
 
-	src, err := ioutil.ReadAll(f)
+	src, err := io.ReadAll(f)
 	if err != nil {
 		return "", "", err
 	}

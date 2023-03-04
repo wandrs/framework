@@ -91,7 +91,7 @@ func (s *FileStore) Release() error {
 		return err
 	}
 
-	return ioutil.WriteFile(s.p.filepath(s.sid), data, 0600)
+	return os.WriteFile(s.p.filepath(s.sid), data, 0600)
 }
 
 // Flush deletes all session data.
@@ -156,7 +156,7 @@ func (p *FileProvider) Read(sid string) (_ RawStore, err error) {
 	}
 
 	var kv map[interface{}]interface{}
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func (p *FileProvider) regenerate(oldsid, sid string) (err error) {
 		if err = os.MkdirAll(path.Dir(oldname), 0700); err != nil {
 			return err
 		}
-		if err = ioutil.WriteFile(oldname, data, 0600); err != nil {
+		if err = os.WriteFile(oldname, data, 0600); err != nil {
 			return err
 		}
 	}

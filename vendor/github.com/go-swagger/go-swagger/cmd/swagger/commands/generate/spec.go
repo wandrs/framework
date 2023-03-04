@@ -100,7 +100,7 @@ func writeToFile(swspec *spec.Swagger, pretty bool, output string) error {
 		fmt.Println(string(b))
 		return nil
 	}
-	return ioutil.WriteFile(output, b, 0644)
+	return os.WriteFile(output, b, 0644)
 }
 
 func marshalToJSONFormat(swspec *spec.Swagger, pretty bool) ([]byte, error) {

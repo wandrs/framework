@@ -160,7 +160,7 @@ if formatter == nil {
 Then obtain an iterator over the tokens:
 
 ```go
-contents, err := ioutil.ReadAll(r)
+contents, err := io.ReadAll(r)
 iterator, err := lexer.Tokenise(nil, string(contents))
 ```
 

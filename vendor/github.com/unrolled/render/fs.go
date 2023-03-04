@@ -17,5 +17,5 @@ func (LocalFileSystem) Walk(root string, walkFn filepath.WalkFunc) error {
 }
 
 func (LocalFileSystem) ReadFile(filename string) ([]byte, error) {
-	return ioutil.ReadFile(filename)
+	return os.ReadFile(filename)
 }

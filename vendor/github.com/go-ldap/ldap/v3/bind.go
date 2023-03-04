@@ -208,7 +208,7 @@ func (l *Conn) DigestMD5Bind(digestMD5BindRequest *DigestMD5BindRequest) (*Diges
 			if child.Data == nil {
 				return result, GetLDAPError(packet)
 			}
-			data, _ := ioutil.ReadAll(child.Data)
+			data, _ := io.ReadAll(child.Data)
 			params, err = parseParams(string(data))
 			if err != nil {
 				return result, fmt.Errorf("parsing digest-challenge: %s", err)

@@ -39,7 +39,7 @@ func (c *Client) CheckPassword(pw string, padding bool) (int, error) {
 		return -1, err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return -1, err
 	}

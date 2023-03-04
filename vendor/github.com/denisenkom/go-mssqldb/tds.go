@@ -219,7 +219,7 @@ func readPrelogin(r *tdsBuffer) (map[uint8][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	struct_buf, err := ioutil.ReadAll(r)
+	struct_buf, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
@@ -1093,7 +1093,7 @@ initiate_connection:
 	if encrypt != encryptNotSup {
 		var config tls.Config
 		if p.certificate != "" {
-			pem, err := ioutil.ReadFile(p.certificate)
+			pem, err := os.ReadFile(p.certificate)
 			if err != nil {
 				return nil, fmt.Errorf("cannot read certificate %q: %v", p.certificate, err)
 			}

@@ -143,5 +143,5 @@ func (c Client) getBucketLifecycle(ctx context.Context, bucketName string) ([]by
 		}
 	}
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }

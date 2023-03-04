@@ -5,7 +5,6 @@
 package models
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -18,7 +17,7 @@ import (
 func TestDumpDatabase(t *testing.T) {
 	assert.NoError(t, PrepareTestDatabase())
 
-	dir, err := ioutil.TempDir(os.TempDir(), "dump")
+	dir, err := os.MkdirTemp(os.TempDir(), "dump")
 	assert.NoError(t, err)
 
 	type Version struct {

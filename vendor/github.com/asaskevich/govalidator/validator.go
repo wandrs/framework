@@ -918,7 +918,7 @@ func IsIMSI(str string) bool {
 // IsRsaPublicKey checks if a string is valid public key with provided length
 func IsRsaPublicKey(str string, keylen int) bool {
 	bb := bytes.NewBufferString(str)
-	pemBytes, err := ioutil.ReadAll(bb)
+	pemBytes, err := io.ReadAll(bb)
 	if err != nil {
 		return false
 	}

@@ -6,7 +6,6 @@ package models
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math"
 	"net/url"
 	"os"
@@ -50,7 +49,7 @@ func MainTest(m *testing.M, pathToGiteaRoot string) {
 	setting.AppURL = "https://try.gitea.io/"
 	setting.RunUser = "runuser"
 	setting.Database.UseSQLite3 = true
-	setting.AppDataPath, err = ioutil.TempDir(os.TempDir(), "appdata")
+	setting.AppDataPath, err = os.MkdirTemp(os.TempDir(), "appdata")
 	if err != nil {
 		fatalTestError("TempDir: %v\n", err)
 	}

@@ -162,7 +162,7 @@ func (b *Bucket) PutDDoc(docname string, value interface{}) error {
 		}
 
 		if res.StatusCode != 201 {
-			body, _ := ioutil.ReadAll(res.Body)
+			body, _ := io.ReadAll(res.Body)
 			Err = fmt.Errorf("error installing view: %v / %s",
 				res.Status, body)
 			logging.Errorf(" Error in PutDDOC %v. Retrying...", Err)
@@ -215,7 +215,7 @@ func (b *Bucket) GetDDoc(docname string, into interface{}) error {
 			return err
 		}
 		if res.StatusCode != 200 {
-			body, _ := ioutil.ReadAll(res.Body)
+			body, _ := io.ReadAll(res.Body)
 			Err = fmt.Errorf("error reading view: %v / %s",
 				res.Status, body)
 			logging.Errorf(" Error in GetDDOC %v Retrying...", Err)
@@ -273,7 +273,7 @@ func (b *Bucket) DeleteDDoc(docname string) error {
 			return err
 		}
 		if res.StatusCode != 200 {
-			body, _ := ioutil.ReadAll(res.Body)
+			body, _ := io.ReadAll(res.Body)
 			Err = fmt.Errorf("error deleting view : %v / %s", res.Status, body)
 			logging.Errorf(" Error in DeleteDDOC %v. Retrying ... ", Err)
 			b.Refresh()

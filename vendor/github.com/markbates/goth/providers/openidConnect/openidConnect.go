@@ -299,7 +299,7 @@ func (p *Provider) fetchUserInfo(url, accessToken string) (map[string]interface{
 
 	// The UserInfo Claims MUST be returned as the members of a JSON object
 	// http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -314,7 +314,7 @@ func getOpenIDConfig(p *Provider, openIDAutoDiscoveryURL string) (*OpenIDConfig,
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
