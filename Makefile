@@ -240,7 +240,7 @@ clean:
 
 GO_PKG   := go.wandrs.dev
 GO_VERSION       ?= 1.18
-BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)
+BUILD_IMAGE      ?= ghcr.io/appscode/golang-dev:$(GO_VERSION)
 
 .PHONY: fmt
 fmt: $(BUILD_DIRS)
