@@ -71,7 +71,6 @@ func (u *User) SizedRelAvatarLink(size int) string {
 //
 // This function make take time to return when federated avatars
 // are in use, due to a DNS lookup need
-//
 func (u *User) RealSizedAvatarLink(size int) string {
 	if u.ID == -1 {
 		return DefaultAvatarLink()
