@@ -239,7 +239,7 @@ clean:
 # 	@$(GOFMT) -w $(GO_SOURCES_OWN)
 
 GO_PKG   := go.wandrs.dev
-GO_VERSION       ?= 1.18
+GO_VERSION       ?= 1.25
 BUILD_IMAGE      ?= ghcr.io/appscode/golang-dev:$(GO_VERSION)
 
 .PHONY: fmt

@@ -1426,7 +1426,6 @@ func SyncExternalUsers(ctx context.Context, updateExisting bool) error {
 					}
 
 					err = CreateUser(usr)
-
 					if err != nil {
 						log.Error("SyncExternalUsers[%s]: Error creating user %s: %v", s.Name, su.Username, err)
 					}
