@@ -14,21 +14,24 @@ import (
 )
 
 func TestEncodeMD5(t *testing.T) {
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		"3858f62230ac3c915f300c664312c63f",
 		EncodeMD5("foobar"),
 	)
 }
 
 func TestEncodeSha1(t *testing.T) {
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		"8843d7f92416211de9ebb963ff4ce28125932878",
 		EncodeSha1("foobar"),
 	)
 }
 
 func TestEncodeSha256(t *testing.T) {
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		"c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2",
 		EncodeSha256("foobar"),
 	)
@@ -208,7 +211,8 @@ func TestStringsToInt64s(t *testing.T) {
 
 func TestInt64sToStrings(t *testing.T) {
 	assert.Equal(t, []string{}, Int64sToStrings([]int64{}))
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		[]string{"1", "4", "16", "64", "256"},
 		Int64sToStrings([]int64{1, 4, 16, 64, 256}),
 	)
@@ -216,7 +220,8 @@ func TestInt64sToStrings(t *testing.T) {
 
 func TestInt64sToMap(t *testing.T) {
 	assert.Equal(t, map[int64]bool{}, Int64sToMap([]int64{}))
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		map[int64]bool{1: true, 4: true, 16: true},
 		Int64sToMap([]int64{1, 4, 16}),
 	)

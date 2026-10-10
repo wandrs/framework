@@ -78,7 +78,7 @@ func (l Level) String() string {
 func (l Level) Color() *[]byte {
 	color, ok := levelToColor[l]
 	if ok {
-		return &(color)
+		return &color
 	}
 	none := levelToColor[NONE]
 	return &none

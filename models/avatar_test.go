@@ -29,11 +29,13 @@ func enableGravatar(t *testing.T) {
 }
 
 func TestHashEmail(t *testing.T) {
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		"d41d8cd98f00b204e9800998ecf8427e",
 		HashEmail(""),
 	)
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		"353cbad9b58e69c96154ad99f92bedc7",
 		HashEmail("gitea@example.com"),
 	)
@@ -47,7 +49,8 @@ func TestSizedAvatarLink(t *testing.T) {
 		SizedAvatarLink("gitea@example.com", 100))
 
 	enableGravatar(t)
-	assert.Equal(t,
+	assert.Equal(
+		t,
 		"https://secure.gravatar.com/avatar/353cbad9b58e69c96154ad99f92bedc7?d=identicon&s=100",
 		SizedAvatarLink("gitea@example.com", 100),
 	)

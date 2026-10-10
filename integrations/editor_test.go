@@ -100,7 +100,8 @@ func testEditFile(t *testing.T, session *TestSession, user, repo, branch, filePa
 	assert.NotEmpty(t, lastCommit)
 
 	// Submit the edits
-	req = NewRequestWithValues(t, "POST", path.Join(user, repo, "_edit", branch, filePath),
+	req = NewRequestWithValues(
+		t, "POST", path.Join(user, repo, "_edit", branch, filePath),
 		map[string]string{
 			"_csrf":         htmlDoc.GetCSRF(),
 			"last_commit":   lastCommit,
@@ -129,7 +130,8 @@ func testEditFileToNewBranch(t *testing.T, session *TestSession, user, repo, bra
 	assert.NotEmpty(t, lastCommit)
 
 	// Submit the edits
-	req = NewRequestWithValues(t, "POST", path.Join(user, repo, "_edit", branch, filePath),
+	req = NewRequestWithValues(
+		t, "POST", path.Join(user, repo, "_edit", branch, filePath),
 		map[string]string{
 			"_csrf":           htmlDoc.GetCSRF(),
 			"last_commit":     lastCommit,

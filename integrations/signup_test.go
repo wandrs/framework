@@ -60,7 +60,8 @@ func TestSignupEmail(t *testing.T) {
 		resp := MakeRequest(t, req, test.wantStatus)
 		if test.wantMsg != "" {
 			htmlDoc := NewHTMLParser(t, resp.Body)
-			assert.Equal(t,
+			assert.Equal(
+				t,
 				test.wantMsg,
 				strings.TrimSpace(htmlDoc.doc.Find(".ui.message").Text()),
 			)

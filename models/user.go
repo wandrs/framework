@@ -283,7 +283,8 @@ func (u *User) OrganisationLink() string {
 func (u *User) GenerateEmailActivateCode(email string) string {
 	code := base.CreateTimeLimitCode(
 		fmt.Sprintf("%d%s%s%s%s", u.ID, email, u.LowerName, u.Passwd, u.Rands),
-		setting.Service.ActiveCodeLives, nil)
+		setting.Service.ActiveCodeLives, nil,
+	)
 
 	// Add tail hex username
 	code += hex.EncodeToString([]byte(u.LowerName))
@@ -951,7 +952,8 @@ func deleteUser(e Engine, u *User) error {
 	}
 	// ***** END: Follow *****
 
-	if err = deleteBeans(e,
+	if err = deleteBeans(
+		e,
 		&AccessToken{UID: u.ID},
 		&Follow{UserID: u.ID},
 		&Follow{FollowID: u.ID},
@@ -1285,7 +1287,8 @@ func (opts *SearchUserOptions) toConds() builder.Cond {
 		if !opts.Actor.IsRestricted {
 			accessCond = builder.Or(
 				builder.In("id", builder.Select("org_id").From("org_user").LeftJoin("`user`", exprCond).Where(builder.And(builder.Eq{"uid": opts.Actor.ID}, builder.Eq{"visibility": structs.VisibleTypePrivate}))),
-				builder.In("visibility", structs.VisibleTypePublic, structs.VisibleTypeLimited))
+				builder.In("visibility", structs.VisibleTypePublic, structs.VisibleTypeLimited),
+			)
 		} else {
 			// restricted users only see orgs they are a member of
 			accessCond = builder.In("id", builder.Select("org_id").From("org_user").LeftJoin("`user`", exprCond).Where(builder.And(builder.Eq{"uid": opts.Actor.ID})))

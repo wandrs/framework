@@ -236,7 +236,8 @@ func Csrfer(opt CsrfOptions, ctx *Context) CSRF {
 			if opt.CookieLifeTime == 0 {
 				expires = time.Now().AddDate(0, 0, 1)
 			}
-			middleware.SetCookie(ctx.Resp, opt.Cookie, x.Token,
+			middleware.SetCookie(
+				ctx.Resp, opt.Cookie, x.Token,
 				opt.CookieLifeTime,
 				opt.CookiePath,
 				opt.CookieDomain,

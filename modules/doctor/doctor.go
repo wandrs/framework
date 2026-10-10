@@ -38,8 +38,11 @@ func (w *wrappedLevelLogger) Log(skip int, level log.Level, format string, v ...
 			[]interface{}{
 				log.NewColoredValueBytes(
 					fmt.Sprintf("[%s]", strings.ToUpper(level.String()[0:1])),
-					level.Color()),
-			}, v...)...)
+					level.Color(),
+				),
+			}, v...,
+		)...,
+	)
 }
 
 func initDBDisableConsole(disableConsole bool) error {

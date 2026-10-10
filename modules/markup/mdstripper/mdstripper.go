@@ -48,7 +48,8 @@ func (r *stripRenderer) Render(w io.Writer, source []byte, doc ast.Node) error {
 				r.processString(
 					w,
 					v.Text(source),
-					coalesce)
+					coalesce,
+				)
 				if v.SoftLineBreak() {
 					r.doubleSpace(w)
 				}
@@ -159,7 +160,8 @@ var (
 func StripMarkdownBytes(rawBytes []byte) ([]byte, []string) {
 	once.Do(func() {
 		gdMarkdown := goldmark.New(
-			goldmark.WithExtensions(extension.Table,
+			goldmark.WithExtensions(
+				extension.Table,
 				extension.Strikethrough,
 				extension.TaskList,
 				extension.DefinitionList,

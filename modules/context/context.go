@@ -667,7 +667,8 @@ func Contexter() func(next http.Handler) http.Handler {
 			}
 			ctx.Resp.Before(func(resp ResponseWriter) {
 				if flash := f.Encode(); len(flash) > 0 {
-					middleware.SetCookie(resp, "macaron_flash", flash, 0,
+					middleware.SetCookie(
+						resp, "macaron_flash", flash, 0,
 						setting.SessionConfig.CookiePath,
 						middleware.Domain(setting.SessionConfig.Domain),
 						middleware.HTTPOnly(true),
@@ -677,7 +678,8 @@ func Contexter() func(next http.Handler) http.Handler {
 					return
 				}
 
-				middleware.SetCookie(ctx.Resp, "macaron_flash", "", -1,
+				middleware.SetCookie(
+					ctx.Resp, "macaron_flash", "", -1,
 					setting.SessionConfig.CookiePath,
 					middleware.Domain(setting.SessionConfig.Domain),
 					middleware.HTTPOnly(true),
