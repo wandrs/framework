@@ -25,7 +25,7 @@ func TestToConfig(t *testing.T) {
 
 	cfg2I, err := toConfig(exemplar, cfg)
 	assert.NoError(t, err)
-	cfg2, ok := (cfg2I).(testData)
+	cfg2, ok := cfg2I.(testData)
 	assert.True(t, ok)
 	assert.NotEqual(t, cfg2, exemplar)
 	assert.Equal(t, &cfg, &cfg2)
@@ -36,7 +36,7 @@ func TestToConfig(t *testing.T) {
 
 	cfg3I, err := toConfig(exemplar, cfgString)
 	assert.NoError(t, err)
-	cfg3, ok := (cfg3I).(testData)
+	cfg3, ok := cfg3I.(testData)
 	assert.True(t, ok)
 	assert.Equal(t, cfg.TestString, cfg3.TestString)
 	assert.Equal(t, cfg.TestInt, cfg3.TestInt)

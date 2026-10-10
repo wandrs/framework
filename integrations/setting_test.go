@@ -23,7 +23,8 @@ func TestSettingShowUserEmailExplore(t *testing.T) {
 	req := NewRequest(t, "GET", "/explore/users")
 	resp := session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc := NewHTMLParser(t, resp.Body)
-	assert.Contains(t,
+	assert.Contains(
+		t,
 		htmlDoc.doc.Find(".ui.user.list").Text(),
 		"user4@example.com",
 	)
@@ -33,7 +34,8 @@ func TestSettingShowUserEmailExplore(t *testing.T) {
 	req = NewRequest(t, "GET", "/explore/users")
 	resp = session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc = NewHTMLParser(t, resp.Body)
-	assert.NotContains(t,
+	assert.NotContains(
+		t,
 		htmlDoc.doc.Find(".ui.user.list").Text(),
 		"user4@example.com",
 	)
@@ -51,7 +53,8 @@ func TestSettingShowUserEmailProfile(t *testing.T) {
 	req := NewRequest(t, "GET", "/user2")
 	resp := session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc := NewHTMLParser(t, resp.Body)
-	assert.Contains(t,
+	assert.Contains(
+		t,
 		htmlDoc.doc.Find(".user.profile").Text(),
 		"user2@example.com",
 	)
@@ -62,7 +65,8 @@ func TestSettingShowUserEmailProfile(t *testing.T) {
 	resp = session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc = NewHTMLParser(t, resp.Body)
 	// Should contain since this user owns the profile page
-	assert.Contains(t,
+	assert.Contains(
+		t,
 		htmlDoc.doc.Find(".user.profile").Text(),
 		"user2@example.com",
 	)
@@ -73,7 +77,8 @@ func TestSettingShowUserEmailProfile(t *testing.T) {
 	req = NewRequest(t, "GET", "/user2")
 	resp = session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc = NewHTMLParser(t, resp.Body)
-	assert.NotContains(t,
+	assert.NotContains(
+		t,
 		htmlDoc.doc.Find(".user.profile").Text(),
 		"user2@example.com",
 	)

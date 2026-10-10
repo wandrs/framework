@@ -32,7 +32,8 @@ func TestXSSUserFullName(t *testing.T) {
 	resp := session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc := NewHTMLParser(t, resp.Body)
 	assert.EqualValues(t, 0, htmlDoc.doc.Find("script.evil").Length())
-	assert.EqualValues(t, fullName,
+	assert.EqualValues(
+		t, fullName,
 		htmlDoc.doc.Find("div.content").Find(".header.text.center").Text(),
 	)
 }

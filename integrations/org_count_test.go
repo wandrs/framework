@@ -28,13 +28,15 @@ func testOrgCounts(t *testing.T, u *url.URL) {
 	var ownerCountRepos map[string]int
 	var collabCountRepos map[string]int
 
-	t.Run("GetTheOwnersNumRepos", doCheckOrgCounts(orgOwner, map[string]int{},
+	t.Run("GetTheOwnersNumRepos", doCheckOrgCounts(
+		orgOwner, map[string]int{},
 		false,
 		func(_ *testing.T, calcOrgCounts map[string]int) {
 			ownerCountRepos = calcOrgCounts
 		},
 	))
-	t.Run("GetTheCollaboratorsNumRepos", doCheckOrgCounts(orgCollaborator, map[string]int{},
+	t.Run("GetTheCollaboratorsNumRepos", doCheckOrgCounts(
+		orgCollaborator, map[string]int{},
 		false,
 		func(_ *testing.T, calcOrgCounts map[string]int) {
 			collabCountRepos = calcOrgCounts

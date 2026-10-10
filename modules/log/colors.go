@@ -380,7 +380,7 @@ func (cv *ColoredValue) Format(s fmt.State, c rune) {
 		}
 	}
 	s.Write(*cv.colorBytes)
-	fmt.Fprintf(&protectedANSIWriter{w: s}, fmtString(s, c), *(cv.Value))
+	fmt.Fprintf(&protectedANSIWriter{w: s}, fmtString(s, c), *cv.Value)
 	s.Write(*cv.resetBytes)
 }
 

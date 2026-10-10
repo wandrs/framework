@@ -48,7 +48,8 @@ func newPictureService() {
 	storageType := sec.Key("AVATAR_STORAGE_TYPE").MustString("")
 	// Specifically default PATH to AVATAR_UPLOAD_PATH
 	avatarSec.Key("PATH").MustString(
-		sec.Key("AVATAR_UPLOAD_PATH").String())
+		sec.Key("AVATAR_UPLOAD_PATH").String(),
+	)
 
 	Avatar.Storage = getStorage("avatars", storageType, avatarSec)
 
@@ -105,7 +106,8 @@ func newRepoAvatarService() {
 	storageType := sec.Key("REPOSITORY_AVATAR_STORAGE_TYPE").MustString("")
 	// Specifically default PATH to AVATAR_UPLOAD_PATH
 	repoAvatarSec.Key("PATH").MustString(
-		sec.Key("REPOSITORY_AVATAR_UPLOAD_PATH").String())
+		sec.Key("REPOSITORY_AVATAR_UPLOAD_PATH").String(),
+	)
 
 	RepoAvatar.Storage = getStorage("repo-avatars", storageType, repoAvatarSec)
 

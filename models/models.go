@@ -66,7 +66,8 @@ var (
 )
 
 func init() {
-	tables = append(tables,
+	tables = append(
+		tables,
 		new(User),
 		new(AccessToken),
 		new(Follow),

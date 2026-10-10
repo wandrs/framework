@@ -124,7 +124,8 @@ func runMigrateStorage(ctx *cli.Context) error {
 			goCtx,
 			storage.LocalStorageConfig{
 				Path: p,
-			})
+			},
+		)
 	case string(storage.MinioStorageType):
 		dstStorage, err = storage.NewMinioStorage(
 			goCtx,
@@ -136,7 +137,8 @@ func runMigrateStorage(ctx *cli.Context) error {
 				Location:        ctx.String("minio-location"),
 				BasePath:        ctx.String("minio-base-path"),
 				UseSSL:          ctx.Bool("minio-use-ssl"),
-			})
+			},
+		)
 	default:
 		return fmt.Errorf("Unsupported storage type: %s", ctx.String("storage"))
 	}

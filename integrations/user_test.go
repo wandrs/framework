@@ -61,7 +61,8 @@ func TestRenameInvalidUsername(t *testing.T) {
 		})
 		resp := session.MakeRequest(t, req, http.StatusOK)
 		htmlDoc := NewHTMLParser(t, resp.Body)
-		assert.Contains(t,
+		assert.Contains(
+			t,
 			htmlDoc.doc.Find(".ui.negative.message").Text(),
 			i18n.Tr("en", "form.alpha_dash_dot_error"),
 		)
@@ -107,7 +108,8 @@ func TestRenameReservedUsername(t *testing.T) {
 		req = NewRequest(t, "GET", test.RedirectURL(resp))
 		resp = session.MakeRequest(t, req, http.StatusOK)
 		htmlDoc := NewHTMLParser(t, resp.Body)
-		assert.Contains(t,
+		assert.Contains(
+			t,
 			htmlDoc.doc.Find(".ui.negative.message").Text(),
 			i18n.Tr("en", "user.form.name_reserved", reservedUsername),
 		)

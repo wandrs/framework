@@ -244,7 +244,8 @@ func DeleteOrganization(org *User) (err error) {
 }
 
 func deleteOrg(e *xorm.Session, u *User) error {
-	if err := deleteBeans(e,
+	if err := deleteBeans(
+		e,
 		&Team{OrgID: u.ID},
 		&OrgUser{OrgID: u.ID},
 		&TeamUser{OrgID: u.ID},

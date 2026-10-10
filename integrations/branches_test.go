@@ -35,7 +35,8 @@ func TestUndoDeleteBranch(t *testing.T) {
 	onGiteaRun(t, func(t *testing.T, u *url.URL) {
 		deleteBranch(t)
 		htmlDoc, name := branchAction(t, ".undo-button")
-		assert.Contains(t,
+		assert.Contains(
+			t,
 			htmlDoc.doc.Find(".ui.positive.message").Text(),
 			i18n.Tr("en", "repo.branch.restore_success", name),
 		)
@@ -44,7 +45,8 @@ func TestUndoDeleteBranch(t *testing.T) {
 
 func deleteBranch(t *testing.T) {
 	htmlDoc, name := branchAction(t, ".delete-branch-button")
-	assert.Contains(t,
+	assert.Contains(
+		t,
 		htmlDoc.doc.Find(".ui.positive.message").Text(),
 		i18n.Tr("en", "repo.branch.deletion_success", name),
 	)
